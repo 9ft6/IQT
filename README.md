@@ -10,6 +10,8 @@ Keep an eye out for updates as we keep building and improving IQT.
 
 Below is a sample code snippet to illustrate the simplicity of creating a login interface with IQT:
 
+![Login Interface Preview](example/view.png)
+
 ```python
 from abc import abstractmethod
 
@@ -59,11 +61,3 @@ if __name__ == '__main__':
     app = LeaflyGUI()
 
 ```
-
-## Preview
-
-Here's a sneak peek of what the IQT Framework is capable of:
-
-![Login Interface Preview](example/view.png)
-
-Stay tuned for more updates as we progress with the development.
