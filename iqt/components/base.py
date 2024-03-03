@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Any
 
-from PySide6.QtWidgets import QWidget, QBoxLayout
+from PySide6.QtWidgets import QWidget
 from pydantic import BaseModel, Field
 
 from iqt.utils import setup_settings

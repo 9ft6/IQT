@@ -1,4 +1,4 @@
-from iqt.widgets.base import BaseConfig, BaseWidgetObject
+from iqt.components.base import BaseConfig, BaseWidgetObject
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
 
 

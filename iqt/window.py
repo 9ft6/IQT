@@ -3,7 +3,7 @@ from typing import Any
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import Qt, QRect
 
-from iqt.widgets.base import Size, BaseObject, BaseConfig
+from iqt.components.base import Size, BaseObject, BaseConfig
 from iqt.utils import setup_settings
 
 
@@ -27,11 +27,12 @@ class Window(BaseObject):
         self.pre_init()
 
         self.window = QMainWindow()
+        self.window.entity = self
         self.cfg = self.build_config()
 
         setup_settings(self.window, self.cfg)
         self.window.setAttribute(Qt.WA_TranslucentBackground, self.cfg.transparent)
-        widget = self.cfg.widget_model().init_widget()
+        self.widget = widget = self.cfg.widget_model().init_widget()
         self.window.setCentralWidget(widget)
 
         if self.cfg.start_at_center:

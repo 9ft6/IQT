@@ -1,6 +1,6 @@
 from iqt.app import Application
 from iqt.window import Window
-from iqt.widgets.widgets import Widget
+from iqt.components.widgets import Widget
 from example.widgets import Horizont, Vertical, Label, Input, Button, CheckBox
 
 
