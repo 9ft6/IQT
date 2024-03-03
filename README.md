@@ -15,26 +15,24 @@ Below is a sample code snippet to illustrate the simplicity of creating a login 
 ```python
 from abc import abstractmethod
 
-from iqt.app import Application, AppConfig
-from iqt.window import Window, WindowConfig
-from iqt.widgets.widgets import Widget, WidgetConfig
-from iqt.widgets.base import Size, BaseObject
-from iqt.widgets.layouts import BaseLayout
+from iqt.app import Application
+from iqt.window import Window
+from iqt.widgets.widgets import Widget
 from example.widgets import Horizont, Vertical, Label, Input, Button, CheckBox
 
 
-class LoginWidget(Widget):
-    class Config(WidgetConfig):
-        layout: BaseLayout = Vertical[
-            ...,
-            Horizont[Label("Please Login:")],
-            Horizont[Label("login:"), Input("login")],
-            Horizont[Label("pass:"), Input("password")],
-            Horizont[Button("login"), ..., CheckBox("Remember me")],
-            ...,
-        ]
-        name: str = "main_widget"
-
+class LoginWidget(
+    Widget,
+    name="main_widget",
+    layout=Vertical[
+        ...,
+        Horizont[Label("Please Login:")],
+        Horizont[Label("login:"), Input("login")],
+        Horizont[Label("pass:"), Input("password")],
+        Horizont[Button("login"), ..., CheckBox("Remember me")],
+        ...,
+    ],
+):
     @abstractmethod
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
@@ -44,20 +42,20 @@ class LoginWidget(Widget):
                 ...  # change config state
 
 
-class LoginWindow(Window):
-    class Config(WindowConfig):
-        widget_model: BaseObject = LoginWidget
-        title: str = "Please login"
-        fixed_size: Size = 480, 240
-        transparent: bool = False
+class LoginWindow(
+    Window,
+    fixed_size=(480, 240),
+    transparent=False,
+    title="Please login",
+    widget_model=LoginWidget,
+):
+    ...
 
 
-class LeaflyGUI(Application):
-    class Config(AppConfig):
-        window_model: Window = LoginWindow
+class TestGUI(Application, window_model=LoginWindow):
+    ...
 
 
 if __name__ == '__main__':
-    app = LeaflyGUI()
-
+    TestGUI().run()
 ```

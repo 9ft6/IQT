@@ -11,7 +11,6 @@ def method_by_setting(object, setting):
         "fixed_size": "setFixedSize",
     }
     if method_name := methods.get(setting):
-        print(object, method_name)
         return getattr(object, method_name, None)
 
 

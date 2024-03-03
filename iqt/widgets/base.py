@@ -6,6 +6,13 @@ from iqt.utils import setup_settings
 Size: tuple[int, int] = ...
 
 
+class ConfigurableType(type):
+    def __new__(cls, name, bases, namespace, **opts):
+        namespace["_cfg_extra"] = opts or {}
+        # namespace.update(opts)
+        return super().__new__(cls, name, bases, namespace)
+
+
 class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     factory: QWidget = None
     init_args: tuple = Field(default_factory=tuple)
@@ -28,12 +35,14 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
         return result
 
 
-class BaseObject:
+class BaseObject(metaclass=ConfigurableType):
     class Config(BaseConfig):
         ...
 
     cfg: Config
     widget: QWidget
+
+    _cfg_extra: dict = None
 
     def init_widget(self) -> QWidget:
         self.cfg = self.build_config()
@@ -43,7 +52,8 @@ class BaseObject:
         return self.widget
 
     def build_config(self):
-        return self.Config()
+        print(self._cfg_extra or {})
+        return self.Config(**(self._cfg_extra or {}))
 
     def factory(self):
         return self.cfg.factory(*self.cfg.init_args, **self.cfg.init_kwargs)

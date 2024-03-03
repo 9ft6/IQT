@@ -5,13 +5,14 @@ from pydantic import BaseModel
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QDir
 
+from iqt.widgets.base import BaseObject, BaseConfig
 from iqt.utils import setup_fonts
 from iqt.style import base_style
 from iqt import logger
 from typing import Any
 
 
-class AppConfig(BaseModel, arbitrary_types_allowed=True):
+class AppConfig(BaseConfig):
     style: str = base_style
     window_model: Any
     app_name: Any = "Base application"
@@ -20,22 +21,23 @@ class AppConfig(BaseModel, arbitrary_types_allowed=True):
     images_path: Path = Path().resolve() / "images"
 
 
-class Application(QApplication):
-    class Config(AppConfig):
-        ...
-
-    cfg: Config
+class Application(BaseObject):
     main_window: Any
+    Config = AppConfig
 
     def __init__(self):
-        self.cfg = self.Config()
+        self.app = QApplication()
+
+    def run(self):
+        self.cfg = self.build_config()
+
         logger.debug(f"{self.cfg.app_name} starting...")
-        super(Application, self).__init__()
         QDir.addSearchPath('images', str(self.cfg.images_path))
         QDir.addSearchPath('icons', str(self.cfg.icon_path))
-        setup_fonts(self)
+        setup_fonts(self.app)
 
-        self.setStyleSheet(self.cfg.style)
+        self.app.setStyleSheet(self.cfg.style)
         self.main_window: Any = self.cfg.window_model(self)
+        self.main_window.init_window()
 
-        sys.exit(self.exec())
+        sys.exit(self.app.exec())
