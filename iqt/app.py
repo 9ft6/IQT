@@ -1,5 +1,4 @@
 import sys
-from abc import abstractmethod
 from pathlib import Path
 
 from PySide6.QtWidgets import QApplication

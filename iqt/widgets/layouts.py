@@ -28,13 +28,9 @@ class BaseLayout(BaseWidgetObject):
         return widget
 
 
-class BaseHorizont(BaseLayout):
-    class Config(BaseLayoutConfig):
-        factory: QWidget = QHBoxLayout
-        name: str = "base_horizont"
+class BaseHorizont(BaseLayout, factory=QHBoxLayout, name="base_horizont"):
+    ...
 
 
-class BaseVertical(BaseLayout):
-    class Config(BaseLayoutConfig):
-        factory: QWidget = QVBoxLayout
-        name: str = "base_vertical"
+class BaseVertical(BaseLayout, factory=QVBoxLayout, name="base_vertical"):
+    ...

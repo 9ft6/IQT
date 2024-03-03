@@ -18,15 +18,14 @@ class WindowConfig(BaseConfig):
 
 class Window(BaseObject):
     window: QMainWindow
-
-    class Config(WindowConfig):
-        ...
+    Config = WindowConfig
 
     def __init__(self, app: QApplication):
         self.app = app
 
     def init_window(self):
         self.pre_init()
+
         self.window = QMainWindow()
         self.cfg = self.build_config()
 
@@ -38,6 +37,7 @@ class Window(BaseObject):
         if self.cfg.start_at_center:
             self.move_to_center()
 
+        self.post_init()
         self.window.show()
 
     def move_to_center(self):

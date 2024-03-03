@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QCheckBox
+from PySide6.QtWidgets import QLabel, QPushButton, QLineEdit, QCheckBox
 
 from iqt.widgets.base import BaseConfig, BaseWidgetObject
 from iqt.widgets.layouts import BaseLayout
@@ -13,10 +13,7 @@ class WidgetConfig(BaseConfig):
 
 
 class Widget(BaseWidgetObject):
-    class Config(WidgetConfig):
-        name: str
-
-    cfg: WidgetConfig
+    Config = WidgetConfig
 
     def factory(self):
         return self.cfg.layout.init_widget()
@@ -26,11 +23,7 @@ class Widget(BaseWidgetObject):
         ...
 
 
-class BaseLabel(BaseWidgetObject):
-    class Config(BaseConfig):
-        name: str = "default_label"
-        factory: QWidget = QLabel
-
+class TextArgumentMixin:
     def __init__(self, text=None, **kwargs):
         self.text = text
 
@@ -40,43 +33,37 @@ class BaseLabel(BaseWidgetObject):
         return cfg
 
 
-class BaseInput(BaseWidgetObject):
-    class Config(BaseConfig):
-        name: str = "default_input"
-        factory: QWidget = QLineEdit
-
-    def __init__(self, text=None, **kwargs):
-        self.text = text
-
-    def build_config(self):
-        cfg = super().build_config()
-        cfg.init_args = (self.text, )
-        return cfg
+class BaseLabel(
+    TextArgumentMixin,
+    BaseWidgetObject,
+    factory=QLabel,
+    name="default_label"
+):
+    ...
 
 
-class BaseButton(BaseWidgetObject):
-    class Config(BaseConfig):
-        name: str = "default_button"
-        factory: QWidget = QPushButton
-
-    def __init__(self, text=None, **kwargs):
-        self.text = text
-
-    def build_config(self):
-        cfg = super().build_config()
-        cfg.init_args = (self.text, )
-        return cfg
+class BaseInput(
+    TextArgumentMixin,
+    BaseWidgetObject,
+    factory=QLineEdit,
+    name="default_input"
+):
+    ...
 
 
-class BaseCheckBox(BaseWidgetObject):
-    class Config(BaseConfig):
-        name: str = "default_checkbox"
-        factory: QWidget = QCheckBox
+class BaseButton(
+    TextArgumentMixin,
+    BaseWidgetObject,
+    factory=QPushButton,
+    name="default_button"
+):
+    ...
 
-    def __init__(self, text=None, **kwargs):
-        self.text = text
 
-    def build_config(self):
-        cfg = super().build_config()
-        cfg.init_args = (self.text, )
-        return cfg
+class BaseCheckBox(
+    TextArgumentMixin,
+    BaseWidgetObject,
+    factory=QCheckBox,
+    name="default_checkbox"
+):
+    ...
