@@ -1,26 +1,34 @@
-from abc import abstractmethod
+from PySide6.QtWidgets import QPushButton, QLineEdit, QCheckBox, QWidget
 
-from PySide6.QtWidgets import QLabel, QPushButton, QLineEdit, QCheckBox
-
-from iqt.widgets.base import BaseConfig, BaseWidgetObject
-from iqt.widgets.layouts import BaseLayout
+from iqt.components.base import BaseConfig, BaseWidgetObject
+from iqt.components.layouts import BaseLayout
 
 Size: tuple[int, int] = ...
 
 
 class WidgetConfig(BaseConfig):
-    layout: BaseLayout
+    layout: BaseLayout = None
 
 
 class Widget(BaseWidgetObject):
     Config = WidgetConfig
 
-    def factory(self):
-        return self.cfg.layout.init_widget()
+    def post_init(self):
+        self.widget.entity = self
+        self.widget.add_widget = self.add_widget
 
-    @abstractmethod
+    def factory(self):
+        layout = self.cfg.layout or self.generate_layout()
+        return layout.init_widget()
+
+    def generate_layout(self):
+        ...
+
     def items_handler(self, *args, **kwargs):
         ...
+
+    def add_widget(self, widget):
+        self.widget.layout().addWidget(widget.init_widget())
 
 
 class TextArgumentMixin:
@@ -33,37 +41,25 @@ class TextArgumentMixin:
         return cfg
 
 
-class BaseLabel(
-    TextArgumentMixin,
-    BaseWidgetObject,
-    factory=QLabel,
-    name="default_label"
-):
-    ...
-
-
 class BaseInput(
     TextArgumentMixin,
     BaseWidgetObject,
-    factory=QLineEdit,
     name="default_input"
 ):
-    ...
+    factory: QWidget = QLineEdit
 
 
 class BaseButton(
     TextArgumentMixin,
     BaseWidgetObject,
-    factory=QPushButton,
     name="default_button"
 ):
-    ...
+    factory: QWidget = QPushButton
 
 
 class BaseCheckBox(
     TextArgumentMixin,
     BaseWidgetObject,
-    factory=QCheckBox,
     name="default_checkbox"
 ):
-    ...
+    factory: QWidget = QCheckBox

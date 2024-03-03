@@ -4,7 +4,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QDir
 
-from iqt.widgets.base import BaseObject, BaseConfig
+from iqt.components.base import BaseObject, BaseConfig
 from iqt.utils import setup_fonts
 from iqt.style import base_style
 from iqt import logger

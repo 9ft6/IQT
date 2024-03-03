@@ -9,7 +9,11 @@ def method_by_setting(object, setting):
         "name": "setObjectName",
         "size": "resize",
         "fixed_size": "setFixedSize",
+        "fixed_width": "setFixedWidth",
+        "fixed_height": "setFixedHeight",
         "style": "setStyleSheet",
+        "margins": "setContentsMargins",
+        "spacing": "setSpacing",
     }
     if method_name := methods.get(setting):
         return getattr(object, method_name, None)

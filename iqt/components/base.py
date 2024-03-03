@@ -16,14 +16,15 @@ class ConfigurableType(type):
 
 
 class BaseConfig(BaseModel, arbitrary_types_allowed=True):
-    factory: Any = None
     init_args: tuple = Field(default_factory=tuple)
     init_kwargs: dict = Field(default_factory=dict)
 
     # settings
     name: str = "default_object"
-    size: Size = None
-    fixed_size: Size = None
+    margins: tuple[int, int, int, int] = Field(None)
+    size: Size = Field(None)
+    fixed_size: Size = Field(None)
+    fixed_width: int = Field(None)
 
     def get_settings(self):
         result = self.model_dump(exclude={
@@ -41,33 +42,36 @@ class BaseObject(metaclass=ConfigurableType):
     class Config(BaseConfig):
         ...
 
+    name: str = "default_object"
     cfg: Config
     widget: QWidget
+    factory: Any
 
     _cfg_extra: dict = None
 
-    @abstractmethod
     def build_config(self):
         return self.Config(**(self._cfg_extra or {}))
 
-    def factory(self):
-        return self.cfg.factory(*self.cfg.init_args, **self.cfg.init_kwargs)
+    def create_widget(self):
+        return self.factory(*self.cfg.init_args, **self.cfg.init_kwargs)
 
-    @abstractmethod
     def pre_init(self) -> None:
         ...
 
-    @abstractmethod
     def post_init(self) -> None:
         ...
 
 
 class BaseWidgetObject(BaseObject):
     def init_widget(self) -> QWidget:
-        self.pre_init()
         self.cfg = self.build_config()
-        self.name = self.cfg.name
-        self.widget = self.factory()
+        self.pre_init()
+
+        self.cfg.name = self.name or self.cfg.name
+        self.widget = self.create_widget()
+        self.widget.entity = self
+        setattr(self, self.name, self.widget)
         setup_settings(self.widget, self.cfg)
+
         self.post_init()
         return self.widget
