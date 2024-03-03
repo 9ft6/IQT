@@ -17,14 +17,17 @@ class WindowConfig(BaseConfig):
 
 
 class Window(BaseObject):
+    window: QMainWindow
+
     class Config(WindowConfig):
         ...
 
     def __init__(self, app: QApplication):
         self.app = app
-        self.window = QMainWindow()
 
     def init_window(self):
+        self.pre_init()
+        self.window = QMainWindow()
         self.cfg = self.build_config()
 
         setup_settings(self.window, self.cfg)

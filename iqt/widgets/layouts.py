@@ -1,4 +1,4 @@
-from iqt.widgets.base import BaseObject, BaseConfig
+from iqt.widgets.base import BaseConfig, BaseWidgetObject
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
 
 
@@ -6,7 +6,7 @@ class BaseLayoutConfig(BaseConfig):
     ...
 
 
-class BaseLayout(BaseObject):
+class BaseLayout(BaseWidgetObject):
     items: tuple
 
     def __init__(self, items):

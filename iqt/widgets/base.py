@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from PySide6.QtWidgets import QWidget
 from pydantic import BaseModel, Field
 
@@ -7,10 +9,9 @@ Size: tuple[int, int] = ...
 
 
 class ConfigurableType(type):
-    def __new__(cls, name, bases, namespace, **opts):
+    def __new__(cls, _name, bases, namespace, **opts):
         namespace["_cfg_extra"] = opts or {}
-        # namespace.update(opts)
-        return super().__new__(cls, name, bases, namespace)
+        return super().__new__(cls, _name, bases, namespace)
 
 
 class BaseConfig(BaseModel, arbitrary_types_allowed=True):
@@ -44,16 +45,23 @@ class BaseObject(metaclass=ConfigurableType):
 
     _cfg_extra: dict = None
 
+    @abstractmethod
+    def build_config(self):
+        return self.Config(**(self._cfg_extra or {}))
+
+    def factory(self):
+        return self.cfg.factory(*self.cfg.init_args, **self.cfg.init_kwargs)
+
+    @abstractmethod
+    def pre_init(self) -> None:
+        ...
+
+
+class BaseWidgetObject(BaseObject):
     def init_widget(self) -> QWidget:
+        self.pre_init()
         self.cfg = self.build_config()
         self.name = self.cfg.name
         self.widget = self.factory()
         setup_settings(self.widget, self.cfg)
         return self.widget
-
-    def build_config(self):
-        print(self._cfg_extra or {})
-        return self.Config(**(self._cfg_extra or {}))
-
-    def factory(self):
-        return self.cfg.factory(*self.cfg.init_args, **self.cfg.init_kwargs)

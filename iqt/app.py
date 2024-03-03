@@ -1,7 +1,7 @@
 import sys
+from abc import abstractmethod
 from pathlib import Path
 
-from pydantic import BaseModel
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QDir
 
@@ -29,9 +29,12 @@ class Application(BaseObject):
         self.app = QApplication()
 
     def run(self):
-        self.cfg = self.build_config()
+        self.app.cfg = self.cfg = self.build_config()
 
         logger.debug(f"{self.cfg.app_name} starting...")
+
+        self.pre_init()
+
         QDir.addSearchPath('images', str(self.cfg.images_path))
         QDir.addSearchPath('icons', str(self.cfg.icon_path))
         setup_fonts(self.app)

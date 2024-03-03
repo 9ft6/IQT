@@ -1,9 +1,9 @@
 .idea/
 .run/
 venv/
+leafly/
 backups/
 .venv/
-.venv/*
 */**/__pycache__/
 __pycache__/*
 */**/*egg-info/

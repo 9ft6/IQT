@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 from iqt.app import Application
 from iqt.window import Window
 from iqt.widgets.widgets import Widget
@@ -18,7 +16,6 @@ class LoginWidget(
         ...,
     ],
 ):
-    @abstractmethod
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
             case "login_button":

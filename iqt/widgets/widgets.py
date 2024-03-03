@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QLineEdit, QCheckBox
 
-from iqt.widgets.base import BaseObject, BaseConfig
+from iqt.widgets.base import BaseConfig, BaseWidgetObject
 from iqt.widgets.layouts import BaseLayout
 
 Size: tuple[int, int] = ...
@@ -12,7 +12,7 @@ class WidgetConfig(BaseConfig):
     layout: BaseLayout
 
 
-class Widget(BaseObject):
+class Widget(BaseWidgetObject):
     class Config(WidgetConfig):
         name: str
 
@@ -26,7 +26,7 @@ class Widget(BaseObject):
         ...
 
 
-class BaseLabel(BaseObject):
+class BaseLabel(BaseWidgetObject):
     class Config(BaseConfig):
         name: str = "default_label"
         factory: QWidget = QLabel
@@ -40,7 +40,7 @@ class BaseLabel(BaseObject):
         return cfg
 
 
-class BaseInput(BaseObject):
+class BaseInput(BaseWidgetObject):
     class Config(BaseConfig):
         name: str = "default_input"
         factory: QWidget = QLineEdit
@@ -54,7 +54,7 @@ class BaseInput(BaseObject):
         return cfg
 
 
-class BaseButton(BaseObject):
+class BaseButton(BaseWidgetObject):
     class Config(BaseConfig):
         name: str = "default_button"
         factory: QWidget = QPushButton
@@ -68,7 +68,7 @@ class BaseButton(BaseObject):
         return cfg
 
 
-class BaseCheckBox(BaseObject):
+class BaseCheckBox(BaseWidgetObject):
     class Config(BaseConfig):
         name: str = "default_checkbox"
         factory: QWidget = QCheckBox
