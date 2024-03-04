@@ -1,7 +1,8 @@
 from iqt.app import Application
 from iqt.window import Window
-from iqt.components.widgets import Widget
-from example.widgets import Horizont, Vertical, Label, Input, Button, CheckBox
+from iqt.components.widgets import Widget, BaseInput as Input, BaseCheckBox as CheckBox
+from iqt.components.layouts import Horizont, Vertical
+from iqt.components import Label, Button
 
 
 class LoginWidget(
