@@ -10,7 +10,9 @@ Keep an eye out for updates as we keep building and improving IQT.
 
 Below is a sample code snippet to illustrate the simplicity of creating a login interface with IQT:
 
-![Login Interface Preview](example/view.png)
+<p align="center">
+  <img src="example/view.png" alt="Login Interface Preview">
+</p>
 
 ```python
 from iqt.app import Application
