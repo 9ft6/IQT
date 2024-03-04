@@ -1,10 +1,6 @@
-from iqt.components.base import BaseConfig, BaseWidgetObject
+from iqt.components.base import BaseWidgetObject
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QBoxLayout, QLayout
 from PySide6.QtCore import Qt, QSize, QRect, QPoint
-
-
-class BaseLayoutConfig(BaseConfig):
-    spacing: int = 4
 
 
 class BaseLayout(BaseWidgetObject):
@@ -17,17 +13,18 @@ class BaseLayout(BaseWidgetObject):
     def __class_getitem__(cls, key):
         return cls(key if isinstance(key, tuple) else (key, ))
 
-    def create_widget(self) -> QWidget:
-        widget = QWidget(*self.cfg.init_args, **self.cfg.init_kwargs)
-        layout = self.factory(widget)
-        for item in self.items:
-            if item is Ellipsis:
-                layout.addStretch()
-            else:
-                item_widget = item.init_widget()
-                layout.addWidget(item_widget)
+    def create_widget(self, parent=None) -> QWidget:
+        return self.factory(parent, *self.cfg.init_args, **self.cfg.init_kwargs)
 
-        return widget
+    def get_construct(self):
+        return {
+            "entity": self,
+            "items": [
+                i.get_construct() if isinstance(i, BaseLayout) else i
+                for i in self.items
+            ],
+        }
+
 
 class Horizont(BaseLayout, name="base_horizont"):
     factory: QBoxLayout = QHBoxLayout

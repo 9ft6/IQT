@@ -12,7 +12,7 @@ class WindowConfig(BaseConfig):
     title: str = "Application"
     fixed_size: Size = None
     transparent: bool = False
-    name: str = "default_window"
+    name: str = "window"
     start_at_center: bool = True
 
 

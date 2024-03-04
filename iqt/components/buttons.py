@@ -12,7 +12,7 @@ class Button(
     BaseWidgetObject,
     signals={"items_handler": ["clicked"]}
 ):
-    name: str = "default_button"
+    name: str = "button"
     factory: QWidget = QPushButton
 
     def __init__(self, text=None, **kwargs):

@@ -19,9 +19,9 @@ class LoginWidget(
 ):
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
-            case "login_button":
+            case "button":
                 ...  # do login
-            case "remember_me":
+            case "checkbox":
                 ...  # change config state
 
 

@@ -11,7 +11,7 @@ from iqt.components.base import BaseWidgetObject
 Size: tuple[int, int] = ...
 
 
-class BaseLabel(BaseWidgetObject, name="default_label"):
+class BaseLabel(BaseWidgetObject, name="label"):
     factory: QWidget = QLabel
 
 
@@ -25,11 +25,11 @@ class Label(BaseLabel, fixed_height=16):
         return cfg
 
 
-class Title(Label, name="default_title"):
+class Title(Label, name="title"):
     ...
 
 
-class Image(BaseLabel, name="default_image"):
+class Image(BaseLabel, name="image"):
     net_manager: QNetworkAccessManager
 
     def __init__(self, image, **kwargs):

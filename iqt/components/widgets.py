@@ -1,4 +1,6 @@
-from PySide6.QtWidgets import QPushButton, QLineEdit, QCheckBox, QWidget
+from types import MethodType
+
+from PySide6.QtWidgets import QLineEdit, QCheckBox, QWidget
 
 from iqt.components.base import BaseConfig, BaseWidgetObject
 from iqt.components.layouts import BaseLayout
@@ -18,24 +20,42 @@ class Widget(BaseWidgetObject):
         self.widget.add_widget = self.add_widget
 
     def factory(self):
+        return self.cfg.layout.init_widget()
+
+    def create_widget(self, parent=None):
         layout = self.cfg.layout or self.generate_layout()
-        widget = layout.init_widget()
-        self.connect_signals(layout.items)
-        return widget
+        return self.create_items(layout.get_construct(), root=self)
 
-    def connect_signals(self, items):
-        for item in items:
-            if item is Ellipsis or not item.cfg.signals:
-                continue
+    def create_items(self, items, root=None):
+        match items:
+            case dict():
+                entity = items["entity"]
+                widget = QWidget()
 
-            for method_name, signals in item.cfg.signals.items():
-                for signal_name in signals:
-                    self.connect_signal(item, signal_name, method_name)
+                layout = entity.factory(widget)
+                for item in items["items"]:
+                    if item is Ellipsis:
+                        layout.addStretch(1)
+                    else:
+                        layout.addWidget(self.create_items(item, root=root))
+                return widget
+            case _:
+                widget = items.init_widget()
+                # print(widget.name)
+                if root and items.cfg.signals:
+                    self.connect_signals(root, items)
+                return widget
 
-    def connect_signal(self, item, signal_name, method_name):
+    def connect_signals(self, root, item):
+        for method_name, signals in item.cfg.signals.items():
+            for signal in signals:
+                self.connect_signal(item, signal, root, method_name)
+
+    def connect_signal(self, item, signal_name, root, method_name):
         if signal := getattr(item.widget, signal_name, None):
-            if method := getattr(self, method_name, None):
-                signal.connect(method)
+            if method := getattr(root, method_name, None):
+                setattr(item.widget, method_name, MethodType(method, item.widget))
+                signal.connect(getattr(item.widget, method_name, None))
 
     def generate_layout(self):
         ...
@@ -60,7 +80,7 @@ class TextArgumentMixin:
 class BaseInput(
     TextArgumentMixin,
     BaseWidgetObject,
-    name="default_input"
+    name="input"
 ):
     factory: QWidget = QLineEdit
 
@@ -68,6 +88,6 @@ class BaseInput(
 class BaseCheckBox(
     TextArgumentMixin,
     BaseWidgetObject,
-    name="default_checkbox"
+    name="checkbox"
 ):
     factory: QWidget = QCheckBox

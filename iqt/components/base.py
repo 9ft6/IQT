@@ -19,7 +19,7 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     init_kwargs: dict = Field(default_factory=dict)
 
     # settings
-    name: str = "default_object"
+    name: str = "object"
     margins: tuple[int, int, int, int] = Field(None)
     signals: dict[str, list] = Field(None)
     size: Size = Field(None)
@@ -42,7 +42,7 @@ class BaseObject(metaclass=ConfigurableType):
     class Config(BaseConfig):
         ...
 
-    name: str = "default_object"
+    name: str = "object"
     cfg: Config
     widget: QWidget
     factory: Any
@@ -52,7 +52,7 @@ class BaseObject(metaclass=ConfigurableType):
     def build_config(self):
         return self.Config(**(self._cfg_extra or {}))
 
-    def create_widget(self):
+    def create_widget(self, parent=None):
         return self.factory(*self.cfg.init_args, **self.cfg.init_kwargs)
 
     def pre_init(self) -> None:
@@ -69,6 +69,7 @@ class BaseWidgetObject(BaseObject):
 
         self.cfg.name = self.name or self.cfg.name
         self.widget = self.create_widget()
+        self.widget.name = self.cfg.name
         self.widget.entity = self
         setattr(self, self.name, self.widget)
         setup_settings(self.widget, self.cfg)
