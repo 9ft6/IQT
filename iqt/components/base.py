@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from typing import Any
 
 from PySide6.QtWidgets import QWidget
@@ -22,6 +21,7 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     # settings
     name: str = "default_object"
     margins: tuple[int, int, int, int] = Field(None)
+    signals: dict[str, list] = Field(None)
     size: Size = Field(None)
     fixed_size: Size = Field(None)
     fixed_width: int = Field(None)
