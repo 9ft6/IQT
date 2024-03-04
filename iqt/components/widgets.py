@@ -41,7 +41,6 @@ class Widget(BaseWidgetObject):
                 return widget
             case _:
                 widget = items.init_widget()
-                # print(widget.name)
                 if root and items.cfg.signals:
                     self.connect_signals(root, items)
                 return widget

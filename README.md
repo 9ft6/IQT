@@ -15,8 +15,9 @@ Below is a sample code snippet to illustrate the simplicity of creating a login 
 ```python
 from iqt.app import Application
 from iqt.window import Window
-from iqt.widgets.widgets import Widget
-from example.widgets import Horizont, Vertical, Label, Input, Button, CheckBox
+from iqt.components.widgets import Widget, BaseInput as Input, BaseCheckBox as CheckBox
+from iqt.components.layouts import Horizont, Vertical
+from iqt.components import Label, Button
 
 
 class LoginWidget(
@@ -33,9 +34,9 @@ class LoginWidget(
 ):
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
-            case "login_button":
+            case "button":
                 ...  # do login
-            case "remember_me":
+            case "checkbox":
                 ...  # change config state
 
 
