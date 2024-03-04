@@ -19,7 +19,23 @@ class Widget(BaseWidgetObject):
 
     def factory(self):
         layout = self.cfg.layout or self.generate_layout()
-        return layout.init_widget()
+        widget = layout.init_widget()
+        self.connect_signals(layout.items)
+        return widget
+
+    def connect_signals(self, items):
+        for item in items:
+            if item is Ellipsis or not item.cfg.signals:
+                continue
+
+            for method_name, signals in item.cfg.signals.items():
+                for signal_name in signals:
+                    self.connect_signal(item, signal_name, method_name)
+
+    def connect_signal(self, item, signal_name, method_name):
+        if signal := getattr(item.widget, signal_name, None):
+            if method := getattr(self, method_name, None):
+                signal.connect(method)
 
     def generate_layout(self):
         ...
@@ -47,14 +63,6 @@ class BaseInput(
     name="default_input"
 ):
     factory: QWidget = QLineEdit
-
-
-class BaseButton(
-    TextArgumentMixin,
-    BaseWidgetObject,
-    name="default_button"
-):
-    factory: QWidget = QPushButton
 
 
 class BaseCheckBox(
