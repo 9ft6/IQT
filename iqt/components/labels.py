@@ -16,13 +16,9 @@ class BaseLabel(BaseWidgetObject, name="label"):
 
 
 class Label(BaseLabel, fixed_height=16):
-    def __init__(self, text=None, **kwargs):
-        self.text = str(text) if isinstance(text, (int, float)) else text
-
-    def build_config(self):
-        cfg = super().build_config()
-        cfg.init_args = (self.text, )
-        return cfg
+    def __init__(self, text=None, *args, **kwargs):
+        kwargs["text"] = text
+        super().__init__(*args, **kwargs)
 
 
 class Title(Label, name="title"):
@@ -32,8 +28,9 @@ class Title(Label, name="title"):
 class Image(BaseLabel, name="image"):
     net_manager: QNetworkAccessManager
 
-    def __init__(self, image, **kwargs):
+    def __init__(self, image, *args, **kwargs):
         self.set_image(image)
+        super().__init__(*args, **kwargs)
 
     def load_from_web(self, image: str):
         self.net_manager = QNetworkAccessManager()

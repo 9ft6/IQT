@@ -88,7 +88,8 @@ class BaseFlowLayout(QLayout):
         size = QSize()
         for item in self._item_list:
             size = size.expandedTo(item.minimumSize())
-        size += QSize(2 * self.contentsMargins().top(), 2 * self.contentsMargins().top())
+        margin = 2 * self.contentsMargins().top()
+        size += QSize(margin, margin)
         return size
 
     def _do_layout(self, rect, test_only):

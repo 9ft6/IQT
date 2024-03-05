@@ -60,27 +60,25 @@ class Widget(BaseWidgetObject):
         ...
 
 
-class TextArgumentMixin:
-    def __init__(self, text=None, **kwargs):
-        self.text = text
-
-    def build_config(self):
-        cfg = super().build_config()
-        cfg.init_args = (self.text, )
-        return cfg
-
 
 class BaseInput(
-    TextArgumentMixin,
     BaseWidgetObject,
     name="input"
 ):
     factory: QWidget = QLineEdit
 
+    def __init__(self, text, *args, **kwargs):
+        kwargs["text"] = text
+        super().__init__(*args, **kwargs)
+
 
 class BaseCheckBox(
-    TextArgumentMixin,
     BaseWidgetObject,
     name="checkbox"
 ):
     factory: QWidget = QCheckBox
+
+    def __init__(self, text, *args, **kwargs):
+        kwargs["text"] = text
+        super().__init__(*args, **kwargs)
+
