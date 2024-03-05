@@ -17,10 +17,6 @@ class Widget(BaseWidgetObject):
 
     def post_init(self):
         self.widget.entity = self
-        self.widget.add_widget = self.add_widget
-
-    def factory(self):
-        return self.cfg.layout.init_widget()
 
     def create_widget(self, parent=None):
         layout = self.cfg.layout or self.generate_layout()
@@ -29,13 +25,11 @@ class Widget(BaseWidgetObject):
     def create_items(self, items, root=None):
         match items:
             case dict():
-                entity = items["entity"]
                 widget = QWidget()
-
-                layout = entity.factory(widget)
+                layout = items["entity"].factory(widget)
                 for item in items["items"]:
                     if item is Ellipsis:
-                        layout.addStretch(1)
+                        layout.addStretch()
                     else:
                         layout.addWidget(self.create_items(item, root=root))
                 return widget
@@ -63,7 +57,7 @@ class Widget(BaseWidgetObject):
         ...
 
     def add_widget(self, widget):
-        self.widget.layout().addWidget(widget.init_widget())
+        ...
 
 
 class TextArgumentMixin:

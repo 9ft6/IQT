@@ -20,6 +20,7 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
 
     # settings
     name: str = "object"
+    text: str = ""
     margins: tuple[int, int, int, int] = Field(None)
     signals: dict[str, list] = Field(None)
     size: Size = Field(None)
@@ -63,11 +64,14 @@ class BaseObject(metaclass=ConfigurableType):
 
 
 class BaseWidgetObject(BaseObject):
+    def __init__(self, *args, **kwargs):
+        self._cfg_extra.update(kwargs)
+
     def init_widget(self) -> QWidget:
         self.cfg = self.build_config()
         self.pre_init()
 
-        self.cfg.name = self.name or self.cfg.name
+        self.cfg.name = self.cfg.name or self.name
         self.widget = self.create_widget()
         self.widget.name = self.cfg.name
         self.widget.entity = self

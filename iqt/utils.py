@@ -6,14 +6,15 @@ from PySide6.QtGui import QFontDatabase, QFont
 
 def method_by_setting(object, setting):
     methods = {
-        "name": "setObjectName",
-        "size": "resize",
+        "fixed_height": "setFixedHeight",
         "fixed_size": "setFixedSize",
         "fixed_width": "setFixedWidth",
-        "fixed_height": "setFixedHeight",
-        "style": "setStyleSheet",
         "margins": "setContentsMargins",
+        "name": "setObjectName",
+        "size": "resize",
         "spacing": "setSpacing",
+        "style": "setStyleSheet",
+        "text": "setText",
     }
     if method_name := methods.get(setting):
         return getattr(object, method_name, None)

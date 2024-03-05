@@ -15,5 +15,6 @@ class Button(
     name: str = "button"
     factory: QWidget = QPushButton
 
-    def __init__(self, text=None, **kwargs):
-        self.text = str(text) if isinstance(text, (int, float)) else text
+    def __init__(self, text, *args, **kwargs):
+        kwargs["text"] = text
+        super().__init__(*args, **kwargs)

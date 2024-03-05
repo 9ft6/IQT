@@ -6,7 +6,8 @@ from PySide6.QtCore import Qt, QSize, QRect, QPoint
 class BaseLayout(BaseWidgetObject):
     items: tuple
 
-    def __init__(self, items):
+    def __init__(self, items, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.items = items
 
     @classmethod
