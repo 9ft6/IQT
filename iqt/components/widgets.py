@@ -31,8 +31,8 @@ class CustomQWidget(QWidget):
 
     def make_items(self, items, parent=None, is_root=False):
         if widgets := items.get("items"):
-            widget = self if is_root else items["factory"](items, parent=parent)
-            layout = items["layout"](widget)
+            widget = self if is_root else QWidget(parent)
+            layout = items["layout"](widget) if is_root else self.layout()
 
             setup_settings(widget, items["widget_settings"])
             setup_settings(layout, items["layout_settings"])
