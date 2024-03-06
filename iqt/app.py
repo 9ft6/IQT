@@ -32,8 +32,6 @@ class Application(BaseObject):
 
         logger.debug(f"{self.cfg.app_name} starting...")
 
-        self.pre_init()
-
         QDir.addSearchPath('images', str(self.cfg.images_path))
         QDir.addSearchPath('icons', str(self.cfg.icon_path))
         setup_fonts(self.app)

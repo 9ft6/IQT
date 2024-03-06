@@ -24,21 +24,19 @@ class Window(BaseObject):
         self.app = app
 
     def init_window(self):
-        self.pre_init()
-
         self.window = QMainWindow()
         self.window.entity = self
         self.cfg = self.build_config()
 
-        setup_settings(self.window, self.cfg)
+        setup_settings(self.window, self.cfg.get_settings())
         self.window.setAttribute(Qt.WA_TranslucentBackground, self.cfg.transparent)
-        self.widget = widget = self.cfg.widget_model().init_widget()
-        self.window.setCentralWidget(widget)
+
+        model = self.cfg.widget_model().widget()
+        self.window.setCentralWidget(model)
 
         if self.cfg.start_at_center:
             self.move_to_center()
 
-        self.post_init()
         self.window.show()
 
     def move_to_center(self):

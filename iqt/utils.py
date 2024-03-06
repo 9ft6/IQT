@@ -3,26 +3,47 @@ from pathlib import Path
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QFontDatabase, QFont
 
+# QT native methods
+native_methods = {
+    "fixed_height": "setFixedHeight",
+    "fixed_size": "setFixedSize",
+    "fixed_width": "setFixedWidth",
+    "margins": "setContentsMargins",
+    "name": "setObjectName",
+    "size": "resize",
+    "spacing": "setSpacing",
+    "style": "setStyleSheet",
+    "text": "setText",
+
+}
+# custom methods
+custom_methods = {
+    "image": "set_image",
+    "items": "set_items",
+}
+
 
 def method_by_setting(object, setting):
-    methods = {
-        "fixed_height": "setFixedHeight",
-        "fixed_size": "setFixedSize",
-        "fixed_width": "setFixedWidth",
-        "margins": "setContentsMargins",
-        "name": "setObjectName",
-        "size": "resize",
-        "spacing": "setSpacing",
-        "style": "setStyleSheet",
-        "text": "setText",
-    }
+    methods = {**native_methods, **custom_methods}
     if method_name := methods.get(setting):
         return getattr(object, method_name, None)
 
 
 def setup_settings(object: QWidget, cfg):
-    for setting, value in cfg.get_settings().items():
-        if method := method_by_setting(object, setting):
+    for setting, value in cfg.items():
+        setup_setting(object, setting, value)
+
+
+def setup_setting(object: QWidget, setting, value):
+    method = method_by_setting(object, setting)
+    if not method:
+        return
+
+    match setting:
+        case "name":
+            method(value)
+            object.name = value
+        case _:
             if isinstance(value, tuple):
                 method(*value)
             else:
@@ -41,3 +62,12 @@ def setup_fonts(root):
         root.setFont(font)
     except Exception as e:
         print(f"Could not load fonts {e}")
+
+
+def get_attr_recursive(obj, method_name):
+    if "." in method_name:
+        parent_name, method_name = method_name.split(".", 1)
+        if parent := get_attr_recursive(obj, parent_name):
+            return get_attr_recursive(parent, method_name)
+    else:
+        return getattr(obj, method_name, None)

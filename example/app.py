@@ -1,22 +1,24 @@
 from iqt.app import Application
 from iqt.window import Window
-from iqt.components.widgets import Widget, BaseInput as Input, BaseCheckBox as CheckBox
+from iqt.components.widgets import Widget, Input, CheckBox
 from iqt.components.layouts import Horizont, Vertical
-from iqt.components import Label, Button
+from iqt.components import Button, Label
 
 
 class LoginWidget(
     Widget,
     name="main_widget",
-    layout=Vertical[
+    fised_size=(50, 50),
+):
+    items = Vertical[
         ...,
         Horizont[Label("Please Login:")],
         Horizont[Label("login:"), Input("login")],
         Horizont[Label("pass:"), Input("password")],
         Horizont[Button("login"), ..., CheckBox("Remember me")],
         ...,
-    ],
-):
+    ]
+
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
             case "button":

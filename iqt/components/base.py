@@ -1,39 +1,38 @@
 from typing import Any
 
+from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QWidget
 from pydantic import BaseModel, Field
-
-from iqt.utils import setup_settings
 
 Size: tuple[int, int] = ...
 
 
 class ConfigurableType(type):
     def __new__(cls, _name, bases, namespace, **opts):
+        if _name == "LoginWidget":
+            print(f' ConfigurableType {_name} {bases} {namespace} {opts}')
         namespace["_cfg_extra"] = opts or {}
         return super().__new__(cls, _name, bases, namespace)
 
 
-class BaseConfig(BaseModel, arbitrary_types_allowed=True):
-    init_args: tuple = Field(default_factory=tuple)
-    init_kwargs: dict = Field(default_factory=dict)
+class SignalModel(BaseModel):
+    type: Any = object
+    signal_name: str
 
-    # settings
+
+class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     name: str = "object"
     text: str = ""
     margins: tuple[int, int, int, int] = Field(None)
-    signals: dict[str, list] = Field(None)
+    to_connect: dict[str, list] = Field({})
+    signals: list[SignalModel] = Field([])
     size: Size = Field(None)
     fixed_size: Size = Field(None)
     fixed_width: int = Field(None)
 
     def get_settings(self):
         result = self.model_dump(exclude={
-            "factory",
-            "widget_model",
-            "layout",
-            "init_args",
-            "init_kwargs",
+
         }, by_alias=True, exclude_none=True)
 
         return result
@@ -46,37 +45,25 @@ class BaseObject(metaclass=ConfigurableType):
     name: str = "object"
     cfg: Config
     widget: QWidget
-    factory: Any
+    widget_model: Any
 
     _cfg_extra: dict = None
 
-    def build_config(self):
-        return self.Config(**(self._cfg_extra or {}))
-
-    def create_widget(self, parent=None):
-        return self.factory(*self.cfg.init_args, **self.cfg.init_kwargs)
-
-    def pre_init(self) -> None:
-        ...
-
-    def post_init(self) -> None:
-        ...
-
-
-class BaseWidgetObject(BaseObject):
     def __init__(self, *args, **kwargs):
-        self._cfg_extra.update(kwargs)
+        self._cfg_extra = {**self._cfg_extra, **kwargs}
 
-    def init_widget(self) -> QWidget:
-        self.cfg = self.build_config()
-        self.pre_init()
+    def build_config(self):
+        self.cfg = self.Config(**(self._cfg_extra or {}))
+        return self.cfg
 
-        self.cfg.name = self.cfg.name or self.name
-        self.widget = self.create_widget()
-        self.widget.name = self.cfg.name
-        self.widget.entity = self
-        setattr(self, self.name, self.widget)
-        setup_settings(self.widget, self.cfg)
 
-        self.post_init()
-        return self.widget
+class BaseWidget(BaseObject):
+    factory: QObject
+
+    def get_items(self):
+        self.build_config()
+        return {
+            "entity": self,
+            "settings": self.cfg.get_settings(),
+            "factory": self.factory
+        }

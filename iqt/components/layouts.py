@@ -1,10 +1,11 @@
-from iqt.components.base import BaseWidgetObject
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QBoxLayout, QLayout
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLayout
 from PySide6.QtCore import Qt, QSize, QRect, QPoint
 
+from iqt.components.base import BaseObject
 
-class BaseLayout(BaseWidgetObject):
-    items: tuple
+
+class BaseLayout(BaseObject):
+    factory: QLayout
 
     def __init__(self, items, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -14,25 +15,26 @@ class BaseLayout(BaseWidgetObject):
     def __class_getitem__(cls, key):
         return cls(key if isinstance(key, tuple) else (key, ))
 
-    def create_widget(self, parent=None) -> QWidget:
-        return self.factory(parent, *self.cfg.init_args, **self.cfg.init_kwargs)
-
-    def get_construct(self):
+    def get_items(self):
+        self.build_config()
         return {
             "entity": self,
+            "widget_settings": {},
+            "layout_settings": {},
+            "factory": QWidget,
+            "layout": self.factory,
             "items": [
-                i.get_construct() if isinstance(i, BaseLayout) else i
-                for i in self.items
-            ],
+                i if isinstance(i, type(Ellipsis)) else i.get_items() for i in self.items
+            ]
         }
 
 
-class Horizont(BaseLayout, name="base_horizont"):
-    factory: QBoxLayout = QHBoxLayout
+class Horizont(BaseLayout):
+    factory: QLayout = QHBoxLayout
 
 
-class Vertical(BaseLayout, name="base_vertical"):
-    factory: QBoxLayout = QVBoxLayout
+class Vertical(BaseLayout):
+    factory: QLayout = QVBoxLayout
 
 
 class BaseFlowLayout(QLayout):
@@ -122,4 +124,4 @@ class BaseFlowLayout(QLayout):
 
 class Flow(BaseLayout):
     name: str = "base_flow"
-    factory: QLayout = BaseFlowLayout
+    layout_model: QLayout = BaseFlowLayout
