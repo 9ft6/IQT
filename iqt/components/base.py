@@ -9,15 +9,14 @@ Size: tuple[int, int] = ...
 
 class ConfigurableType(type):
     def __new__(cls, _name, bases, namespace, **opts):
-        if _name == "LoginWidget":
-            print(f' ConfigurableType {_name} {bases} {namespace} {opts}')
         namespace["_cfg_extra"] = opts or {}
         return super().__new__(cls, _name, bases, namespace)
 
 
 class SignalModel(BaseModel):
     type: Any = object
-    signal_name: str
+    name: str
+    method: str
 
 
 class BaseConfig(BaseModel, arbitrary_types_allowed=True):
@@ -31,10 +30,8 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     fixed_width: int = Field(None)
 
     def get_settings(self):
-        result = self.model_dump(exclude={
-
-        }, by_alias=True, exclude_none=True)
-
+        result = self.model_dump(by_alias=True, exclude_none=True)
+        result["signals"] = self.signals
         return result
 
 
@@ -59,10 +56,12 @@ class BaseObject(metaclass=ConfigurableType):
 
 class BaseWidget(BaseObject):
     factory: QObject
+    to_connect: QObject = []
 
     def get_items(self):
         self.build_config()
         return {
+            "to_connect": self.to_connect,
             "entity": self,
             "settings": self.cfg.get_settings(),
             "factory": self.factory

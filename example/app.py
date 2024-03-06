@@ -22,9 +22,9 @@ class LoginWidget(
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
             case "button":
-                ...  # do login
+                print("do login")
             case "checkbox":
-                ...  # change config state
+                print("change config state")
 
 
 class LoginWindow(
