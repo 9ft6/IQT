@@ -23,15 +23,15 @@ class CheckBox(BaseWidget):
 class CustomQWidget(QWidget):
     _items: dict
 
-    def __init__(self, items, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, items, *args, parent=None, **kwargs):
+        super().__init__(parent, *args, **kwargs)
         self._items = items
         self._entity = items["entity"]
         self.make_items(items, is_root=True)
 
     def make_items(self, items, parent=None, is_root=False):
         if widgets := items.get("items"):
-            widget = self if is_root else items["factory"](parent)
+            widget = self if is_root else items["factory"](items, parent=parent)
             layout = items["layout"](widget)
 
             setup_settings(widget, items["widget_settings"])
