@@ -43,25 +43,21 @@ class CustomQWidget(QWidget):
         return self
 
     def make_items(self, item, parent=None):
-        from iqt.components.layouts import BaseLayout
+        from iqt.components.layouts import BaseLayout, BaseObject
 
+        config = item.config()
+        widget = config.widget(parent)
         match item:
-            case list():
-                return [self.make_items(i, parent=parent) for i in item]
-            case type(Ellipsis()):
-                return item
-            case BaseLayout() | BaseWidget():
-                config = item.config()
-                widget = config.widget(parent=parent)
+            case BaseLayout():
                 widget.build(config, root=self._entity)
-                return widget
-            case _:
-                config = item.config()
-                widget = config.widget(parent)
+            case BaseWidget():
+                widget.build(config)
+            case BaseObject():
                 setup_settings(widget, config.widget_settings)
                 setattr(self, widget.name, widget)
                 self.create_signals(widget, item)
-                return widget
+
+        return widget
 
     def create_signals(self, widget, settings):
         if signals := settings.signals:
