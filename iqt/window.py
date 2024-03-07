@@ -30,9 +30,7 @@ class Window(BaseObject):
 
         setup_settings(self.window, self.cfg.get_settings())
         self.window.setAttribute(Qt.WA_TranslucentBackground, self.cfg.transparent)
-
-        model = self.cfg.widget_model().widget()
-        self.window.setCentralWidget(model)
+        self.window.setCentralWidget(self.cfg.widget_model().widget())
 
         if self.cfg.start_at_center:
             self.move_to_center()

@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLayout
 from PySide6.QtCore import Qt, QSize, QRect, QPoint
 
-from iqt.components.base import BaseObject
+from iqt.components.base import BaseObject, LayoutConfigResponse
+from iqt.components.widgets import Widget
 
 
 class BaseLayout(BaseObject):
@@ -9,24 +10,22 @@ class BaseLayout(BaseObject):
 
     def __init__(self, items, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.items = items
+        self.items = list(items)
 
     @classmethod
     def __class_getitem__(cls, key):
         return cls(key if isinstance(key, tuple) else (key, ))
 
-    def get_items(self):
-        self.build_config()
-        return {
-            "entity": self,
-            "widget_settings": {},
-            "layout_settings": {},
-            "factory": QWidget,
-            "layout": self.factory,
-            "items": [
-                i if isinstance(i, type(Ellipsis)) else i.get_items() for i in self.items
-            ]
-        }
+    def config(self):
+        widget = Widget()
+        return LayoutConfigResponse(
+            entity=widget,
+            widget_settings=widget.build_config().get_settings(),
+            layout_settings=self.build_config().get_settings(),
+            widget=widget.factory,
+            layout=self.factory,
+            items=self.items,
+        )
 
 
 class Horizont(BaseLayout):

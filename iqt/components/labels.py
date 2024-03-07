@@ -5,13 +5,13 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtCore import QUrl
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
-from iqt.components.base import BaseWidget
+from iqt.components.base import BaseObject
 
 
 Size: tuple[int, int] = ...
 
 
-class BaseLabel(BaseWidget, name="label"):
+class BaseLabel(BaseObject, name="label"):
     factory: QWidget = QLabel
 
 

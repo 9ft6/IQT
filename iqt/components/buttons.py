@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QWidget, QPushButton
-from iqt.components.base import BaseWidget, BaseConfig
+from iqt.components.base import BaseObject, BaseConfig
 
 
-class Button(BaseWidget):
+class Button(BaseObject):
     class Config(BaseConfig):
         name: str = "button"
 

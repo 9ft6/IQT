@@ -8,7 +8,6 @@ from iqt.components import Button, Label
 class LoginWidget(
     Widget,
     name="main_widget",
-    fised_size=(50, 50),
 ):
     items = Vertical[
         ...,

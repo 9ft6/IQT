@@ -35,6 +35,20 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
         return result
 
 
+class BaseConfigResponse(BaseModel, arbitrary_types_allowed=True):
+    to_connect: dict[str, list] = Field({})
+    signals: list[SignalModel] = Field([])
+    entity: Any
+    widget_settings: dict
+    widget: Any
+
+
+class LayoutConfigResponse(BaseConfigResponse, arbitrary_types_allowed=True):
+    layout_settings: dict
+    layout: Any
+    items: list
+
+
 class BaseObject(metaclass=ConfigurableType):
     class Config(BaseConfig):
         ...
@@ -42,7 +56,9 @@ class BaseObject(metaclass=ConfigurableType):
     name: str = "object"
     cfg: Config
     widget: QWidget
-    widget_model: Any
+    factory: QWidget
+    to_connect: dict = {}
+    signals: list[SignalModel] = []
 
     _cfg_extra: dict = None
 
@@ -53,16 +69,28 @@ class BaseObject(metaclass=ConfigurableType):
         self.cfg = self.Config(**(self._cfg_extra or {}))
         return self.cfg
 
+    def config(self):
+        return BaseConfigResponse(
+            to_connect=self.to_connect,
+            signals=self.signals,
+            entity=self,
+            widget_settings=self.build_config().get_settings(),
+            widget=self.factory,
+        )
+
 
 class BaseWidget(BaseObject):
     factory: QObject
-    to_connect: QObject = []
+    items: Any
 
-    def get_items(self):
-        self.build_config()
-        return {
-            "to_connect": self.to_connect,
-            "entity": self,
-            "settings": self.cfg.get_settings(),
-            "factory": self.factory
-        }
+    def config(self):
+        return LayoutConfigResponse(
+            to_connect=self.to_connect,
+            signals=self.signals,
+            entity=self,
+            widget_settings=self.build_config().get_settings(),
+            layout_settings=self.items.build_config().get_settings(),
+            widget=self.factory,
+            layout=self.items.factory,
+            items=self.items.items,
+        )

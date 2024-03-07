@@ -1,16 +1,16 @@
 from types import MethodType
+from typing import Any
 
-from PySide6.QtWidgets import QWidget, QCheckBox, QLineEdit
+from PySide6.QtWidgets import QWidget, QCheckBox, QLineEdit, QLabel
 from PySide6.QtCore import Signal
 
-from iqt.components.base import BaseWidget
-from iqt.components.layouts import BaseLayout
+from iqt.components.base import BaseWidget, BaseObject
 from iqt.utils import setup_settings, get_attr_recursive
 
 Size: tuple[int, int] = ...
 
 
-class Input(BaseWidget):
+class Input(BaseObject):
     factory: QWidget = QLineEdit
 
     def __init__(self, text=None, *args, **kwargs):
@@ -18,51 +18,58 @@ class Input(BaseWidget):
         super().__init__(*args, **kwargs)
 
 
-class CheckBox(BaseWidget):
+class CheckBox(BaseObject):
     factory: QWidget = QCheckBox
 
 
 class CustomQWidget(QWidget):
-    _items: dict
+    _entity: Any
 
-    def __init__(self, items, *args, parent=None, **kwargs):
-        super().__init__(parent, *args, **kwargs)
-        self._items = items
-        self._entity = items["entity"]
-        self.make_items(items, is_root=True)
+    def build(self, config, root=None):
+        self._entity = root or config.entity
+        layout = config.layout(self)
 
-    def make_items(self, items, parent=None, is_root=False):
-        if widgets := items.get("items"):
-            widget = self if is_root else QWidget(parent)
-            layout = items["layout"](widget)
+        setup_settings(layout, config.layout_settings)
+        setup_settings(self, config.widget_settings)
 
-            setup_settings(widget, items["widget_settings"])
-            setup_settings(layout, items["layout_settings"])
-            if name := getattr(widget, "name", None):
-                setattr(self, name, widget)
+        for item in config.items:
+            if item is Ellipsis:
+                layout.addStretch()
+            else:
+                widget = self.make_items(item, parent=self)
+                setattr(self, widget.name, widget)
+                layout.addWidget(widget)
 
-            for item in widgets:
-                if isinstance(item, type(Ellipsis)):
-                    layout.addStretch()
-                else:
-                    layout.addWidget(self.make_items(item, parent=parent))
+        return self
 
-            self.create_signals(widget, items)
-            return widget
-        else:
-            widget = items["factory"](parent)
-            setup_settings(widget, items["settings"])
-            setattr(self, widget.name, widget)
-            self.create_signals(widget, items)
-            return widget
+    def make_items(self, item, parent=None):
+        from iqt.components.layouts import BaseLayout
+
+        match item:
+            case list():
+                return [self.make_items(i, parent=parent) for i in item]
+            case type(Ellipsis()):
+                return item
+            case BaseLayout() | BaseWidget():
+                config = item.config()
+                widget = config.widget(parent=parent)
+                widget.build(config, root=self._entity)
+                return widget
+            case _:
+                config = item.config()
+                widget = config.widget(parent)
+                setup_settings(widget, config.widget_settings)
+                setattr(self, widget.name, widget)
+                self.create_signals(widget, item)
+                return widget
 
     def create_signals(self, widget, settings):
-        if signals := settings.get("signals"):
+        if signals := settings.signals:
             for signal in signals:
                 setattr(self, signal.name, Signal(signal.type))
                 self.connect_signals(widget, (signal.method, signal.name))
 
-        if signals := settings.get("to_connect"):
+        if signals := settings.to_connect:
             self.connect_signals(widget, signals)
 
     def connect_signals(self, widget, signals):
@@ -88,32 +95,13 @@ class CustomQWidget(QWidget):
                 return get_attr_recursive(widget, method_name)
 
 
-
 class Widget(BaseWidget):
     factory: QWidget = CustomQWidget
-    items: BaseLayout
     to_connect: dict[str, list[str]] = {}
-    signals: list = None
+    signals: list = []
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get_items(self):
-        self.build_config()
-        return {
-            "to_connect": self.to_connect,
-            "signals": self.signals,
-            "entity": self,
-            "widget_settings": self.cfg.get_settings(),
-            "layout_settings": {},
-            "factory": self.factory,
-            "layout": self.items.factory,
-            "items": [
-                i if isinstance(i, type(Ellipsis)) else i.get_items()
-                for i in self.items.items
-            ],
-        }
-
     def widget(self):
-        self.build_config()
-        return self.factory(self.get_items())
+        return self.factory().build(self.config())
