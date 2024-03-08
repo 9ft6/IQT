@@ -1,7 +1,7 @@
 from typing import Any
 
 from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtCore import Qt, QRect
+from PySide6.QtCore import Qt, QRect, Property, QPropertyAnimation, QEasingCurve
 
 from iqt.components.base import Size, BaseObject, BaseConfig
 from iqt.components import Widget
@@ -10,10 +10,24 @@ from iqt.utils import setup_settings
 
 
 class MainWindow(QMainWindow):
-    def move_to_center(self):
+    size_value: tuple[int, int]
+
+    def setup_animation(self):
+        self.anim = QPropertyAnimation(self, b"geometry")
+        self.anim.setEasingCurve(QEasingCurve.InOutCubic)
+        self.anim.setDuration(100)
+
+    def start_resize_animation(self, final_rect):
+        initial_rect = self.geometry()
+        self.anim.setStartValue(self.geometry())
+        final_rect.moveCenter(initial_rect.center())
+        self.anim.setEndValue(final_rect)
+        self.anim.start()
+
+    def move_to_center(self, fixed_size):
         center = QApplication.primaryScreen().geometry().center()
         x, y, (w, h) = center.x(), center.y(), self.size().toTuple()
-        self.setGeometry(QRect(x - w / 2, y - h / 2, w, h))
+        self.start_resize_animation(QRect(x - w / 2, y - h / 2, *fixed_size))
 
     def change_widget(self, widget: Widget):
         if isinstance(widget, Widget):
@@ -28,8 +42,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
         fixed_size = self.entity.cfg.fixed_size or widget.size().toTuple()
-        self.setFixedSize(*fixed_size)
-        self.move_to_center()
+        self.move_to_center(fixed_size)
 
 
 class WindowConfig(BaseConfig):
@@ -57,11 +70,11 @@ class Window(BaseObject):
 
         setup_settings(self.window, self.cfg.get_settings())
         self.window.setAttribute(Qt.WA_TranslucentBackground, self.cfg.transparent)
-
+        self.window.setup_animation()
         self.widget = self.set_widget(self.cfg.widget_model())
 
         if self.cfg.start_at_center:
-            self.window.move_to_center()
+            self.window.move_to_center(self.widget.widget.size().toTuple())
 
         self.window.show()
         self.post_init()
