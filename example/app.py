@@ -19,7 +19,7 @@ class LoginValidWidget(BaseResponseWidget, size=(360, 240)):
     ]
 
 
-class LoginInvalidWidget(BaseResponseWidget, size=(160, 60)):
+class LoginInvalidWidget(BaseResponseWidget, size=(240, 80)):
     items = Vertical[Label("login is biba or boba"), Button("try again")]
 
 

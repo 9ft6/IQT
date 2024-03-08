@@ -14,6 +14,7 @@ native_methods = {
     "spacing": "setSpacing",
     "style": "setStyleSheet",
     "text": "setText",
+    "title": "setTitle",
 
 }
 # custom methods

@@ -17,7 +17,7 @@ class BaseLabel(BaseObject, name="label"):
 
 class Label(BaseLabel, fixed_height=16):
     def __init__(self, text=None, *args, **kwargs):
-        kwargs["text"] = text
+        kwargs["text"] = str(text)
         super().__init__(*args, **kwargs)
 
 

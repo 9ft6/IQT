@@ -1,7 +1,7 @@
 from typing import Any
 
 from PySide6.QtCore import QObject
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QApplication
 from pydantic import BaseModel, Field
 
 Size: tuple[int, int] = ...

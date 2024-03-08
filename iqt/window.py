@@ -26,9 +26,10 @@ class MainWindow(QMainWindow):
 
         widget.window = widget.entity.window = self
         self.setCentralWidget(widget)
-        self.setFixedSize(widget.size())
+
+        fixed_size = self.entity.cfg.fixed_size or widget.size().toTuple()
+        self.setFixedSize(*fixed_size)
         self.move_to_center()
-        print()
 
 
 class WindowConfig(BaseConfig):

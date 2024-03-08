@@ -1,7 +1,7 @@
 from types import MethodType
 from typing import Any
 
-from PySide6.QtWidgets import QWidget, QCheckBox, QLineEdit, QLabel
+from PySide6.QtWidgets import QWidget, QCheckBox, QLineEdit, QApplication
 from PySide6.QtCore import Signal, QObject
 
 from iqt.components.base import BaseWidget, BaseObject
@@ -35,23 +35,36 @@ class CustomQWidget(QWidget):
     def build(self, config, root=None):
         self.root = root or self
         self.entity = config.entity
+        self.app = self.entity.app = QApplication.instance()
 
         layout = config.layout(self)
 
         setup_settings(layout, config.layout_settings)
         setup_settings(self, config.widget_settings)
 
-        for item in config.items:
+        for item in (self.entity.generate_items() or config).items:
+            if not item:
+                continue
+
             if item is Ellipsis:
                 layout.addStretch()
             else:
-                widget = self.make_items(item, parent=self)
+                widget = self.add_widget_to_layout(item, layout=layout)
                 self.set_widget_attr(widget.name, widget)
-                layout.addWidget(widget)
 
         self.create_signals(self, config)
         self.entity.widget = self
         return self
+
+    def add_widget_to_layout(self, widget, layout=None):
+        layout = layout or self.layout()
+        if not isinstance(widget, QWidget):
+            widget = self.make_items(widget, parent=self)
+        layout.addWidget(widget)
+        return widget
+
+    def add_widget(self, widget):
+        return self.add_widget_to_layout(widget)
 
     def set_widget_attr(self, name, widget):
         setattr(self, name, widget)
@@ -98,8 +111,7 @@ class CustomQWidget(QWidget):
                         else:
                             setattr(widget, method_name, MethodType(method, widget))
                             method = getattr(widget, method_name)
-
-                        signal.connect(method)
+                            signal.connect(method)
 
     def find_method(self, method_name):
         if "." in method_name:
@@ -129,5 +141,11 @@ class Widget(BaseWidget):
     to_connect: dict[str, list[str]] = {}
     signals: list = []
 
+    def generate_items(self):
+        ...
+
     def widget(self):
         return self.factory().build(self.config())
+
+    def add_widget(self, widget):
+        return self.widget.add_widget(widget)
