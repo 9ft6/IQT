@@ -39,6 +39,7 @@ def setup_setting(object: QWidget, setting, value):
     if not method:
         return
 
+    # print(setting, value)
     match setting:
         case "name":
             method(value)

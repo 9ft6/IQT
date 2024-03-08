@@ -5,7 +5,7 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtCore import QUrl
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
-from iqt.components.base import BaseObject
+from iqt.components.base import BaseObject, BaseConfig
 
 
 Size: tuple[int, int] = ...
@@ -28,10 +28,6 @@ class Title(Label, name="title"):
 class ImageLabel(QLabel):
     net_manager: QNetworkAccessManager
 
-    def __init__(self, image, *args, **kwargs):
-        self.set_image(image)
-        super().__init__(*args, **kwargs)
-
     def load_from_web(self, image: str):
         self.net_manager = QNetworkAccessManager()
         self.net_manager.finished.connect(self.on_image_loaded)
@@ -40,17 +36,23 @@ class ImageLabel(QLabel):
     def on_image_loaded(self, reply):
         pixmap = QPixmap()
         pixmap.loadFromData(reply.readAll())
-        scaled = pixmap.scaledToWidth(self.widget.width())
-        self.widget.setPixmap(scaled)
+        self.set_pixmap(pixmap)
 
     def set_image(self, image: str):
         if Path(image).exists():
-            self.widget.setPixmap(QPixmap(image))
+            self.set_pixmap(QPixmap(image))
         elif QUrl(image).isValid():
             self.load_from_web(image)
 
+    def set_pixmap(self, pixmap: QPixmap):
+        scaled = pixmap.scaledToWidth(self.width())
+        self.setPixmap(scaled)
+
 
 class Image(BaseLabel, name="image"):
+    class Config(BaseConfig):
+        image: str | Path
+
     factory: QWidget = ImageLabel
 
     def __init__(self, image, *args, **kwargs):
