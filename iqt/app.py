@@ -13,7 +13,7 @@ from typing import Any
 
 class AppConfig(BaseConfig):
     style: str = base_style
-    window_model: Any
+    start_window: Any
     app_name: Any = "Base application"
     font_path: Path = Path().resolve() / "fonts"
     icon_path: Path = Path().resolve() / "icons"
@@ -38,8 +38,8 @@ class Application(BaseObject):
         setup_fonts(self.app)
 
         self.app.setStyleSheet(self.cfg.style)
-        self.main_window: Any = self.cfg.window_model(self)
-        self.main_window.init_window()
+        window: Any = self.cfg.start_window(self)
+        window.init_window()
 
         self.post_init()
         sys.exit(self.app.exec())

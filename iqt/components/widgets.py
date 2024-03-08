@@ -85,6 +85,12 @@ class CustomQWidget(QWidget):
                 method_name, signal_name = signals
                 if method := self.find_method(method_name):
                     if signal := get_attr_recursive(widget, signal_name):
+                        if isinstance(method.__self__, QObject) or widget is self:
+                            signal.connect(method)
+                        else:
+                            setattr(widget, method_name, MethodType(method, widget))
+                            method = getattr(widget, method_name)
+
                         signal.connect(method)
 
     def find_method(self, method_name):
@@ -93,10 +99,21 @@ class CustomQWidget(QWidget):
             if parent := get_attr_recursive(self, parent_name):
                 return parent.find_method(method_name)
         else:
-            result = getattr(self, method_name, None)
-            if not result and isinstance(self, CustomQWidget):
-                return getattr(self.entity, method_name, None)
-            return result
+            return self.get_grand_pa(self, method_name)
+
+    def get_grand_pa(self, widget, method_name):
+        parent = widget
+        while parent:
+            if result := getattr(parent, method_name, None):
+                return result
+
+            if isinstance(parent, CustomQWidget):
+                result = getattr(parent.entity, method_name, None)
+
+            if result:
+                return result
+
+            parent = parent.parent()
 
 
 class Widget(BaseWidget):

@@ -8,15 +8,14 @@ from iqt.components import Button, Label, Image
 class LoginWidget(
     Widget,
     name="main_widget",
+    margins=(16, 8, 16, 8),
 ):
     items = Vertical[
-        ...,
-        Horizont[..., Image("logo.png", fixed_height=60)],
+        Horizont[..., Image("logo.png", fixed_width=160)],
         Horizont[Label("Please Login:")],
         Horizont[Label("login:"), ..., Input("login", fixed_width=160)],
         Horizont[Label("pass:"), ..., Input("password", fixed_width=160)],
         Horizont[Button("login"), ..., CheckBox("Remember me")],
-        ...,
     ]
 
     def items_handler(self, sender: Widget, *args, **kwargs):
@@ -29,7 +28,8 @@ class LoginWidget(
 
 class LoginWindow(
     Window,
-    fixed_size=(260, 260),
+    name="login_window",
+    fixed_size=(280, 360),
     transparent=False,
     title="Please login",
     widget_model=LoginWidget,
@@ -37,7 +37,7 @@ class LoginWindow(
     ...
 
 
-class TestGUI(Application, window_model=LoginWindow):
+class TestGUI(Application, start_window=LoginWindow):
     ...
 
 
