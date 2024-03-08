@@ -29,6 +29,7 @@ class Application(BaseObject):
 
     def run(self):
         self.app.cfg = self.cfg = self.build_config()
+        self.pre_init()
 
         logger.debug(f"{self.cfg.app_name} starting...")
 
@@ -40,4 +41,11 @@ class Application(BaseObject):
         self.main_window: Any = self.cfg.window_model(self)
         self.main_window.init_window()
 
+        self.post_init()
         sys.exit(self.app.exec())
+
+    def pre_init(self) -> None:
+        ...
+
+    def post_init(self) -> None:
+        ...

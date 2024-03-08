@@ -2,7 +2,7 @@ from types import MethodType
 from typing import Any
 
 from PySide6.QtWidgets import QWidget, QCheckBox, QLineEdit, QLabel
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QObject
 
 from iqt.components.base import BaseWidget, BaseObject
 from iqt.utils import setup_settings, get_attr_recursive
@@ -23,10 +23,15 @@ class CheckBox(BaseObject):
 
 
 class CustomQWidget(QWidget):
-    _entity: Any
+    root: Any
+    entity: Any
+
+    __signals: QObject
 
     def build(self, config, root=None):
-        self._entity = root or config.entity
+        self.root = root or self
+        self.entity = config.entity
+
         layout = config.layout(self)
 
         setup_settings(layout, config.layout_settings)
@@ -40,6 +45,8 @@ class CustomQWidget(QWidget):
                 setattr(self, widget.name, widget)
                 layout.addWidget(widget)
 
+        self.create_signals(self, config)
+        self.entity.widget = self
         return self
 
     def make_items(self, item, parent=None):
@@ -48,10 +55,8 @@ class CustomQWidget(QWidget):
         config = item.config()
         widget = config.widget(parent)
         match item:
-            case BaseLayout():
-                widget.build(config, root=self._entity)
-            case BaseWidget():
-                widget.build(config)
+            case BaseLayout() | BaseWidget():
+                widget.build(config, root=parent.root)
             case BaseObject():
                 setup_settings(widget, config.widget_settings)
                 setattr(self, widget.name, widget)
@@ -61,12 +66,13 @@ class CustomQWidget(QWidget):
 
     def create_signals(self, widget, settings):
         if signals := settings.signals:
+            class_attrs = {s.name: Signal(s.type) for s in signals}
+            self.__signals = type('Signals', (QObject,), class_attrs)()
             for signal in signals:
-                setattr(self, signal.name, Signal(signal.type))
-                self.connect_signals(widget, (signal.method, signal.name))
+                obj = getattr(self.__signals, signal.name)
+                setattr(self, signal.name, obj)
 
-        if signals := settings.to_connect:
-            self.connect_signals(widget, signals)
+        self.connect_signals(widget, settings.to_connect)
 
     def connect_signals(self, widget, signals):
         match signals:
@@ -77,27 +83,26 @@ class CustomQWidget(QWidget):
                 [self.connect_signals(widget, s) for s in signals]
             case tuple():
                 method_name, signal_name = signals
-                if method := self.ensure_method(widget, method_name):
+                if method := self.find_method(method_name):
                     if signal := get_attr_recursive(widget, signal_name):
-                        print(f'   connect {signal_name} --> {method_name}')
                         signal.connect(method)
 
-    def ensure_method(self, widget, method_name):
-        if low_method := get_attr_recursive(self, method_name):
-            return low_method
+    def find_method(self, method_name):
+        if "." in method_name:
+            parent_name, method_name = method_name.split(".", 1)
+            if parent := get_attr_recursive(self, parent_name):
+                return parent.find_method(method_name)
         else:
-            if high_method := get_attr_recursive(self._entity, method_name):
-                setattr(widget, method_name, MethodType(high_method, widget))
-                return get_attr_recursive(widget, method_name)
+            result = getattr(self, method_name, None)
+            if not result and isinstance(self, CustomQWidget):
+                return getattr(self.entity, method_name, None)
+            return result
 
 
 class Widget(BaseWidget):
     factory: QWidget = CustomQWidget
     to_connect: dict[str, list[str]] = {}
     signals: list = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def widget(self):
         return self.factory().build(self.config())
