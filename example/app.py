@@ -15,7 +15,7 @@ class LoginWidget(
         Horizont[Label("Please Login:")],
         Horizont[Label("login:"), ..., Input("login", fixed_width=160)],
         Horizont[Label("pass:"), ..., Input("password", fixed_width=160)],
-        Horizont[Button("login"), ..., CheckBox("Remember me")],
+        Horizont[CheckBox("Remember me"), ..., Button("login")],
     ]
 
     def items_handler(self, sender: Widget, *args, **kwargs):
