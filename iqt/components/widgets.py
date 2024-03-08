@@ -13,8 +13,8 @@ Size: tuple[int, int] = ...
 class Input(BaseObject):
     factory: QWidget = QLineEdit
 
-    def __init__(self, text=None, *args, **kwargs):
-        kwargs["text"] = text
+    def __init__(self, name=None, *args, **kwargs):
+        kwargs["name"] = name
         super().__init__(*args, **kwargs)
 
 
@@ -46,12 +46,16 @@ class CustomQWidget(QWidget):
                 layout.addStretch()
             else:
                 widget = self.make_items(item, parent=self)
-                setattr(self, widget.name, widget)
+                self.set_widget_attr(widget.name, widget)
                 layout.addWidget(widget)
 
         self.create_signals(self, config)
         self.entity.widget = self
         return self
+
+    def set_widget_attr(self, name, widget):
+        setattr(self, name, widget)
+        setattr(self.root.entity, name, widget)
 
     def make_items(self, item, parent=None):
         from iqt.components.layouts import BaseLayout, BaseObject
@@ -63,7 +67,7 @@ class CustomQWidget(QWidget):
                 widget.build(config, root=parent.root)
             case BaseObject():
                 setup_settings(widget, config.widget_settings)
-                setattr(self, widget.name, widget)
+                self.set_widget_attr(widget.name, widget)
                 self.create_signals(widget, item)
 
         return widget
@@ -74,7 +78,7 @@ class CustomQWidget(QWidget):
             self.__signals = type('Signals', (QObject,), class_attrs)()
             for signal in signals:
                 obj = getattr(self.__signals, signal.name)
-                setattr(self, signal.name, obj)
+                self.set_widget_attr(signal.name, obj)
 
         self.connect_signals(widget, settings.to_connect)
 

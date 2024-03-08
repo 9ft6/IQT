@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLayout
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QLayout
 from PySide6.QtCore import Qt, QSize, QRect, QPoint
 
 from iqt.components.base import BaseObject, LayoutConfigResponse

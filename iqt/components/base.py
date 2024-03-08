@@ -82,6 +82,7 @@ class BaseObject(metaclass=ConfigurableType):
 class BaseWidget(BaseObject):
     factory: QObject
     items: Any
+    window: Any
 
     def config(self):
         return LayoutConfigResponse(
