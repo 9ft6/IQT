@@ -1,7 +1,7 @@
 from typing import Any
 
 from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtCore import Qt, QRect, Property, QPropertyAnimation, QEasingCurve
+from PySide6.QtCore import Qt, QRect, QPropertyAnimation, QEasingCurve
 
 from iqt.components.base import Size, BaseObject, BaseConfig
 from iqt.components import Widget
@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
     def setup_animation(self):
         self.anim = QPropertyAnimation(self, b"geometry")
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
-        self.anim.setDuration(100)
+        self.anim.setDuration(120)
 
     def start_resize_animation(self, final_rect):
         initial_rect = self.geometry()
@@ -27,7 +27,8 @@ class MainWindow(QMainWindow):
     def move_to_center(self, fixed_size, animation=True):
         center = QApplication.primaryScreen().geometry().center()
         x, y, (w, h) = center.x(), center.y(), self.size().toTuple()
-        final = QRect(x - w / 2, y - h / 2, *fixed_size)
+
+        final = QRect(x - w / 2, y - h / 2 + 16, *fixed_size)
         if animation:
             self.start_resize_animation(final)
         else:
@@ -35,12 +36,12 @@ class MainWindow(QMainWindow):
 
     def change_widget(self, widget: Widget, animation=True):
         if isinstance(widget, Widget):
-            widget = widget.widget()
+            widget = widget.create_widget()
         else:
             class Wrapper(Widget):
                 items = Horizont[widget]
 
-            widget = Wrapper().widget()
+            widget = Wrapper().create_widget()
 
         widget.window = widget.entity.window = self
         self.setCentralWidget(widget)
@@ -87,9 +88,3 @@ class Window(BaseObject):
     def set_widget(self, widget, animation=True):
         self.window.change_widget(widget, animation=animation)
         return widget
-
-    def pre_init(self) -> None:
-        ...
-
-    def post_init(self) -> None:
-        ...

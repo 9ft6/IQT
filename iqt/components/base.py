@@ -78,6 +78,21 @@ class BaseObject(metaclass=ConfigurableType):
             widget=self.factory,
         )
 
+    def pre_init(self) -> None:
+        ...
+
+    def post_init(self) -> None:
+        ...
+
+    def init_widget(self, parent) -> None:
+        return self.factory(parent)
+
+    def create_widget(self, parent=None):
+        self.pre_init()
+        self.widget = self.init_widget(parent)
+        self.post_init()
+        return self.widget
+
 
 class BaseWidget(BaseObject):
     factory: QObject

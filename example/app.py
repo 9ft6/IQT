@@ -2,7 +2,7 @@ from iqt.app import Application
 from iqt.window import Window
 from iqt.components.widgets import Widget, Input, CheckBox
 from iqt.components.layouts import Horizont, Vertical
-from iqt.components import Button, Label, Image
+from iqt.components import Button, Label, Title, Image
 
 
 class BaseResponseWidget(Widget):
@@ -31,7 +31,7 @@ class LoginWidget(
 ):
     items = Vertical[
         Horizont[..., Image("logo.png", fixed_width=160)],
-        Horizont[Label("Please Login:")],
+        Horizont[Title("Please Login:")],
         Horizont[Label("login:"), ..., Input("login", fixed_width=160)],
         Horizont[Label("pass:"), ..., Input("pwd", fixed_width=160)],
         Horizont[CheckBox("Remember me"), ..., Button("login")],

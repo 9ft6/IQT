@@ -37,15 +37,9 @@ class Application(BaseObject):
         QDir.addSearchPath('icons', str(self.cfg.icon_path))
         setup_fonts(self.app)
 
-        self.app.setStyleSheet(self.cfg.style)
         window: Any = self.cfg.start_window(self)
         window.init_window()
 
         self.post_init()
+        self.app.setStyleSheet(self.cfg.style)
         sys.exit(self.app.exec())
-
-    def pre_init(self) -> None:
-        ...
-
-    def post_init(self) -> None:
-        ...

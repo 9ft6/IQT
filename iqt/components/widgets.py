@@ -67,18 +67,20 @@ class CustomQWidget(QWidget):
         return self.add_widget_to_layout(widget)
 
     def set_widget_attr(self, name, widget):
-        setattr(self, name, widget)
-        setattr(self.root.entity, name, widget)
+        objects = [self, self.entity, self.root, self.root.entity]
+        [setattr(o, name, widget) for o in objects]
 
     def make_items(self, item, parent=None):
         from iqt.components.layouts import BaseLayout, BaseObject
 
         config = item.config()
-        widget = config.widget(parent)
+
         match item:
             case BaseLayout() | BaseWidget():
+                widget = config.widget(parent)
                 widget.build(config, root=parent.root)
             case BaseObject():
+                widget = config.entity.create_widget(parent)
                 setup_settings(widget, config.widget_settings)
                 self.set_widget_attr(widget.name, widget)
                 self.create_signals(widget, item)
@@ -144,8 +146,5 @@ class Widget(BaseWidget):
     def generate_items(self):
         ...
 
-    def widget(self):
-        return self.factory().build(self.config())
-
-    def add_widget(self, widget):
-        return self.widget.add_widget(widget)
+    def init_widget(self, parent=None):
+        return self.factory(parent).build(self.config())
