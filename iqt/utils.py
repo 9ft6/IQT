@@ -36,6 +36,7 @@ def setup_settings(object: QWidget, cfg):
 
 
 def setup_setting(object: QWidget, setting, value):
+    # print(object, setting, value)
     method = method_by_setting(object, setting)
     if not method:
         return

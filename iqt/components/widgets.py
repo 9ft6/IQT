@@ -81,7 +81,6 @@ class CustomQWidget(QWidget):
                 widget.build(config, root=parent.root)
             case BaseObject():
                 widget = config.entity.create_widget(parent)
-                setup_settings(widget, config.widget_settings)
                 self.set_widget_attr(widget.name, widget)
                 self.create_signals(widget, item)
 

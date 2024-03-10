@@ -1,8 +1,10 @@
 from typing import Any
 
 from PySide6.QtCore import QObject
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtWidgets import QWidget
 from pydantic import BaseModel, Field
+
+from iqt.utils import setup_settings
 
 Size: tuple[int, int] = ...
 
@@ -78,18 +80,20 @@ class BaseObject(metaclass=ConfigurableType):
             widget=self.factory,
         )
 
-    def pre_init(self) -> None:
+    def pre_init(self):
         ...
 
-    def post_init(self) -> None:
+    def post_init(self):
         ...
 
-    def init_widget(self, parent) -> None:
+    def init_widget(self, parent=None):
         return self.factory(parent)
 
     def create_widget(self, parent=None):
         self.pre_init()
         self.widget = self.init_widget(parent)
+        config = self.config()
+        setup_settings(self.widget, config.widget_settings)
         self.post_init()
         return self.widget
 
@@ -100,13 +104,19 @@ class BaseWidget(BaseObject):
     window: Any
 
     def config(self):
+        widget_settings = self.build_config().get_settings()
+        items = self.generate_items() or self.items
+        layout_settings = items.build_config().get_settings()
         return LayoutConfigResponse(
             to_connect=self.to_connect,
             signals=self.signals,
             entity=self,
-            widget_settings=self.build_config().get_settings(),
-            layout_settings=self.items.build_config().get_settings(),
+            widget_settings=widget_settings,
+            layout_settings=layout_settings,
             widget=self.factory,
             layout=self.items.factory,
             items=self.items.items,
         )
+
+    def generate_items(self):
+        ...

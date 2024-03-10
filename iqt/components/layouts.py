@@ -123,4 +123,4 @@ class BaseFlowLayout(QLayout):
 
 class Flow(BaseLayout):
     name: str = "base_flow"
-    layout_model: QLayout = BaseFlowLayout
+    factory: QLayout = BaseFlowLayout
