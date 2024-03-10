@@ -15,7 +15,9 @@ native_methods = {
     "style": "setStyleSheet",
     "text": "setText",
     "title": "setTitle",
-
+    "set_resizable": "setWidgetResizable",
+    "h_scroll_policy": "setHorizontalScrollBarPolicy",
+    "v_scroll_policy": "setVerticalScrollBarPolicy",
 }
 # custom methods
 custom_methods = {

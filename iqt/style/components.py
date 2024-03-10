@@ -6,7 +6,7 @@ style = f'''
         {Fonts.title}
     }}
     QWidget#scroll_area_widget,
-    DataViewWidget {{
+    DataViewScrollArea {{
         background-color: {Colors.lightest};
     }}
 '''
