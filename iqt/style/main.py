@@ -17,7 +17,6 @@ main = f'''
     QLabel {{
         {Fonts.normal}
         background: {Colors.none};
-
     }}
     QLineEdit {{
         {Fonts.normal}

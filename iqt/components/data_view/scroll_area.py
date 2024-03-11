@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QScrollArea, QScrollBar
 from iqt.components.widgets import Widget
 from iqt.components.layouts import Horizont, Flow, Vertical
 from iqt.components.data_view.scroller import ScrollerMixin
+from iqt.components.base import BaseImageWidgetMixin
 
 
 get_layout_by_type = {
@@ -18,18 +19,19 @@ class DataViewScrollArea(QScrollArea, ScrollerMixin):
     def setup_layout(self, config):
         self.cfg = config
         size = self.parent().size().toTuple()
-
         class MainWidget(Widget, size=size, name="scroll_area_widget"):
             items = get_layout_by_type(config.direction)[None]
-
+        self.setFixedSize(*size)
         self.scroll_widget = MainWidget().create_widget()
         self.layout = self.scroll_widget.layout()
         self.setWidget(self.scroll_widget)
+
         self.scroll_bar = QScrollBar()
         self.setHorizontalScrollBarPolicy(self.cfg.h_scroll_policy)
         self.setVerticalScrollBarPolicy(self.cfg.v_scroll_policy)
         if scroll_bar_setter := getattr(self, self.cfg.scroll_bar_setter):
             scroll_bar_setter(self.scroll_bar)
+
         self.scroller = self.setup_scroller()
 
     def add_widget(self, widget):

@@ -1,7 +1,11 @@
 from typing import Any
+from pathlib import Path
 
-from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QWidget
+from PySide6.QtGui import QPixmap, QPainter, QImage
+from PySide6.QtCore import QUrl, QObject
+from PySide6.QtSvg import QSvgRenderer
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from pydantic import BaseModel, Field
 
 from iqt.utils import setup_settings
@@ -30,6 +34,7 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     size: Size = Field(None)
     fixed_size: Size = Field(None)
     fixed_width: int = Field(None)
+    hidden: bool = Field(False)
 
     def get_settings(self):
         result = self.model_dump(by_alias=True, exclude_none=True)
@@ -96,6 +101,47 @@ class BaseObject(metaclass=ConfigurableType):
         setup_settings(self.widget, config.widget_settings)
         self.post_init()
         return self.widget
+
+
+class BaseImageWidgetMixin:
+    net_manager: QNetworkAccessManager
+
+    def load_from_web(self, image: str):
+        self.net_manager = QNetworkAccessManager()
+        self.net_manager.finished.connect(self.on_image_loaded)
+        self.net_manager.get(QNetworkRequest(QUrl(image)))
+
+    def on_image_loaded(self, reply):
+        url = reply.request().url().toString()
+        if 'svg' in reply.header(QNetworkRequest.ContentTypeHeader) or url.endswith('.svg'):
+            self.set_svg(reply.readAll())
+
+        pixmap = QPixmap()
+        pixmap.loadFromData(reply.readAll())
+        self.set_pixmap(pixmap)
+
+    def set_image(self, image: str):
+        if isinstance(image, str) and "<svg " in image:
+            self.set_svg(image)
+        elif Path(image).exists():
+            self.set_pixmap(QPixmap(image))
+        elif QUrl(image).isValid():
+            self.load_from_web(image)
+
+    def set_svg(self, svg: str):
+        renderer = QSvgRenderer(svg)
+        image = QImage(renderer.defaultSize(), QImage.Format_ARGB32)
+        image.fill(0)  # Transparent background
+
+        painter = QPainter(image)
+        renderer.render(painter)
+        painter.end()
+
+        self.set_pixmap(QPixmap.fromImage(image))
+
+    def set_pixmap(self, pixmap: QPixmap):
+        scaled = pixmap.scaledToWidth(self.width())
+        self.setPixmap(scaled)
 
 
 class BaseWidget(BaseObject):

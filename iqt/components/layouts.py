@@ -1,11 +1,19 @@
 from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QLayout
 from PySide6.QtCore import Qt, QSize, QRect, QPoint
 
-from iqt.components.base import BaseObject, LayoutConfigResponse
+from iqt.components.base import BaseObject, LayoutConfigResponse, BaseConfig
 from iqt.components.widgets import Widget
 
 
+class BaseLayoutConfig(BaseConfig):
+    margins: tuple[int, int, int, int] = (4, 4, 4, 4)
+    spacing: int = 4
+
+
 class BaseLayout(BaseObject):
+    class Config(BaseLayoutConfig):
+        ...
+
     factory: QLayout
 
     def __init__(self, items, *args, **kwargs):

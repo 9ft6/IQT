@@ -18,6 +18,7 @@ native_methods = {
     "set_resizable": "setWidgetResizable",
     "h_scroll_policy": "setHorizontalScrollBarPolicy",
     "v_scroll_policy": "setVerticalScrollBarPolicy",
+    "hidden": "setHidden",
 }
 # custom methods
 custom_methods = {
@@ -68,10 +69,13 @@ def setup_fonts(root):
         print(f"Could not load fonts {e}")
 
 
-def get_attr_recursive(obj, method_name):
+def get_attr_recursive(obj, method_name, with_parent=False):
     if "." in method_name:
         parent_name, method_name = method_name.split(".", 1)
         if parent := get_attr_recursive(obj, parent_name):
-            return get_attr_recursive(parent, method_name)
+            return get_attr_recursive(parent, method_name, with_parent=with_parent)
     else:
-        return getattr(obj, method_name, None)
+        if with_parent:
+            return getattr(obj, method_name, None), obj
+        else:
+            return getattr(obj, method_name, None)

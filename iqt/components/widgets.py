@@ -76,7 +76,10 @@ class CustomQWidget(QWidget):
         config = item.config()
 
         match item:
-            case BaseLayout() | BaseWidget():
+            case BaseWidget():
+                widget = config.entity.create_widget(parent)
+
+            case BaseLayout():
                 widget = config.widget(parent)
                 widget.build(config, root=parent.root)
             case BaseObject():
@@ -106,8 +109,13 @@ class CustomQWidget(QWidget):
             case tuple():
                 method_name, signal_name = signals
                 if method := self.find_method(method_name):
-                    if signal := get_attr_recursive(widget, signal_name):
-                        if isinstance(method.__self__, QObject) or widget is self:
+                    if signal := get_attr_recursive(widget, signal_name, with_parent=widget is self):
+                        if isinstance(method.__self__, QObject):
+                            signal.connect(method)
+                        elif widget is self:
+                            signal, parent = signal
+                            setattr(parent, method_name, MethodType(method, parent))
+                            method = getattr(parent, method_name)
                             signal.connect(method)
                         else:
                             setattr(widget, method_name, MethodType(method, widget))
@@ -141,6 +149,11 @@ class Widget(BaseWidget):
     factory: QWidget = CustomQWidget
     to_connect: dict[str, list[str]] = {}
     signals: list = []
+
+    def __init__(self, name=None, *args, **kwargs):
+        if name:
+            kwargs["name"] = name
+        super().__init__(*args, **kwargs)
 
     def generate_items(self):
         ...
