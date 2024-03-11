@@ -65,9 +65,9 @@ class DynamicDataView(Widget):
 
         self.dataset = self.dataset()
         self.ensure_type_btn("flow", "flow")
-        self.update_context()
+        self.update_content()
 
-    def update_context(self):
+    def update_content(self):
         for item in self.dataset:
             widget = self.item_model.view_widgets.get(self.active.name)
             self.active.add(widget(item))
@@ -76,7 +76,7 @@ class DynamicDataView(Widget):
         for name in ["flow", "vertical", "horizont"]:
             self.ensure_type_btn(name, sender.name)
 
-        self.update_context()
+        self.update_content()
 
     def ensure_type_btn(self, name, sender_name):
         if view := getattr(self, name, None):
