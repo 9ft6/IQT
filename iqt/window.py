@@ -78,9 +78,9 @@ class Window(BaseObject):
         self.window.setup_animation()
         self.widget = self.set_widget(self.cfg.widget_model(), animation=False)
 
-        widget_size = self.widget.widget.size().toTuple()
         if self.cfg.start_at_center:
-            self.window.move_to_center(widget_size, animation=False)
+            self.window.resize(*self.cfg.size)
+            self.window.move_to_center(self.cfg.size, animation=False)
 
         self.window.show()
         self.post_init()

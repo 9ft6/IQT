@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from iqt.components.layouts import Vertical, Horizont
 from iqt.components.data_view.item import BaseDataItem
 from iqt.components.base import BaseConfig
@@ -10,10 +8,10 @@ from iqt.components import (
     VerticalDataView,
     HorizontDataView,
     BaseDataView,
-    ImageButton
 )
 from iqt.components.data_view.dataset import Dataset
 from iqt.components.buttons import FlowBtn, HorizontBtn, VerticalBtn
+
 
 class EditSideBar(Widget, fixed_width=132):
     items = Vertical[...]
@@ -43,7 +41,6 @@ class DynamicDataView(Widget):
     items = Vertical[
         # EditSideBar(),
         NavBar(),
-        ...,
         FlowDataView("flow", hidden=True),
         VerticalDataView("vertical", hidden=True),
         HorizontDataView("horizont", hidden=True),
@@ -69,7 +66,6 @@ class DynamicDataView(Widget):
         self.dataset = self.dataset()
         self.ensure_type_btn("flow", "flow")
         self.update_context()
-        print(self.dataset)
 
     def update_context(self):
         for item in self.dataset:

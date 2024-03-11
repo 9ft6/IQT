@@ -26,8 +26,7 @@ class Button(BaseObject):
 
 class BaseImageButton(QPushButton, BaseImageWidgetMixin):
     def setPixmap(self, image):
-        self.pixmap_path = f'images:{image}'
-        self.setIcon(QIcon(self.pixmap_path))
+        self.setIcon(QIcon(image))
 
 
 class ImageButton(Button):
@@ -40,22 +39,25 @@ class ImageButton(Button):
         super().__init__(*args, **kwargs)
 
 
+class ViewBtnConfig(ButtonConfig):
+    hidden: bool = True
+    fixed_size: tuple[int, int] = (24, 24)
+
+
 class FlowBtn(ImageButton):
-    class Config(ButtonConfig):
+    class Config(ViewBtnConfig):
         name: str = "flow"
-        image: str | Path = svg.a
-        hidden: bool = True
+        image: str | Path = svg.flow
 
 
 class HorizontBtn(ImageButton):
-    class Config(ButtonConfig):
+    class Config(ViewBtnConfig):
         name: str = "vertical"
-        image: str | Path = svg.b
-        hidden: bool = True
+        image: str | Path = svg.vertical
 
 
 class VerticalBtn(ImageButton):
-    class Config(ButtonConfig):
+    class Config(ViewBtnConfig):
         name: str = "horizont"
-        image: str | Path = svg.c
-        hidden: bool = True
+        image: str | Path = svg.horizont
+

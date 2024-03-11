@@ -3,7 +3,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPixmap, QPainter, QImage
-from PySide6.QtCore import QUrl, QObject
+from PySide6.QtCore import QUrl, QObject, QByteArray
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from pydantic import BaseModel, Field
@@ -129,7 +129,8 @@ class BaseImageWidgetMixin:
             self.load_from_web(image)
 
     def set_svg(self, svg: str):
-        renderer = QSvgRenderer(svg)
+        renderer = QSvgRenderer()
+        renderer.load(QByteArray(svg.encode('utf-8')))
         image = QImage(renderer.defaultSize(), QImage.Format_ARGB32)
         image.fill(0)  # Transparent background
 

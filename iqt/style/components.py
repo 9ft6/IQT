@@ -6,7 +6,8 @@ style = f'''
         {Fonts.title}
     }}
     .BaseImageButton {{
-        background-color: {Colors.white};
+        background: {Colors.none};
+        border: none;
     }}
     QWidget#scroll_area_widget,
     DataViewScrollArea {{

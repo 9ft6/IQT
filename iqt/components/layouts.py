@@ -102,6 +102,7 @@ class BaseFlowLayout(QLayout):
         return size
 
     def _do_layout(self, rect, test_only):
+        # TODO: Fix spacing and margins. must be the same layouts
         x = rect.x()
         y = rect.y()
         line_height = 0

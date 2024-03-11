@@ -7,6 +7,7 @@ from PySide6.QtGui import QFontDatabase, QFont
 native_methods = {
     "fixed_height": "setFixedHeight",
     "fixed_size": "setFixedSize",
+    "min_size": "setMinimalSize",
     "fixed_width": "setFixedWidth",
     "margins": "setContentsMargins",
     "name": "setObjectName",
