@@ -12,12 +12,14 @@ class DataNavigationState(BaseModel):
     per_page: int = 50
     sort_key: str = None
     filter: dict = {}
+    ascending: bool = True
 
 
 class Dataset:
     state: DataNavigationState
     items: dict
     dump_file: str | Path
+    item_model: BaseModel
 
     def __init__(self, update_callback):
         self.update_callback = update_callback
@@ -27,27 +29,43 @@ class Dataset:
         self.per_page = self.state.per_page
 
     def __iter__(self):
-        filtered = self._get_filtered()
-        _sorted = list(sorted(filtered.keys()))
-        page, per_page = self.state.page, self.state.per_page
-        current_page = _sorted[(page - 1) * per_page:page * per_page]
-        result = [self.items[i] for i in current_page]
-        return iter(result)
+        filtered = self._get_filtered(self.items)
+        _sorted = self._get_sorted(filtered)
+        return iter(self._get_current_page(_sorted))
 
-    def _get_filtered(self):
-        filtered = self.items
+    def _get_filtered(self, items):
+        filtered = items
         # TODO: Implement filter
         return filtered
 
+    def _get_sorted(self, filtered):
+        kwargs = {"key": lambda s: getattr(s, self.state.sort_key or "id", "")}
+        return list(sorted(filtered.values(), reverse=self.state.ascending, **kwargs))
+
+    def _get_current_page(self, _sorted):
+        page, per_page = self.state.page, self.state.per_page
+        return _sorted[(page - 1) * per_page:page * per_page]
+
+    def get_sort_fields(self):
+        # TODO: implement dynamic fields generation
+        return self.item_model.sort_fields
+
     def count(self):
-        return len(self._get_filtered())
+        return len(self._get_filtered(self.items))
+
+    def set_ascending(self, ascending: bool):
+        if self.state.ascending != ascending:
+            self.state.ascending = ascending
+
+    def set_sort_key(self, key):
+        if self.state.sort_key != key:
+            self.state.sort_key = key
+            self.update_callback()
 
     def set_page(self, page):
-        if self.state.page == page:
-            return
-
-        self.state.page = page
-        self.update_callback()
+        if self.state.page != page:
+            self.state.page = page
+            self.update_callback()
 
     def show(self, _filter=None):
         for item in self.items.values():
