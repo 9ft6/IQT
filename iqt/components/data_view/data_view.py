@@ -23,8 +23,10 @@ class BaseDataView(BaseObject):
         ...
 
     factory: QWidget = DataViewScrollArea
+    widgets: dict
 
     def __init__(self, name=None, *args, **kwargs):
+        self.widgets = {}
         if name:
             kwargs["name"] = name
         super().__init__(*args, **kwargs)
@@ -38,10 +40,11 @@ class BaseDataView(BaseObject):
         ...
 
     def clear(self):
-        ...
+        self.widget.clear()
+        self.widgets = {}
 
     def post_init(self) -> None:
-        copy_methods = ["add", "remove", "clear"]
+        copy_methods = ["add", "remove"]
         for m in copy_methods:
             if v := getattr(self, m, None):
                 setattr(self.widget, m, v)

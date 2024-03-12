@@ -35,7 +35,7 @@ class CustomQWidget(QWidget):
     def build(self, config, root=None):
         self.root = root or self
         self.entity = config.entity
-        self.app = self.entity.app = QApplication.instance()
+        self.app = QApplication.instance()
 
         layout = config.layout(self)
 
@@ -65,6 +65,12 @@ class CustomQWidget(QWidget):
 
     def add_widget(self, widget):
         return self.add_widget_to_layout(widget)
+
+    def clear(self):
+        while item := self.layout().itemAt(0):
+            widget = item.widget()
+            widget.hide()
+            self.layout().removeWidget(widget)
 
     def set_widget_attr(self, name, widget):
         objects = [self, self.entity, self.root, self.root.entity]

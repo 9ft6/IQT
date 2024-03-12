@@ -9,7 +9,7 @@ from iqt.logger import logger
 
 class DataNavigationState(BaseModel):
     page: int = 1
-    per_page: int = 5
+    per_page: int = 50
     sort_key: str = None
     filter: dict = {}
 
@@ -19,16 +19,18 @@ class Dataset:
     items: dict
     dump_file: str | Path
 
-    def __init__(self):
+    def __init__(self, update_callback):
+        self.update_callback = update_callback
         logger.info("Loading strains dataset...")
         self.load()
         self.state = DataNavigationState()
+        self.per_page = self.state.per_page
 
     def __iter__(self):
         filtered = self._get_filtered()
         _sorted = list(sorted(filtered.keys()))
         page, per_page = self.state.page, self.state.per_page
-        current_page = _sorted[page * per_page:page * per_page + per_page]
+        current_page = _sorted[(page - 1) * per_page:page * per_page]
         result = [self.items[i] for i in current_page]
         return iter(result)
 
@@ -41,7 +43,11 @@ class Dataset:
         return len(self._get_filtered())
 
     def set_page(self, page):
+        if self.state.page == page:
+            return
+
         self.state.page = page
+        self.update_callback()
 
     def show(self, _filter=None):
         for item in self.items.values():

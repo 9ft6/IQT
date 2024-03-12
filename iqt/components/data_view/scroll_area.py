@@ -17,17 +17,11 @@ class DataViewScrollArea(QScrollArea, ScrollerMixin):
 
     def setup_layout(self, config):
         self.cfg = config
-        # w, h = self.parent().size().toTuple()
-        # size = w - 100, h - 100
 
         class MainWidget(Widget, name="scroll_area_widget"):
             items = get_layout_by_type(config.direction)[None]
 
-
-        # self.setFixedSize(*size)
         self.scroll_widget = MainWidget().create_widget()
-        # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        # self.scroll_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.layout = self.scroll_widget.layout()
         self.setWidget(self.scroll_widget)
 
@@ -54,3 +48,9 @@ class DataViewScrollArea(QScrollArea, ScrollerMixin):
 
             method = getattr(self.scroll_widget, f"setFixed{attr_name.capitalize()}")
             method(value)
+
+    def clear(self):
+        while item := self.layout.itemAt(0):
+            widget = item.widget()
+            widget.hide()
+            self.layout.removeWidget(widget)

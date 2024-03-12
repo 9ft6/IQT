@@ -29,6 +29,7 @@ class Application(BaseObject):
 
     def run(self):
         self.app.cfg = self.cfg = self.build_config()
+        self.app.setStyleSheet(self.cfg.style)
         self.pre_init()
 
         logger.debug(f"{self.cfg.app_name} starting...")
@@ -41,5 +42,4 @@ class Application(BaseObject):
         window.init_window()
 
         self.post_init()
-        self.app.setStyleSheet(self.cfg.style)
         sys.exit(self.app.exec())

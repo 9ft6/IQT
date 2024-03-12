@@ -1,7 +1,7 @@
 from typing import Any
 from pathlib import Path
 
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtGui import QPixmap, QPainter, QImage
 from PySide6.QtCore import QUrl, QObject, QByteArray
 from PySide6.QtSvg import QSvgRenderer
@@ -70,6 +70,7 @@ class BaseObject(metaclass=ConfigurableType):
     _cfg_extra: dict = None
 
     def __init__(self, *args, **kwargs):
+        self.app = QApplication.instance()
         self._cfg_extra = {**self._cfg_extra, **kwargs}
 
     def build_config(self):
@@ -152,7 +153,7 @@ class BaseWidget(BaseObject):
 
     def config(self):
         widget_settings = self.build_config().get_settings()
-        items = self.generate_items() or self.items
+        self.items = items = self.generate_items() or self.items
         layout_settings = items.build_config().get_settings()
         return LayoutConfigResponse(
             to_connect=self.to_connect,

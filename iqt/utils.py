@@ -32,6 +32,8 @@ def method_by_setting(object, setting):
     methods = {**native_methods, **custom_methods}
     if method_name := methods.get(setting):
         return getattr(object, method_name, None)
+    else:
+        return getattr(object, setting, None)
 
 
 def setup_settings(object: QWidget, cfg):
