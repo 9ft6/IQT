@@ -84,7 +84,6 @@ class CustomQWidget(QWidget):
         match item:
             case BaseWidget():
                 widget = config.entity.create_widget(parent)
-
             case BaseLayout():
                 widget = config.widget(parent)
                 widget.build(config, root=parent.root)

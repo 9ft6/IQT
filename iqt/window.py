@@ -78,7 +78,7 @@ class Window(BaseObject):
         self.window.setup_animation()
         self.widget = self.set_widget(self.cfg.widget_model(), animation=False)
 
-        if self.cfg.start_at_center:
+        if self.cfg.start_at_center and self.cfg.size:
             self.window.resize(*self.cfg.size)
             self.window.move_to_center(self.cfg.size, animation=False)
 

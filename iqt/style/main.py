@@ -12,6 +12,13 @@ main = f'''
         {Fonts.normal}
         background: {Colors.none};
     }}
+    ButtonQWidget {{
+        background: {Colors.light};
+        border-radius: 4px;
+        height: 24px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }}
     QLineEdit {{
         {Fonts.normal}
         color: {Colors.white};

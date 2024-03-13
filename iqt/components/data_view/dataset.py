@@ -39,7 +39,7 @@ class Dataset:
         return filtered
 
     def _get_sorted(self, filtered):
-        kwargs = {"key": lambda s: getattr(s, self.state.sort_key or "id", "")}
+        kwargs = {"key": lambda s: str(getattr(s, self.state.sort_key or "id", ""))}
         return list(sorted(filtered.values(), reverse=self.state.ascending, **kwargs))
 
     def _get_current_page(self, _sorted):
@@ -56,6 +56,7 @@ class Dataset:
     def set_ascending(self, ascending: bool):
         if self.state.ascending != ascending:
             self.state.ascending = ascending
+            self.update_callback()
 
     def set_sort_key(self, key):
         if self.state.sort_key != key:

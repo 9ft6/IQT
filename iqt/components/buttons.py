@@ -7,6 +7,10 @@ from iqt.images import svg
 from iqt.components.base import BaseObject, BaseConfig, BaseImageWidgetMixin
 
 
+class ButtonQWidget(QPushButton):
+    ...
+
+
 class ButtonConfig(BaseConfig):
     name: str = "button"
     text: str = ""
@@ -17,7 +21,7 @@ class Button(BaseObject):
     Config = ButtonConfig
 
     to_connect: dict = {"items_handler": ["clicked"]}
-    factory: QWidget = QPushButton
+    factory: QWidget = ButtonQWidget
 
     def __init__(self, text=None, *args, **kwargs):
         kwargs["text"] = text or ""

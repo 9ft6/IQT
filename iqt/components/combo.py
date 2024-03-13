@@ -12,6 +12,11 @@ class ComboBoxWidget(QComboBox):
         self.currentTextChanged.connect(self.empty_handler)
         self.setEditable(True)
 
+    def set_items(self, texts, sort=True):
+        self.clear()
+        self.set_empty_state()
+        self.add_items(texts, sort=sort)
+
     def add_items(self, texts, sort=True):
         if sort:
             texts = set(sorted(texts))
@@ -36,7 +41,8 @@ class ComboBoxWidget(QComboBox):
     def clear_text(self):
         self.setCurrentIndex(-1)
 
-    def set_empty_state(self, state):
+    def set_empty_state(self, state=None):
+        state = state or self.empty_state
         self.empty_state = state
         self.setPlaceholderText(state)
         self.lineEdit().setPlaceholderText(state)

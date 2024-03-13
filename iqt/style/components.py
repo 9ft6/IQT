@@ -9,6 +9,9 @@ style = f'''
         background: {Colors.none};
         border: none;
     }}
+    .SortingQWidget {{
+        background-color: {Colors.red};
+    }}
     PageQButton {{
         background: {Colors.gray};
         border: none;

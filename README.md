@@ -84,3 +84,24 @@ class TestGUI(Application, start_window=LoginWindow):
 if __name__ == '__main__':
     TestGUI().run()
 ```
+
+
+## Introducing Data View
+Iam excited to share a sneak peek at a new feature coming to the IQT Framework: Data View. This addition is all about making it easier for you to create GUIs by simply defining your data model. Here's what you can look forward to:
+
+What's New with Data View:
+- pagination
+- filtration
+- sorting
+- 3 type of view
+
+<p align="center">
+  <img src="example/dataview.gif" alt="Login Interface Preview">
+</p>
+
+Simplify Your Code: Just define your data model, and Data View handles the rest, generating the interface automatically.
+More Control and Flexibility: In the pipeline are features for object manipulation, such as selecting and bulk editing, tailored specifically to the type of data you're working with. Plus, each data type will get its widget, potentially even with auto-generation for ease of use.
+Customization and Adaptability: Data View is built to be flexible, letting you display and manage data in various layouts. You'll have the foundation to create views that not only look great but also fit exactly what your app needs.
+Aligned with IQT Framework's Vision: True to the IQT Framework's aim, Data View is here to make GUI development in Python faster and more intuitive, providing you with components that are easy to use and configure. It's all about enhancing your app's data display and interaction, fitting a wide range of application requirements.
+Stay tuned for more updates as we continue to develop and enhance the Data View feature!
+

@@ -1,7 +1,12 @@
+from pathlib import Path
+
 from iqt.components.base import BaseConfig
-from iqt.components import Widget, ComboBox
+from iqt.components.widgets import CustomQWidget
+from iqt.components import Widget, ComboBox, ImageButton, Label
 from iqt.components.layouts import Horizont
 from iqt.components.combo import ComboBoxConfig
+from iqt.components.buttons import ButtonConfig
+from iqt.images import svg
 
 
 class SortingComboBox(ComboBox):
@@ -11,21 +16,40 @@ class SortingComboBox(ComboBox):
         fixed_width: int = 128
 
 
-class SortingConfig(BaseConfig):
-    name: str = 'sorting'
+class AscendingButton(ImageButton):
+    class Config(ButtonConfig):
+        name: str = "ascending_btn"
+        image: str | Path = svg.ascending
+        fixed_size: tuple[int, int] = (24, 24)
+
+
+class SortingQWidget(CustomQWidget):
+    ...
 
 
 class SortingWidget(Widget):
-    Config = SortingConfig
-    items = Horizont[SortingComboBox()]
+    class Config(BaseConfig):
+        name: str = 'sorting'
+
+    factory = SortingQWidget
+    items = Horizont[Label("Sort by:"), SortingComboBox(), AscendingButton()]
     to_connect: dict[str, list[str]] = {
-        "sort_handler": [
-            "sort_box.currentTextChanged"
-        ]
+        "sort_handler": ["sort_box.currentTextChanged"],
+        "ascending_handler": ["ascending_btn.clicked"],
     }
 
     def update(self):
-        self.sort_box.add_items(self.widget.dataset.get_sort_fields())
+        fields = set(self.widget.dataset.get_sort_fields())
+        exists = set(self.sort_box.get_all_items())
+        exists.remove(self.sort_box.lineEdit().placeholderText())
+        if fields != exists:
+            self.sort_box.set_items(fields)
+
+    def ascending_handler(self, sender, *args):
+        dataset = self.widget.dataset
+        value = not dataset.state.ascending
+        dataset.set_ascending(value)
+        sender.set_image(svg.ascending if value else svg.descending)
 
     def sort_handler(self, sender, text):
         value = text if sender.empty_state != text else None

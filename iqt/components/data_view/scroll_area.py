@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QScrollArea, QScrollBar, QSizePolicy
+from PySide6.QtWidgets import QScrollArea, QScrollBar
 
 from iqt.components.widgets import Widget
 from iqt.components.layouts import Horizont, Flow, Vertical
