@@ -11,8 +11,7 @@ from iqt.components.widgets import Widget, Input, CheckBox
 from iqt.components.layouts import Horizont, Vertical
 from iqt.components import Button, Label, Title, Image
 from iqt.components.data_view.dynamic import DynamicDataView
-
-from item import Supply, Supplies
+from dataset import Supply, Supplies
 
 
 class StrainsView(DynamicDataView):
@@ -20,32 +19,27 @@ class StrainsView(DynamicDataView):
     dataset = Supplies
 
 
-class LoginInvalidWidget(Widget, size=(240, 80)):
+class LoginInvalidWidget(Widget, size=(240, 80), margins=(16, 8, 16, 8)):
     items = Vertical[Label("login is biba or boba"), Button("try again")]
     to_connect = {"back_to_login": ["button.clicked"]}
 
-    def back_to_login(self):
+    def back_to_login(self, *args, **kwargs):
         self.window.change_widget(LoginWidget())
 
 
-class LoginWidget(
-    Widget,
-    name="main_widget",
-    size=(280, 360),
-    margins=(16, 8, 16, 8),
-):
+class LoginWidget(Widget, size=(280, 360), margins=(16, 8, 16, 8)):
     items = Vertical[
         Horizont[..., Image("logo.png", fixed_width=160)],
         Horizont[Title("Please Login:")],
-        Horizont[Label("login:"), ..., Input("login", fixed_width=160)],
-        Horizont[Label("pass:"), ..., Input("pwd", fixed_width=160)],
+        Horizont[Label("login:"), ..., Input("login", fixed_size=(160, 32))],
+        Horizont[Label("pass:"), ..., Input("pwd", fixed_size=(160, 32))],
         Horizont[CheckBox("Remember me"), ..., Button("login")],
     ]
 
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
             case "button":
-                if self.login.text() in ["biba", "boba"] or 1:
+                if self.login.text() in ["biba", "boba"]:
                     self.window.change_widget(StrainsView(size=(1600, 1024)))
                 else:
                     self.window.change_widget(LoginInvalidWidget())
@@ -53,18 +47,9 @@ class LoginWidget(
                 print("change config state")
 
 
-class LoginWindow(
-    Window,
-    name="login_window",
-    transparent=False,
-    title="Please login",
-    widget_model=LoginWidget,
-):
-    ...
-
-
-class TestGUI(Application, start_window=LoginWindow):
-    ...
+class TestGUI(Application):
+    class StartWindow(Window, title="Please login", widget_model=LoginWidget):
+        ...
 
 
 if __name__ == '__main__':
