@@ -3,24 +3,22 @@ from iqt.window import Window
 from iqt.components.widgets import Widget, Input, CheckBox
 from iqt.components.layouts import Horizont, Vertical
 from iqt.components import Button, Label, Title, Image
+from iqt.components.data_view.dynamic import DynamicDataView
+
+from item import Supply, Supplies
 
 
-class BaseResponseWidget(Widget):
+class StrainsView(DynamicDataView):
+    item_model = Supply()
+    dataset = Supplies
+
+
+class LoginInvalidWidget(Widget, size=(240, 80)):
+    items = Vertical[Label("login is biba or boba"), Button("try again")]
     to_connect = {"back_to_login": ["button.clicked"]}
 
     def back_to_login(self):
         self.window.change_widget(LoginWidget())
-
-
-class LoginValidWidget(BaseResponseWidget, size=(360, 240)):
-    items = Vertical[
-        Horizont[..., Label("SUPER SECRET CONTENT HERE"), ...],
-        Button("logout")
-    ]
-
-
-class LoginInvalidWidget(BaseResponseWidget, size=(240, 80)):
-    items = Vertical[Label("login is biba or boba"), Button("try again")]
 
 
 class LoginWidget(
@@ -40,8 +38,8 @@ class LoginWidget(
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
             case "button":
-                if self.login.text() in ["biba", "boba"]:
-                    self.window.change_widget(LoginValidWidget())
+                if self.login.text() in ["biba", "boba"] or 1:
+                    self.window.change_widget(StrainsView(size=(1600, 1024)))
                 else:
                     self.window.change_widget(LoginInvalidWidget())
             case "checkbox":
