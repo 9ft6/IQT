@@ -1,3 +1,10 @@
+try:
+    import iqt
+except ImportError:
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path().resolve() / ".."))
+
 from iqt.app import Application
 from iqt.window import Window
 from iqt.components.widgets import Widget, Input, CheckBox

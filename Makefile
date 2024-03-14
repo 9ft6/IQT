@@ -4,4 +4,4 @@ help: ## Show list of commands
 
 
 run: ## Run app
-	python app/app.py
+	cd example; python app.py
