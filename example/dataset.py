@@ -9,12 +9,12 @@ from iqt.components.data_view.dataset import Dataset
 
 class Supply(BaseDataItem):
     _view_widgets: dict = {}
-    _sort_fields: str = ["name", "slug", "category"]
+    _sort_fields: str = ["name", "rating", "category"]
 
-    id: int = None
-    rating: float = Field(None, description="Average rating")
+    id: int = Field(None, description="ID")
+    rating: float = Field(None, description="Rating")
     category: Literal["books", "other"] = Field(None, description="Category")
-    name: str = Field(None, description="Strain name")
+    name: str = Field(None, description="Name")
     image: str = Field(None, description="<preview>")
     slug: str | None = Field(None, description="Slug")
     subtitle: str = Field(None, description="<item_name>")

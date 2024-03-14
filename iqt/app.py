@@ -13,7 +13,6 @@ from iqt import logger
 
 class AppConfig(BaseConfig):
     style: str = base_style
-    start_window: Any
     app_name: Any = "Base application"
     font_path: Path = Path().resolve() / "fonts"
     icon_path: Path = Path().resolve() / "icons"
@@ -22,6 +21,7 @@ class AppConfig(BaseConfig):
 
 class Application(BaseObject):
     main_window: Any
+    StartWindow: Any
     Config = AppConfig
 
     def run(self):
@@ -36,7 +36,7 @@ class Application(BaseObject):
         QDir.addSearchPath('icons', str(self.cfg.icon_path))
         setup_fonts(self.app)
 
-        window: Any = self.cfg.start_window(self)
+        window: Any = self.StartWindow(self)
         window.init_window()
 
         self.post_init()
