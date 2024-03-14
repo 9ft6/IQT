@@ -2,6 +2,7 @@ from iqt.components.layouts import Vertical, Horizont
 from iqt.components.data_view.item import BaseDataItem, DynamicItem
 from iqt.components.data_view.pagination import Pagination
 from iqt.components.data_view.sort import SortingWidget
+from iqt.components.data_view.filter import FilterWidget
 from iqt.components.base import BaseConfig
 from iqt.components import (
     Button,
@@ -27,7 +28,7 @@ class NavBar(Widget, name="navbar"):
         ...,
         Pagination(),
         ...,
-        Button("querying"),
+        Horizont[FilterWidget()],
         Horizont[SortingWidget()],
     ]
 

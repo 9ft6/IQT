@@ -78,7 +78,7 @@ class DynamicItemWidget(CustomQWidget):
     ...
 
 
-class DynamicItem(Widget, name="base_item_widget"):
+class DynamicItem(Widget, name="base_item_widget", fixed_width=250):
     factory = DynamicItemWidget
 
     def __init__(self, item, **kwargs):

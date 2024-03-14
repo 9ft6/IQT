@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from iqt.components.widgets import CustomQWidget
 from iqt.components import Widget, ComboBox, ImageButton, Label
 from iqt.components.layouts import Horizont
 from iqt.components.combo import ComboBoxConfig
@@ -22,12 +21,7 @@ class AscendingButton(ImageButton):
         fixed_size: tuple[int, int] = (24, 24)
 
 
-class SortingQWidget(CustomQWidget):
-    ...
-
-
 class SortingWidget(Widget, name='sorting'):
-    factory = SortingQWidget
     items = Horizont[Label("Sort by:"), SortingComboBox(), AscendingButton()]
     to_connect: dict[str, list[str]] = {
         "sort_handler": ["sort_box.currentTextChanged"],

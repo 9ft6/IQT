@@ -142,8 +142,22 @@ class BaseImageWidgetMixin:
         self.set_pixmap(QPixmap.fromImage(image))
 
     def set_pixmap(self, pixmap: QPixmap):
-        scaled = pixmap.scaledToWidth(self.width())
-        self.setPixmap(scaled)
+        if pixmap:
+            width, height = size = pixmap.size().toTuple()
+            ratio = max(size) / min(size)
+
+            if ratio > 16 / 9:
+                if width > height:
+                    new_width = height * 16 / 9
+                    crop_x = (pixmap.width() - new_width) / 2
+                    pixmap = pixmap.copy(crop_x, 0, new_width, pixmap.height())
+                else:
+                    new_height = width * 16 / 9
+                    crop_y = (pixmap.height() - new_height) / 2
+                    pixmap = pixmap.copy(0, crop_y, pixmap.width(), new_height)
+
+            scaled = pixmap.scaledToWidth(self.width())
+            self.setPixmap(scaled)
 
 
 class BaseWidget(BaseObject):

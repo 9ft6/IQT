@@ -2,7 +2,7 @@ from types import MethodType
 from typing import Any
 
 from PySide6.QtWidgets import QWidget, QCheckBox, QLineEdit, QApplication
-from PySide6.QtCore import Signal, QObject
+from PySide6.QtCore import Signal, QObject, Qt
 
 from iqt.components.base import BaseWidget, BaseObject
 from iqt.utils import setup_settings, get_attr_recursive
@@ -35,12 +35,13 @@ class CustomQWidget(QWidget):
     def build(self, config, root=None):
         self.root = root or self
         self.entity = config.entity
+        self.setAttribute(Qt.WA_StyledBackground)
         self.app = QApplication.instance()
 
         layout = config.layout(self)
 
-        setup_settings(self, config.widget_settings)
         setup_settings(layout, config.layout_settings)
+        setup_settings(self, config.widget_settings)
 
         for item in (self.entity.generate_items() or config).items:
             if not item:
@@ -164,4 +165,4 @@ class Widget(BaseWidget):
         ...
 
     def init_widget(self, parent=None):
-        return self.factory().build(self.config())
+        return self.factory(parent).build(self.config())

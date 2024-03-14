@@ -25,7 +25,7 @@ class BaseLayout(BaseObject):
         return cls(key if isinstance(key, tuple) else (key, ))
 
     def config(self):
-        widget = Widget()
+        widget = Widget(name="default_widget")
         return LayoutConfigResponse(
             entity=widget,
             widget_settings=widget.build_config().get_settings(),

@@ -3,12 +3,17 @@ from iqt.style.settings import Colors, Fonts
 
 style = f'''
     QWidget#strain_card {{
-        background: {Colors.red};
+        background: {Colors.gray};
         border: 1px solid green;
     }}
+    QWidget#pagination,
+    QWidget#default_widget {{
+        background: {Colors.none};
+    }}
+    QWidget#filter,
     QWidget#sorting {{
-        background: {Colors.red};
-        border: 1px solid green;
+        background: {Colors.light};
+        border-radius: 8px;
     }}
     QLabel#title {{
         {Fonts.title}
