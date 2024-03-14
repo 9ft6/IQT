@@ -158,6 +158,9 @@ class BaseImageWidgetMixin:
 
             scaled = pixmap.scaledToWidth(self.width())
             self.setPixmap(scaled)
+        else:
+            from iqt.images import svg
+            self.set_image(svg.no_preview)
 
 
 class BaseWidget(BaseObject):

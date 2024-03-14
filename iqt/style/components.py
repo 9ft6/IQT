@@ -18,6 +18,9 @@ style = f'''
     QLabel#title {{
         {Fonts.title}
     }}
+    .DynamicItemWidget {{
+        border-radius: 8px;
+    }}
     .BaseImageButton {{
         background: {Colors.none};
         border: none;

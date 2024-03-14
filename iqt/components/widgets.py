@@ -4,7 +4,7 @@ from typing import Any
 from PySide6.QtWidgets import QWidget, QCheckBox, QLineEdit, QApplication
 from PySide6.QtCore import Signal, QObject, Qt
 
-from iqt.components.base import BaseWidget, BaseObject
+from iqt.components.base import BaseWidget, BaseObject, BaseConfig
 from iqt.utils import setup_settings, get_attr_recursive
 
 Size: tuple[int, int] = ...

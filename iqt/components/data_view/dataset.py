@@ -9,7 +9,7 @@ from iqt.logger import logger
 
 class DataNavigationState(BaseModel):
     page: int = 1
-    per_page: int = 50
+    per_page: int = 25
     sort_key: str = None
     filter: dict = {}
     ascending: bool = True
