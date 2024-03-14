@@ -1,5 +1,5 @@
 from iqt.components.layouts import Vertical, Horizont
-from iqt.components.data_view.item import BaseDataItem
+from iqt.components.data_view.item import BaseDataItem, DynamicItem
 from iqt.components.data_view.pagination import Pagination
 from iqt.components.data_view.sort import SortingWidget
 from iqt.components.base import BaseConfig
@@ -28,7 +28,7 @@ class NavBar(Widget, name="navbar"):
         Pagination(),
         ...,
         Button("querying"),
-        SortingWidget(),
+        Horizont[SortingWidget()],
     ]
 
 
@@ -61,7 +61,7 @@ class DynamicDataView(Widget):
 
     def post_init(self):
         for name in ["flow", "vertical", "horizont"]:
-            if self.item_model.view_widgets.get(name):
+            if self.item_model._view_widgets.get(name):
                 if view := getattr(self.navbar, name, None):
                     view.show()
 
@@ -78,7 +78,10 @@ class DynamicDataView(Widget):
     def update_content(self):
         self.active.clear()
         for item in self.dataset:
-            widget = self.item_model.view_widgets.get(self.active.name)
+            widget = self.item_model._view_widgets.get(self.active.name, DynamicItem)
+
+            if not widget:
+                widget = DynamicItem
             self.active.add(widget(item))
 
         self.pagination.entity.update()

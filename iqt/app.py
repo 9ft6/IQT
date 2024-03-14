@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from typing import Any
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QDir
@@ -8,7 +9,6 @@ from iqt.components.base import BaseObject, BaseConfig
 from iqt.utils import setup_fonts
 from iqt.style import base_style
 from iqt import logger
-from typing import Any
 
 
 class AppConfig(BaseConfig):
@@ -24,10 +24,8 @@ class Application(BaseObject):
     main_window: Any
     Config = AppConfig
 
-    def __init__(self):
-        self.app = QApplication()
-
     def run(self):
+        self.app = QApplication()
         self.app.cfg = self.cfg = self.build_config()
         self.app.setStyleSheet(self.cfg.style)
         self.pre_init()

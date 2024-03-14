@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from iqt.components.base import BaseConfig
 from iqt.components.widgets import CustomQWidget
 from iqt.components import Widget, ComboBox, ImageButton, Label
 from iqt.components.layouts import Horizont
@@ -27,10 +26,7 @@ class SortingQWidget(CustomQWidget):
     ...
 
 
-class SortingWidget(Widget):
-    class Config(BaseConfig):
-        name: str = 'sorting'
-
+class SortingWidget(Widget, name='sorting'):
     factory = SortingQWidget
     items = Horizont[Label("Sort by:"), SortingComboBox(), AscendingButton()]
     to_connect: dict[str, list[str]] = {

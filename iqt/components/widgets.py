@@ -39,8 +39,8 @@ class CustomQWidget(QWidget):
 
         layout = config.layout(self)
 
-        setup_settings(layout, config.layout_settings)
         setup_settings(self, config.widget_settings)
+        setup_settings(layout, config.layout_settings)
 
         for item in (self.entity.generate_items() or config).items:
             if not item:
@@ -164,4 +164,4 @@ class Widget(BaseWidget):
         ...
 
     def init_widget(self, parent=None):
-        return self.factory(parent).build(self.config())
+        return self.factory().build(self.config())

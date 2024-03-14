@@ -21,9 +21,10 @@ class Dataset:
     dump_file: str | Path
     item_model: BaseModel
 
-    def __init__(self, update_callback):
+    def __init__(self, update_callback=None):
+        self.items = {}
         self.update_callback = update_callback
-        logger.info("Loading strains dataset...")
+        logger.info("Loading dataset...")
         self.load()
         self.state = DataNavigationState()
         self.per_page = self.state.per_page
@@ -48,7 +49,7 @@ class Dataset:
 
     def get_sort_fields(self):
         # TODO: implement dynamic fields generation
-        return self.item_model.sort_fields
+        return self.item_model._sort_fields
 
     def count(self):
         return len(self._get_filtered(self.items))
@@ -56,7 +57,8 @@ class Dataset:
     def set_ascending(self, ascending: bool):
         if self.state.ascending != ascending:
             self.state.ascending = ascending
-            self.update_callback()
+            if self.update_callback:
+                self.update_callback()
 
     def set_sort_key(self, key):
         if self.state.sort_key != key:
@@ -88,3 +90,11 @@ class Dataset:
                 self.items = pickle.load(file)
         except Exception as e:
             logger.error(f"Cannot read strains.pickle {e}")
+
+    def put_raws(self, raws: dict):
+        items = {i: self.item_model.parse_obj(r) for i, r in raws.items()}
+        self.put_items(items)
+
+    def put_items(self, items: dict):
+        self.items.update(items)
+        self.dump()
