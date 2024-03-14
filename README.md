@@ -8,6 +8,8 @@ With IQT, you can put together the visual parts of your app fast, with just a fe
 Keep an eye out for updates as we keep building and improving IQT.
 ## Simple example
 
+To run this example, clone the repository and execute ```make run``` in the root directory.
+
 Below is a sample code snippet to illustrate the simplicity of creating a login interface with IQT:
 
 So you need only 60+ lines of code to make app like this
