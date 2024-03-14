@@ -2,7 +2,8 @@ from .settings import Colors, Fonts
 
 
 main = f'''
-    QMainWindow {{
+    QMainWindow,
+    QWidget {{
         background-color: {Colors.dark};
         border-radius: 0px;
         selection-background-color: {Colors.selection};

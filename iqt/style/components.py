@@ -2,15 +2,20 @@ from iqt.style.settings import Colors, Fonts
 
 
 style = f'''
+    QWidget#strain_card {{
+        background: {Colors.red};
+        border: 1px solid green;
+    }}
+    QWidget#sorting {{
+        background: {Colors.red};
+        border: 1px solid green;
+    }}
     QLabel#title {{
         {Fonts.title}
     }}
     .BaseImageButton {{
         background: {Colors.none};
         border: none;
-    }}
-    .SortingQWidget {{
-        background-color: {Colors.red};
     }}
     PageQButton {{
         background: {Colors.gray};
