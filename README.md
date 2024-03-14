@@ -12,7 +12,7 @@ To run this example, clone the repository and execute ```make run``` in the root
 
 Below is a sample code snippet to illustrate the simplicity of creating a login interface with IQT:
 
-So you need only 60+ lines of code to make app like this
+So you need only 60+ lines of code to make app like this.
 <p align="center">
   <img src="example/boba.gif" alt="Login Interface Preview">
 </p>
@@ -23,38 +23,27 @@ from iqt.app import Application
 from iqt.window import Window
 from iqt.components.widgets import Widget, Input, CheckBox
 from iqt.components.layouts import Horizont, Vertical
-from iqt.components import Button, Label, Image
+from iqt.components import Button, Label, Title, Image
+from iqt.components.data_view.dynamic import DynamicDataView
+from dataset import Supply, Supplies
 
+class StrainsView(DynamicDataView):
+    item_model = Supply()
+    dataset = Supplies
 
-class BaseResponseWidget(Widget):
+class LoginInvalidWidget(Widget, size=(240, 80), margins=(16, 8, 16, 8)):
+    items = Vertical[Label("login is biba or boba"), Button("try again")]
     to_connect = {"back_to_login": ["button.clicked"]}
 
-    def back_to_login(self):
+    def back_to_login(self, *args, **kwargs):
         self.window.change_widget(LoginWidget())
 
-
-class LoginValidWidget(BaseResponseWidget, size=(360, 240)):
-    items = Vertical[
-        Horizont[..., Label("SUPER SECRET CONTENT HERE"), ...],
-        Button("logout")
-    ]
-
-
-class LoginInvalidWidget(BaseResponseWidget, size=(240, 80)):
-    items = Vertical[Label("login:valid_pwd"), Button("try again")]
-
-
-class LoginWidget(
-    Widget,
-    name="main_widget",
-    size=(280, 360),
-    margins=(16, 8, 16, 8),
-):
+class LoginWidget(Widget, size=(280, 360), margins=(16, 8, 16, 8)):
     items = Vertical[
         Horizont[..., Image("logo.png", fixed_width=160)],
-        Horizont[Label("Please Login:")],
-        Horizont[Label("login:"), ..., Input("login", fixed_width=160)],
-        Horizont[Label("pass:"), ..., Input("pwd", fixed_width=160)],
+        Horizont[Title("Please Login:")],
+        Horizont[Label("login:"), ..., Input("login", fixed_size=(160, 32))],
+        Horizont[Label("pass:"), ..., Input("pwd", fixed_size=(160, 32))],
         Horizont[CheckBox("Remember me"), ..., Button("login")],
     ]
 
@@ -62,48 +51,48 @@ class LoginWidget(
         match sender.name:
             case "button":
                 if self.login.text() in ["biba", "boba"]:
-                    self.window.change_widget(LoginValidWidget())
+                    self.window.change_widget(StrainsView(size=(1600, 1024)))
                 else:
                     self.window.change_widget(LoginInvalidWidget())
             case "checkbox":
                 print("change config state")
 
-
-class LoginWindow(
-    Window,
-    name="login_window",
-    transparent=False,
-    title="Please login",
-    widget_model=LoginWidget,
-):
-    ...
-
-
-class TestGUI(Application, start_window=LoginWindow):
-    ...
-
+class TestGUI(Application):
+    class StartWindow(Window, title="Please login", widget_model=LoginWidget):
+        ...
 
 if __name__ == '__main__':
     TestGUI().run()
 ```
+This interface retrieves data from a simple storage. It is a class that contains a dictionary named items, in which lie homogeneous Pydantic models. 
 
+The content of the file dataset.py is sufficient for an interface to be automatically generated with three view types, filtering, pagination, and sorting.
+```python
+from iqt.components.data_view.item import BaseDataItem
+from iqt.components.data_view.dataset import Dataset
 
-## Introducing Data View
-Iam excited to share a sneak peek at a new feature coming to the IQT Framework: Data View. This addition is all about making it easier for you to create GUIs by simply defining your data model. Here's what you can look forward to:
+class Supply(BaseDataItem):
+    _view_widgets: dict = {}
+    _sort_fields: str = ["name", "rating", "category"]
 
-What's New with Data View:
-- pagination
-- filtration
-- sorting
-- 3 type of view
+    id: int = Field(None, description="ID")
+    rating: float = Field(None, description="Rating")
+    category: Literal["books", "other"] = Field(None, description="Category")
+    name: str = Field(None, description="Name")
+    image: str = Field(None, description="<preview>")
+    slug: str | None = Field(None, description="Slug")
+    subtitle: str = Field(None, description="<item_name>")
+    discount: bool = Field(False, description="Discount")
 
-<p align="center">
-  <img src="example/dataview.gif" alt="Login Interface Preview">
-</p>
+class Supplies(Dataset):
+    dump_file: Path = Path("supplies.pickle")
+    item_model: BaseModel = Supply()
+```
 
-Simplify Your Code: Just define your data model, and Data View handles the rest, generating the interface automatically.
-More Control and Flexibility: In the pipeline are features for object manipulation, such as selecting and bulk editing, tailored specifically to the type of data you're working with. Plus, each data type will get its widget, potentially even with auto-generation for ease of use.
-Customization and Adaptability: Data View is built to be flexible, letting you display and manage data in various layouts. You'll have the foundation to create views that not only look great but also fit exactly what your app needs.
-Aligned with IQT Framework's Vision: True to the IQT Framework's aim, Data View is here to make GUI development in Python faster and more intuitive, providing you with components that are easy to use and configure. It's all about enhancing your app's data display and interaction, fitting a wide range of application requirements.
-Stay tuned for more updates as we continue to develop and enhance the Data View feature!
+Features to be added:
+- Functions for convenient editing will be added
+- Widget caching.
+
+Stay tuned for updates.
+
 
