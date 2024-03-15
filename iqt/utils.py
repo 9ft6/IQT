@@ -26,6 +26,7 @@ custom_methods = {
     "image": "set_image",
     "items": "set_items",
     "empty_state": "set_empty_state",
+    "value": "set_text",
 }
 
 

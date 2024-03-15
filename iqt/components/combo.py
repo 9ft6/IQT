@@ -56,7 +56,9 @@ class ComboBoxWidget(QComboBox):
 
 class ComboBoxConfig(BaseConfig):
     name: str = "combo_box"
-    empty_state: str = " "
+    empty_state: str = ""
+    items: set = {}
+    value: str = ""
 
 
 class ComboBox(BaseObject):

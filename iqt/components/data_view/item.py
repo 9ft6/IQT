@@ -56,10 +56,10 @@ class NameField(BaseFieldWidget):
 
 class ComboBoxField(BaseFieldWidget):
     def generate_items(self):
-        return Horizont[ComboBox(
+        return Horizont[Label(self.field.description, fixed_width=64), ComboBox(
             empty_state=self.field.description,
-            set_items=get_args(self.field.annotation),
-            default_value=getattr(self.item, self.name, None)
+            items=get_args(self.field.annotation),
+            value=getattr(self.item, self.name, None)
         )]
 
 
