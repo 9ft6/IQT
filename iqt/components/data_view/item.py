@@ -32,7 +32,8 @@ class StringField(BaseFieldWidget):
 class PreviewLabel(ImageLabel):
     def load_from_web(self, image: str):
         super().load_from_web(image)
-        self.setFixedWidth(self.parent().parent().width())
+        width = self.parent().parent().width() - 16
+        self.setFixedWidth(width)
         self.set_image(svg.no_preview)
 
 

@@ -10,6 +10,7 @@ style = f'''
     QWidget#default_widget {{
         background: {Colors.none};
     }}
+    PreviewLabel,
     QWidget#filter,
     QWidget#sorting {{
         background: {Colors.light};
