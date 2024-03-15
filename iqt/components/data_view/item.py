@@ -4,7 +4,7 @@ from types import UnionType
 
 from pydantic import BaseModel
 
-from iqt.components import Widget, Label, Image, ComboBox, Title
+from iqt.components import Widget, Label, Image, ComboBox, Title, Input
 from iqt.components.layouts import Horizont, Vertical
 from iqt.components.widgets import CustomQWidget
 
@@ -21,9 +21,10 @@ class BaseFieldWidget(Widget):
 
 class StringField(BaseFieldWidget):
     def generate_items(self):
+        value = str(getattr(self.item, self.name, ""))
         return Horizont[
             Label(self.field.description, fixed_width=64),
-            Label(getattr(self.item, self.name, None))
+            Input(name=f"_{self.name}", text=value)
         ]
 
 
@@ -94,7 +95,7 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
         elif f.annotation in {str, int, float}:
             return StringField
         elif f.annotation is bool:
-            ...  # return "check_box"
+            ...  # TODO: implement and return "check_box"
         else:
             print(f"Unknown widget type: {f.annotation}")
 
