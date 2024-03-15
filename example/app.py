@@ -14,7 +14,7 @@ from iqt.components.data_view.dynamic import DynamicDataView
 from dataset import Supply, Supplies
 
 
-class StrainsView(DynamicDataView):
+class StrainsView(DynamicDataView, size=(1600, 1024)):
     item_model = Supply()
     dataset = Supplies
 
@@ -48,7 +48,7 @@ class LoginWidget(Widget, size=(280, 360), margins=(16, 8, 16, 8)):
 
 
 class TestGUI(Application):
-    class StartWindow(Window, title="Please login", widget_model=LoginWidget):
+    class StartWindow(Window, title="Please login", widget_model=StrainsView):
         ...
 
 

@@ -4,7 +4,8 @@ from types import UnionType
 
 from pydantic import BaseModel
 
-from iqt.components import Widget, Label, Image, ComboBox, Title, Input
+from iqt.images import svg
+from iqt.components import Widget, Label, Image, ComboBox, Title, Input, ImageLabel
 from iqt.components.layouts import Horizont, Vertical
 from iqt.components.widgets import CustomQWidget
 
@@ -28,11 +29,22 @@ class StringField(BaseFieldWidget):
         ]
 
 
+class PreviewLabel(ImageLabel):
+    def load_from_web(self, image: str):
+        super().load_from_web(image)
+        self.setFixedWidth(self.parent().parent().width())
+        self.set_image(svg.no_preview)
+
+
+class Preview(Image):
+    factory = PreviewLabel
+
+
 class PreviewField(BaseFieldWidget):
     order: int = 2
 
     def generate_items(self):
-        return Horizont[Image(getattr(self.item, self.name, None))]
+        return Horizont[Preview(getattr(self.item, self.name, None))]
 
 
 class NameField(BaseFieldWidget):

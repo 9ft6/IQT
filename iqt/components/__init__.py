@@ -1,5 +1,5 @@
 from iqt.logger import logger
-from iqt.components.labels import Label, Title, Image
+from iqt.components.labels import Label, Title, Image, ImageLabel
 from iqt.components.data_view import BaseDataView, VerticalDataView, HorizontDataView, FlowDataView
 from iqt.components.buttons import Button, ImageButton
 from iqt.components.widgets import Widget, Input
