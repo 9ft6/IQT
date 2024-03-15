@@ -3,9 +3,7 @@ from iqt.components.data_view.item import BaseDataItem, get_item_by_layout
 from iqt.components.data_view.pagination import Pagination
 from iqt.components.data_view.sort import SortingWidget
 from iqt.components.data_view.filter import FilterWidget
-from iqt.components.base import BaseConfig
 from iqt.components import (
-    Button,
     Widget,
     FlowDataView,
     VerticalDataView,
@@ -33,14 +31,7 @@ class NavBar(Widget, name="navbar"):
     ]
 
 
-class DynamicDataConfig(BaseConfig):
-    ...
-
-
 class DynamicDataView(Widget):
-    class Config(DynamicDataConfig):
-        ...
-
     items = Vertical[
         # EditSideBar(),
         NavBar(),

@@ -23,8 +23,9 @@ class BaseFieldWidget(Widget):
 class StringField(BaseFieldWidget):
     def generate_items(self):
         value = str(getattr(self.item, self.name, ""))
+        name = self.field.description or self.name
         return Horizont[
-            Label(self.field.description, fixed_width=64),
+            Label(name, fixed_width=64),
             Input(name=f"_{self.name}", text=value)
         ]
 
@@ -57,11 +58,15 @@ class NameField(BaseFieldWidget):
 
 class ComboBoxField(BaseFieldWidget):
     def generate_items(self):
-        return Horizont[Label(self.field.description, fixed_width=64), ComboBox(
-            empty_state=self.field.description,
-            items=get_args(self.field.annotation),
-            value=getattr(self.item, self.name, None)
-        )]
+        name = self.field.description or self.name
+        return Horizont[
+            Label(self.field.description, fixed_width=64),
+            ComboBox(
+                empty_state=name,
+                items=get_args(self.field.annotation),
+                value=getattr(self.item, self.name, None)
+            ),
+        ]
 
 
 class BaseDataItem(BaseModel):
