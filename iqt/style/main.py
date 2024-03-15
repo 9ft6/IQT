@@ -108,4 +108,41 @@ main = f'''
     QScrollArea {{
         border-radius: 4px;
     }}
+    QScrollBar:vertical {{
+        border: 0px;
+        background: {Colors.lightest};
+        width: 16px;
+        margin: 0px 0px 0px 0px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }}
+    QScrollBar:horizontal {{
+        border: 0px;
+        background: {Colors.lightest};
+        height: 12px;
+        border-radius: 0px;
+        margin: 0px 0px 0px 0px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }}
+    QScrollBar::handle:vertical {{
+        background: {Colors.gray};
+        min-height: 32px;
+        width: 10px;
+        border-radius: 5px;
+        margin: 2px 2px 2px 2px;
+    }}
+    QScrollBar::handle:horizontal {{
+        background: {Colors.gray};
+        min-width: 32px;
+        height: 10px;
+        border-radius: 5px;
+        margin: 0px 2px 2px 2px;
+    }}
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical, QScrollBar::up-arrow:vertical,
+    QScrollBar::down-arrow:vertical, QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical,
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal, QScrollBar:left-arrow:horizontal,
+    QScrollBar::sub-page:horizontal, QScrollBar::add-page:horizontal, QScrollBar::right-arrow:horizontal {{
+        background: {Colors.none};
+    }}
 '''

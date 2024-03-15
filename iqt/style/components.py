@@ -36,7 +36,9 @@ style = f'''
     PageQButton[active = true] {{
         background: {Colors.light};
     }}
-    QWidget#scroll_area_widget,
+    QWidget#scroll_area_widget {{
+        background-color: {Colors.none};
+    }}
     DataViewScrollArea {{
         background-color: {Colors.lightest};
     }}
