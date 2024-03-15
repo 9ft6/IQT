@@ -5,9 +5,12 @@ from types import UnionType
 from pydantic import BaseModel
 
 from iqt.images import svg
-from iqt.components import Widget, Label, Image, ComboBox, Title, Input, ImageLabel
+from iqt.components import Widget, Label, Image, ComboBox, Title, Input, ImageLabel, CheckBox
 from iqt.components.layouts import Horizont, Vertical
 from iqt.components.widgets import CustomQWidget
+
+
+name_label_width = 80
 
 
 class BaseFieldWidget(Widget):
@@ -25,7 +28,7 @@ class StringField(BaseFieldWidget):
         value = str(getattr(self.item, self.name, ""))
         name = self.field.description or self.name
         return Horizont[
-            Label(name, fixed_width=64),
+            Label(name, fixed_width=name_label_width),
             Input(name=f"_{self.name}", text=value)
         ]
 
@@ -60,13 +63,19 @@ class ComboBoxField(BaseFieldWidget):
     def generate_items(self):
         name = self.field.description or self.name
         return Horizont[
-            Label(self.field.description, fixed_width=64),
+            Label(self.field.description, fixed_width=name_label_width),
             ComboBox(
                 empty_state=name,
                 items=get_args(self.field.annotation),
                 value=getattr(self.item, self.name, None)
             ),
         ]
+
+
+class CheckBoxField(BaseFieldWidget):
+    def generate_items(self):
+        name = self.field.description or self.name
+        return Horizont[CheckBox(text=name)]
 
 
 class BaseDataItem(BaseModel):
@@ -113,9 +122,11 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
         elif f.annotation in {str, int, float}:
             return StringField
         elif f.annotation is bool:
-            ...  # TODO: implement and return "check_box"
+            return CheckBoxField
+        elif f.annotation is dict or get_origin(f.annotation) is dict:
+            ...  # TODO: implement sub-widgets
         else:
-            print(f"Unknown widget type: {f.annotation}")
+            print(f"Unknown widget type: {f.annotation} {get_origin(f.annotation)}")
 
     @classmethod
     def get_special_widget(cls, widget_name):

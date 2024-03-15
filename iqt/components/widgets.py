@@ -21,14 +21,6 @@ class Input(BaseObject):
         super().__init__(*args, **kwargs)
 
 
-class CheckBox(BaseObject):
-    factory: QWidget = QCheckBox
-
-    def __init__(self, text=None, *args, **kwargs):
-        kwargs["text"] = text
-        super().__init__(*args, **kwargs)
-
-
 class CustomQWidget(QWidget):
     root: Any
     entity: Any
