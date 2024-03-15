@@ -11,6 +11,9 @@ Size: tuple[int, int] = ...
 
 
 class Input(BaseObject):
+    class Config(BaseConfig):
+        fixed_height: int = 24
+
     factory: QWidget = QLineEdit
 
     def __init__(self, name=None, *args, **kwargs):

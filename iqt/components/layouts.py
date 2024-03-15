@@ -103,10 +103,10 @@ class BaseFlowLayout(QLayout):
 
     def _do_layout(self, rect, test_only):
         # TODO: Fix spacing and margins. must be the same layouts
-        x = rect.x()
-        y = rect.y()
+        x = rect.x() + 4
+        y = rect.y() + 4
         line_height = 0
-        spacing = self.spacing() + 1
+        spacing = self.spacing()
 
         for item in self._item_list:
             item_hint = item.sizeHint()
@@ -116,7 +116,7 @@ class BaseFlowLayout(QLayout):
 
             next_x = x + item_hint.width() + spacing
             if next_x - spacing > rect.right() and line_height > 0:
-                x = rect.x()
+                x = rect.x() + 4
                 y = y + line_height + spacing
                 next_x = x + item_hint.width() + spacing
                 line_height = 0
@@ -126,7 +126,7 @@ class BaseFlowLayout(QLayout):
 
             x = next_x
             line_height = max(line_height, item_hint.height())
-        self.height = y + line_height - rect.y()
+        self.height = y + line_height - rect.y() + 4
         return self.height
 
 
