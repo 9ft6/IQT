@@ -167,11 +167,13 @@ class BaseWidget(BaseObject):
     factory: QObject
     items: Any
     window: Any
+    layout_extra_settings: dict = None
 
     def config(self):
         widget_settings = self.build_config().get_settings()
         self.items = items = self.generate_items() or self.items
         layout_settings = items.build_config().get_settings()
+        layout_settings.update(self.layout_extra_settings or {})
         return LayoutConfigResponse(
             to_connect=self.to_connect,
             signals=self.signals,

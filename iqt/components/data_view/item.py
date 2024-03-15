@@ -122,7 +122,7 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
 
 
 class DynamicFlowItem(BaseDynamicItem, fixed_width=250):
-    ...
+    layout_extra_settings = {"spacing": 0}
 
 
 class DynamicColumnItem(BaseDynamicItem, fixed_width=250):
