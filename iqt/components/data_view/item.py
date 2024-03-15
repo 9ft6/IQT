@@ -1,4 +1,6 @@
-from typing import Union, get_args, get_origin, Literal
+from copy import deepcopy
+from typing import get_args, get_origin, Literal
+from types import UnionType
 
 from pydantic import BaseModel
 
@@ -81,8 +83,10 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
 
     @classmethod
     def get_widget_by_field(cls, f):
-        if f.annotation is Union:
-            return [i for i in get_args(f.annotation) if i is not None.__class__]
+        if get_origin(f.annotation) is UnionType:
+            field = deepcopy(f)
+            field.annotation = [i for i in get_args(f.annotation) if i is not None.__class__][0]
+            return cls.get_widget_by_field(field)
         elif f.description and f.description.startswith('<') and f.description.endswith('>'):
             return cls.get_special_widget(f.description)
         elif get_origin(f.annotation) is Literal:
@@ -91,6 +95,8 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
             return StringField
         elif f.annotation is bool:
             ...  # return "check_box"
+        else:
+            print(f"Unknown widget type: {f.annotation}")
 
     @classmethod
     def get_special_widget(cls, widget_name):
