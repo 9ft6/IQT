@@ -13,6 +13,14 @@ main = f'''
         {Fonts.normal}
         background: {Colors.none};
     }}
+    QPushButton:hover {{
+        background: {Colors.gray};
+        border: 1px solid {Colors.white};
+    }}
+    QPushButton:clicked {{
+        background: {Colors.light_gray};
+        border: 1px solid {Colors.white};
+    }}
     ButtonQWidget {{
         background: {Colors.light};
         border-radius: 4px;
