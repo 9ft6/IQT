@@ -24,7 +24,8 @@ class Button(BaseObject):
     factory: QWidget = ButtonQWidget
 
     def __init__(self, text=None, *args, **kwargs):
-        kwargs["text"] = text or ""
+        # kwargs["text"] = text or self._cfg_extra.get("text", "")
+        kwargs["text"] = text or kwargs.get("text", "")
         super().__init__(*args, **kwargs)
 
 
@@ -65,3 +66,10 @@ class VerticalBtn(ImageButton):
         name: str = "horizont"
         image: str | Path = svg.horizont
 
+
+class AcceptBtn(Button, name="accept", text="Accept"):
+    ...
+
+
+class DeclineBtn(Button, name="decline", text="Decline"):
+    ...

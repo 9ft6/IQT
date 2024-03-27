@@ -22,3 +22,4 @@ class Supply(BaseDataItem):
 ```
 - <b>_view_widgets</b> - You can specify a widget for each display type: "flow", "vertical", "horizont".
 - <b>_sort_fields</b> - You can explicitly indicate which fields are allowed for sorting.
+- <b>_sort_items</b> - Dict with SudWidgets for field_names

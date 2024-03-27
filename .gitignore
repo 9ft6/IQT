@@ -23,11 +23,6 @@ data/*
 !env/*.*.*
 /.venv/
 /backup
-**/*.csv#
 **/*.json
 .job
-**/*.csv
-**/*.ods
-**/*.xls
-**/*.xls#
-**/*.xz
+

@@ -7,14 +7,14 @@ except ImportError:
 
 from iqt.app import Application
 from iqt.window import Window
-from iqt.components.widgets import Widget, Input, CheckBox
+from iqt.components.widgets import Widget, Input
 from iqt.components.layouts import Horizont, Vertical
-from iqt.components import Button, Label, Title, Image
+from iqt.components import Button, Label, Title, Image, CheckBox
 from iqt.components.data_view.dynamic import DynamicDataView
 from dataset import Supply, Supplies
 
 
-class StrainsView(DynamicDataView):
+class StrainsView(DynamicDataView, size=(1600, 1024)):
     item_model = Supply()
     dataset = Supplies
 

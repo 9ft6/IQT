@@ -6,6 +6,8 @@ Welcome to the IQT Framework, a fresh way to make GUIs in Python. We know that u
 With IQT, you can put together the visual parts of your app fast, with just a few lines of code. It lets you stay focused on what your app should do, not on the repetitive setup stuff. This means you get to the fun part of making your app work the way you want it to, quicker.
 
 Keep an eye out for updates as we keep building and improving IQT.
+
+Python 3.11 required
 ## Simple example
 
 To run this example, clone the repository and execute ```make run``` in the root directory.
@@ -94,5 +96,3 @@ Features to be added:
 - Widget caching.
 
 Stay tuned for updates.
-
-

@@ -22,7 +22,7 @@ class ConfigurableType(type):
 class SignalModel(BaseModel):
     type: Any = object
     name: str
-    method: str
+    method: str = None
 
 
 class BaseConfig(BaseModel, arbitrary_types_allowed=True):

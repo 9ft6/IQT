@@ -5,7 +5,7 @@ from types import UnionType
 from pydantic import BaseModel
 
 from iqt.images import svg
-from iqt.components import Widget, Label, Image, ComboBox, Title, Input, ImageLabel, CheckBox
+from iqt.components import Widget, Label, Image, ComboBox, Title, Input, ImageLabel, CheckBox, Button
 from iqt.components.layouts import Horizont, Vertical
 from iqt.components.widgets import CustomQWidget
 
@@ -96,20 +96,25 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
     def __init__(self, item, layout_name, **kwargs):
         self.item = item
         self.layout_name = layout_name
+        self._sub_widgets = getattr(item, "_sub_widgets", {})
         super().__init__()
 
     def _prepare_widgets(self):
         widgets = []
         for name, field in self.item.__fields__.items():
+            if widget := self._sub_widgets.get(name):
+                widgets.append(widget(name, self.item, field))
             if widget := self.get_widget_by_field(field):
                 widgets.append(widget(name, self.item, field))
 
         return sorted(widgets, key=lambda x: x.order)
 
+    def sub_item_handler(self, *args, **kwargs):
+        print(args, kwargs)
+
     def generate_items(self, **kwargs):
         return self.layout[*self._prepare_widgets(), *self.tail]
 
-    @classmethod
     def get_widget_by_field(cls, f):
         if get_origin(f.annotation) is UnionType:
             field = deepcopy(f)
@@ -123,10 +128,8 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
             return StringField
         elif f.annotation is bool:
             return CheckBoxField
-        elif f.annotation is dict or get_origin(f.annotation) is dict:
-            ...  # TODO: implement sub-widgets
-        else:
-            print(f"Unknown widget type: {f.annotation} {get_origin(f.annotation)}")
+        # else:
+        #     print(f"Unknown widget type: {f.annotation} {get_origin(f.annotation)}")
 
     @classmethod
     def get_special_widget(cls, widget_name):
@@ -176,3 +179,7 @@ get_item_by_layout = {
     'vertical': DynamicRowItem,
     'horizont': DynamicColumnItem,
 }.__getitem__
+
+
+class DynamicSubItem(BaseFieldWidget):
+    order: int = 3
