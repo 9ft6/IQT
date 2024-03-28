@@ -33,7 +33,7 @@ class LoginWidget(Widget, size=(280, 360), margins=(16, 8, 16, 8)):
         Horizont[Title("Please Login:")],
         Horizont[Label("login:"), ..., Input("login", fixed_size=(160, 32))],
         Horizont[Label("pass:"), ..., Input("pwd", fixed_size=(160, 32))],
-        Horizont[CheckBox("Remember me"), ..., Submit("login")],
+        Horizont[CheckBox(text="Remember me"), ..., Submit("login")],
     ]
 
     def items_handler(self, sender: Widget, *args, **kwargs):
