@@ -17,12 +17,15 @@ class BasePopupEvent(BusEvent):
         super().__init__(message=message)
 
 
-class OpenPopupEvent(BasePopupEvent):
-    type: str = "open_popup"
-    
-
 class ClosePopupEvent(BasePopupEvent):
     type: str = "close_popup"
+
+    def __init__(self):
+        super().__init__(message=None)
+
+
+class OpenPopupEvent(BasePopupEvent):
+    type: str = "open_popup"
 
 
 class SetPopupEvent(BasePopupEvent):

@@ -24,7 +24,6 @@ class PaginationConfig(BaseConfig):
 class Pagination(Widget):
     Config = PaginationConfig
     items = Horizont[None]
-    widgets: dict
 
     def pre_init(self):
         self.widgets = {}
@@ -35,7 +34,6 @@ class Pagination(Widget):
         pages = list(pages) or [1]
         self.widget.clear()
         self.widgets.clear()
-
         [self.add_button(p) for p in pages]
         self.ensure_current()
 
@@ -43,6 +41,7 @@ class Pagination(Widget):
         page = page or self.widget.dataset.state.page
         for n, w in self.widgets.items():
             w.set_active(str(n) == page)
+
         self.widgets[page].set_active(True)
 
     def items_handler(self, sender, *args):

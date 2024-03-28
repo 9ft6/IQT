@@ -72,9 +72,9 @@ class CustomQWidget(QWidget):
 
     def clear(self):
         while item := self.layout().itemAt(0):
-            widget = item.widget()
-            widget.hide()
-            self.layout().removeWidget(widget)
+            if widget := item.widget():
+                widget.hide()
+                self.layout().removeWidget(widget)
 
     def set_widget_attr(self, name, widget):
         objects = [self, self.entity, self.root, self.root.entity]
@@ -84,7 +84,6 @@ class CustomQWidget(QWidget):
         from iqt.components.layouts import BaseLayout, BaseObject
 
         config = item.config()
-
         match item:
             case BaseWidget():
                 widget = config.entity.create_widget(parent)

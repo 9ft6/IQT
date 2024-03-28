@@ -14,6 +14,7 @@ from iqt.components import (
 )
 from iqt.components.layouts import Horizont
 from iqt.components.data_view.dataset import DataNavigationState
+from iqt.events import OpenPopupEvent
 
 name_label_width = 80
 
@@ -93,10 +94,8 @@ class ListField(BaseFieldWidget):
             item_model = value[0]
             dataset = GeneratedDataset
 
-        widget = DataView().create_widget()
-        widget.move_to_center()
-        # print(args, kwargs)
-#
+        self.send_event(OpenPopupEvent(DataView))
+
 
 class ComboBoxField(BaseFieldWidget):
     def generate_items(self):

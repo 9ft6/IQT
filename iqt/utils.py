@@ -29,6 +29,7 @@ custom_methods = {
     "items": "set_items",
     "empty_state": "set_empty_state",
     "value": "set_text",
+    "event_filter": "installEventFilter",
 }
 
 
@@ -52,6 +53,8 @@ def setup_setting(object: QWidget, setting, value):
         return
 
     match setting:
+        case "event_filter":
+            method(object)
         case "name":
             method(value)
             object.name = value
@@ -68,7 +71,7 @@ def setup_fonts(root):
         for font_file in fonts_dir.iterdir():
             if font_file.is_file() and font_file.suffix in ['.otf']:
                 font_path = str(Path(font_file).absolute())
-                font = QFontDatabase.addApplicationFont(font_path)
+                QFontDatabase.addApplicationFont(font_path)
         font = QFont('Ubuntu Mono')
         font.setStyleStrategy(QFont.PreferAntialias)
         root.setFont(font)

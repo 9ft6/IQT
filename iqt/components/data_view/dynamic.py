@@ -1,8 +1,3 @@
-from iqt.components.layouts import Vertical, Horizont
-from iqt.components.data_view.item import BaseDataItem, get_item_by_layout
-from iqt.components.data_view.pagination import Pagination
-from iqt.components.data_view.sort import SortingWidget
-from iqt.components.data_view.filter import FilterWidget
 from iqt.components import (
     Widget,
     FlowDataView,
@@ -10,8 +5,15 @@ from iqt.components import (
     HorizontDataView,
     BaseDataView,
 )
-from iqt.components.data_view.dataset import Dataset
 from iqt.components.buttons import FlowBtn, HorizontBtn, VerticalBtn
+from iqt.components.data_view.item import BaseDataItem, get_item_by_layout
+from iqt.components.data_view.pagination import Pagination
+from iqt.components.data_view.sort import SortingWidget
+from iqt.components.data_view.filter import FilterWidget
+from iqt.components.data_view.dataset import Dataset
+from iqt.components.data_view.popup import Popup
+from iqt.components.layouts import Vertical, Horizont
+from iqt.components.widgets import CustomQWidget
 
 
 class EditSideBar(Widget, fixed_width=132):
@@ -19,26 +21,29 @@ class EditSideBar(Widget, fixed_width=132):
 
 
 class NavBar(Widget, name="navbar"):
-    items = Horizont[
-        FlowBtn(),
-        HorizontBtn(),
-        VerticalBtn(),
-        ...,
-        Pagination(),
-        ...,
-        Horizont[FilterWidget()],
-        Horizont[SortingWidget()],
-    ]
+    def generate_items(self):
+        return Horizont[
+            FlowBtn(),
+            HorizontBtn(),
+            VerticalBtn(),
+            ...,
+            Pagination(),
+            ...,
+            Horizont[FilterWidget()],
+            Horizont[SortingWidget()],
+        ]
+
+
+class DynamicDataViewWidget(CustomQWidget):
+    def resizeEvent(self, event):
+        if self.entity.popup:
+            self.entity.popup.resize(event.size())
+
+        return super().resizeEvent(event)
 
 
 class DynamicDataView(Widget):
-    items = Vertical[
-        # EditSideBar(),
-        NavBar(),
-        FlowDataView("flow", hidden=True),
-        VerticalDataView("vertical", hidden=True),
-        HorizontDataView("horizont", hidden=True),
-    ]
+    factory = DynamicDataViewWidget
     to_connect = {
         "view_type_handler": [
             "navbar.flow.clicked",
@@ -48,13 +53,25 @@ class DynamicDataView(Widget):
     }
     item_model: BaseDataItem
     active: BaseDataView = None
+    popup: Widget = None
     dataset: Dataset
     pagination: Pagination
+
+    def generate_items(self):
+        return Vertical[
+            # EditSideBar(),
+            NavBar(),
+            FlowDataView("flow", hidden=True),
+            VerticalDataView("vertical", hidden=True),
+            HorizontDataView("horizont", hidden=True),
+        ]
 
     def post_init(self):
         for name in ["flow", "vertical", "horizont"]:
             if view := getattr(self.navbar, name, None):
                 view.show()
+
+        self.popup = Popup().create_widget(parent=self.widget)
 
         self.dataset = self.dataset(self.update_content)
         self.pagination = self.navbar.pagination

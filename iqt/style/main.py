@@ -153,4 +153,12 @@ main = f'''
     QScrollBar::sub-page:horizontal, QScrollBar::add-page:horizontal, QScrollBar::right-arrow:horizontal {{
         background: {Colors.none};
     }}
+    QWidget#popup {{
+        background: rgba(0, 0, 0, 0.8);
+    }}
+    QLabel#popup_resize_label {{
+        background: rgba(0, 0, 0, 0.0);
+        border-right: 2px solid {Colors.lightest};
+        border-bottom: 2px solid {Colors.lightest};
+    }}
 '''

@@ -40,8 +40,12 @@ class Dataset:
         return filtered
 
     def _get_sorted(self, filtered):
-        kwargs = {"key": lambda s: str(getattr(s, self.state.sort_key or "id", ""))}
-        return list(sorted(filtered.values(), reverse=self.state.ascending, **kwargs))
+        key = self.state.sort_key or "id"
+        return list(sorted(
+            filtered.values(),
+            reverse=self.state.ascending,
+            **{"key": lambda s: str(getattr(s, key, ""))}
+        ))
 
     def _get_current_page(self, _sorted):
         page, per_page = self.state.page, self.state.per_page
@@ -92,7 +96,10 @@ class Dataset:
             logger.error(f"Cannot read strains.pickle {e}")
 
     def put_raws(self, raws: dict):
-        items = {i: self.item_model.parse_obj(r) for i, r in raws.items()}
+        items = {
+            i: self.item_model.parse_obj(r)
+            for i, r in raws.items()
+        }
         self.put_items(items)
 
     def put_items(self, items: dict):

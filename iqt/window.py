@@ -66,7 +66,6 @@ class Window(BaseObject):
 
     def init_window(self):
         self.window = self.factory()
-        self.window.setVisible(False)
         self.window.entity = self
         self.cfg = self.build_config()
 
@@ -81,7 +80,7 @@ class Window(BaseObject):
         if self.cfg.start_at_center and self.cfg.size:
             self.window.resize(*self.cfg.size)
             self.window.move_to_center(self.cfg.size, animation=False)
-        self.window.setVisible(True)
+
         self.window.show()
         self.post_init()
 
