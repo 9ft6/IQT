@@ -8,6 +8,7 @@ from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from pydantic import BaseModel, Field
 
+from iqt.events import BusEvent
 from iqt.utils import setup_settings
 
 Size: tuple[int, int] = ...
@@ -99,10 +100,18 @@ class BaseObject(metaclass=ConfigurableType):
     def create_widget(self, parent=None):
         self.pre_init()
         self.widget = self.init_widget(parent)
+        self.app = QApplication.instance()
+        self.app.event_bus.connect(self.event_bus_handler)
         config = self.config()
         setup_settings(self.widget, config.widget_settings)
         self.post_init()
         return self.widget
+
+    def event_bus_handler(self, message):
+        ...
+
+    def send_event(self, event):
+        self.app.event_bus.emit(event)
 
 
 class BaseImageWidgetMixin:

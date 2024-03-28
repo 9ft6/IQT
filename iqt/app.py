@@ -3,9 +3,10 @@ from pathlib import Path
 from typing import Any
 
 from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import QDir
+from PySide6.QtCore import QDir, Signal
 
 from iqt.components.base import BaseObject, BaseConfig
+from iqt.events import BusEvent
 from iqt.utils import setup_fonts
 from iqt.style import base_style
 from iqt import logger
@@ -19,18 +20,22 @@ class AppConfig(BaseConfig):
     images_path: Path = Path().resolve() / "images"
 
 
+class AppObject(QApplication):
+    event_bus: Signal = Signal(BusEvent)
+
+
 class Application(BaseObject):
     main_window: Any
     StartWindow: Any
     Config = AppConfig
 
     def run(self):
-        self.app = QApplication()
+        self.app = AppObject()
         self.app.cfg = self.cfg = self.build_config()
         self.app.setStyleSheet(self.cfg.style)
-        self.pre_init()
 
         logger.debug(f"{self.cfg.app_name} starting...")
+        self.pre_init()
 
         QDir.addSearchPath('images', str(self.cfg.images_path))
         QDir.addSearchPath('icons', str(self.cfg.icon_path))
@@ -38,6 +43,7 @@ class Application(BaseObject):
 
         window: Any = self.StartWindow(self)
         window.init_window()
+        self.app.window = window
 
         self.post_init()
         sys.exit(self.app.exec())
