@@ -34,7 +34,10 @@ class DataViewScrollArea(QScrollArea, ScrollerMixin):
         self.scroller = self.setup_scroller()
 
     def add_widget(self, widget):
-        self.layout.addWidget(widget.create_widget())
+        widget = widget.create_widget(self.scroll_widget)
+        widget.setVisible(False)
+        self.layout.addWidget(widget)
+        widget.setVisible(True)
         self.auto_resize()
 
     def auto_resize(self):

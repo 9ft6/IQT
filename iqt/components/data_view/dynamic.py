@@ -77,6 +77,7 @@ class DynamicDataView(Widget):
 
             if not widget:
                 widget = get_item_by_layout(self.active.name)
+
             self.active.add(widget(item, self.active.name))
 
         self.pagination.entity.update()

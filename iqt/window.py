@@ -25,7 +25,8 @@ class MainWindow(QMainWindow):
         self.anim.start()
 
     def move_to_center(self, fixed_size, animation=True):
-        center = QApplication.primaryScreen().geometry().center()
+        screen = QApplication.primaryScreen().geometry().center()
+        center = screen
         x, y, (w, h) = center.x(), center.y(), fixed_size
         final = QRect(x - w / 2, y - h/2, *fixed_size)
         if animation:
@@ -35,12 +36,12 @@ class MainWindow(QMainWindow):
 
     def change_widget(self, widget: Widget, animation=True):
         if isinstance(widget, Widget):
-            widget = widget.create_widget()
+            widget = widget.create_widget(self)
         else:
             class Wrapper(Widget):
                 items = Horizont[widget]
 
-            widget = Wrapper().create_widget()
+            widget = Wrapper().create_widget(self)
 
         widget.window = widget.entity.window = self
         self.setCentralWidget(widget)
@@ -68,19 +69,22 @@ class Window(BaseObject):
 
     def init_window(self):
         self.window = self.factory()
+        self.window.setVisible(False)
         self.window.entity = self
         self.cfg = self.build_config()
+
         self.pre_init()
 
         setup_settings(self.window, self.cfg.get_settings())
         self.window.setAttribute(Qt.WA_TranslucentBackground, self.cfg.transparent)
         self.window.setup_animation()
-        self.widget = self.set_widget(self.cfg.widget_model(), animation=False)
+        widget = self.cfg.widget_model()
+        self.widget = self.set_widget(widget, animation=False)
 
         if self.cfg.start_at_center and self.cfg.size:
             self.window.resize(*self.cfg.size)
             self.window.move_to_center(self.cfg.size, animation=False)
-
+        self.window.setVisible(True)
         self.window.show()
         self.post_init()
 

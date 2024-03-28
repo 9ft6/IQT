@@ -28,6 +28,7 @@ class CustomQWidget(QWidget):
     __signals: QObject
 
     def build(self, config, root=None):
+        self.setVisible(False)
         self.root = root or self
         self.entity = config.entity
         self.setAttribute(Qt.WA_StyledBackground)
@@ -50,6 +51,7 @@ class CustomQWidget(QWidget):
 
         self.create_signals(self, config)
         self.entity.widget = self
+        self.setVisible(True)
         return self
 
     def add_widget_to_layout(self, widget, layout=None):
