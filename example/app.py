@@ -9,7 +9,7 @@ from iqt.app import Application
 from iqt.window import Window
 from iqt.components.widgets import Widget, Input
 from iqt.components.layouts import Horizont, Vertical
-from iqt.components import Button, Label, Title, Image, CheckBox, Submit
+from iqt.components import Label, Title, Image, CheckBox, Submit
 from iqt.components.data_view.dynamic import DynamicDataView
 from dataset import Supply, Supplies
 

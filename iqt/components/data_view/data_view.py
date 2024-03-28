@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Qt
 
 from iqt.components.base import BaseObject, BaseConfig, BaseConfigResponse
-from iqt.components.data_view.scroll_area import DataViewScrollArea
+from iqt.components.scroll_area import DataViewScrollArea
 
 
 class DataViewConfig(BaseConfig):

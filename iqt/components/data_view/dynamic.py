@@ -6,11 +6,10 @@ from iqt.components import (
     BaseDataView,
 )
 from iqt.components.buttons import FlowBtn, HorizontBtn, VerticalBtn
-from iqt.components.data_view.item import BaseDataItem, get_item_by_layout
+from iqt.components.data_view.dataset import BaseDataItem, get_item_by_layout, Dataset
 from iqt.components.data_view.navigation.pagination import Pagination
 from iqt.components.data_view.navigation.sort import SortingWidget
 from iqt.components.data_view.navigation.filter import FilterWidget
-from iqt.components.data_view.dataset import Dataset
 from iqt.components.data_view.popup import Popup
 from iqt.components.layouts import Vertical, Horizont
 from iqt.components.widgets import CustomQWidget

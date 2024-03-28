@@ -13,7 +13,6 @@ from iqt.components import (
     Widget,
 )
 from iqt.components.layouts import Horizont
-from iqt.components.data_view.dataset import DataNavigationState
 from iqt.events import OpenPopupEvent
 
 name_label_width = 80
@@ -82,13 +81,12 @@ class ListField(BaseFieldWidget):
         from iqt.components.data_view.dataset import Dataset
 
         class GeneratedDataset(Dataset):
+            initial_load: bool = False
             item_model = value[0]
-            items = {i.id: i for i in value}
 
             def __init__(self, update_callback=None):
-                self.update_callback = update_callback
-                self.state = DataNavigationState()
-                self.per_page = self.state.per_page
+                super().__init__(update_callback=update_callback)
+                self.items = {i.id: i for i in value}
 
         class DataView(DynamicDataView, size=(800, 600)):
             item_model = value[0]

@@ -20,12 +20,14 @@ class Dataset:
     items: dict
     dump_file: str | Path
     item_model: BaseModel
+    initial_load: bool = True
 
     def __init__(self, update_callback=None):
         self.items = {}
         self.update_callback = update_callback
-        logger.info("Loading dataset...")
-        self.load()
+        if self.initial_load:
+            logger.info("Loading dataset...")
+            self.load()
         self.state = DataNavigationState()
         self.per_page = self.state.per_page
 
