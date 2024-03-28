@@ -14,7 +14,7 @@ from iqt.components.data_view.dynamic import DynamicDataView
 from dataset import Supply, Supplies
 
 
-class StrainsView(DynamicDataView, size=(1600, 1024)):
+class View(DynamicDataView, size=(1600, 1024)):
     item_model = Supply()
     dataset = Supplies
 
@@ -40,7 +40,7 @@ class LoginWidget(Widget, size=(280, 360), margins=(16, 8, 16, 8)):
         match sender.name:
             case "submit":
                 if self.login.text() in ["biba", "boba"]:
-                    self.window.change_widget(StrainsView(size=(1600, 1024)))
+                    self.window.change_widget(View(size=(1600, 1024)))
                 else:
                     self.window.change_widget(LoginInvalidWidget())
             case "checkbox":
