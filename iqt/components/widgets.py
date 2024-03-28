@@ -5,7 +5,11 @@ from PySide6.QtWidgets import QWidget, QCheckBox, QLineEdit, QApplication
 from PySide6.QtCore import Signal, QObject, Qt
 
 from iqt.components.base import BaseWidget, BaseObject, BaseConfig
-from iqt.utils import setup_settings, get_attr_recursive
+from iqt.utils import (
+    setup_settings,
+    get_attr_recursive,
+    get_widget_center_geometry,
+)
 
 Size: tuple[int, int] = ...
 
@@ -28,7 +32,6 @@ class CustomQWidget(QWidget):
     __signals: QObject
 
     def build(self, config, root=None):
-        self.setVisible(False)
         self.root = root or self
         self.entity = config.entity
         self.setAttribute(Qt.WA_StyledBackground)
@@ -51,8 +54,11 @@ class CustomQWidget(QWidget):
 
         self.create_signals(self, config)
         self.entity.widget = self
-        self.setVisible(True)
         return self
+
+    def move_to_center(self, size=None, animation=True):
+        size = size or self.size().toTuple()
+        self.setGeometry(get_widget_center_geometry(size))
 
     def add_widget_to_layout(self, widget, layout=None):
         layout = layout or self.layout()

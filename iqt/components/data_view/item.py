@@ -61,7 +61,10 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
     def get_widget_by_field(cls, f):
         if get_origin(f.annotation) is UnionType:
             field = deepcopy(f)
-            field.annotation = [i for i in get_args(f.annotation) if i is not None.__class__][0]
+            field.annotation = [
+                i for i in get_args(f.annotation)
+                if i is not None.__class__
+            ][0]
             return cls.get_widget_by_field(field)
         elif f.description and f.description.startswith('<') and f.description.endswith('>'):
             return cls.get_special_widget(f.description)

@@ -93,8 +93,8 @@ class ListField(BaseFieldWidget):
             item_model = value[0]
             dataset = GeneratedDataset
 
-
-        DataView().create_widget()
+        widget = DataView().create_widget()
+        widget.move_to_center()
         # print(args, kwargs)
 #
 

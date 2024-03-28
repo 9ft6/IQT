@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtGui import QFontDatabase, QFont
+from PySide6.QtCore import QRect
 
 # QT native methods
 native_methods = {
@@ -85,3 +86,10 @@ def get_attr_recursive(obj, method_name, with_parent=False):
             return getattr(obj, method_name, None), obj
         else:
             return getattr(obj, method_name, None)
+
+
+def get_widget_center_geometry(size):
+    screen = QApplication.primaryScreen().geometry().center()
+    center = screen
+    x, y, (w, h) = center.x(), center.y(), size
+    return QRect(x - w / 2, y - h / 2, *size)

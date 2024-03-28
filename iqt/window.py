@@ -6,7 +6,7 @@ from PySide6.QtCore import Qt, QRect, QPropertyAnimation, QEasingCurve
 from iqt.components.base import Size, BaseObject, BaseConfig
 from iqt.components import Widget
 from iqt.components.layouts import Horizont
-from iqt.utils import setup_settings
+from iqt.utils import setup_settings, get_widget_center_geometry
 
 
 class MainWindow(QMainWindow):
@@ -24,11 +24,8 @@ class MainWindow(QMainWindow):
         self.anim.setEndValue(final_rect)
         self.anim.start()
 
-    def move_to_center(self, fixed_size, animation=True):
-        screen = QApplication.primaryScreen().geometry().center()
-        center = screen
-        x, y, (w, h) = center.x(), center.y(), fixed_size
-        final = QRect(x - w / 2, y - h/2, *fixed_size)
+    def move_to_center(self, size, animation=True):
+        final = get_widget_center_geometry(size)
         if animation:
             self.start_resize_animation(final)
         else:
