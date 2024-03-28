@@ -54,6 +54,13 @@ class PopupWidget(CustomQWidget):
                     new_size = self.old_size + QSize(*(diff * 2).toTuple())
                     current.resize(*new_size.toTuple())
                     self.entity.move_to_center(current)
+
+                    # move resize label
+                    pos = self.size() / 2 - current.geometry().size() / 2
+                    x, y = (current.geometry().size() + pos).toTuple()
+                    w, h = self.resize_label.size().toTuple()
+                    self.resize_label.move(x - w + 2, y - h + 2)
+
             case QEvent.MouseButtonRelease:
                 if self.old_pos:
                     self.old_pos = None
@@ -85,7 +92,6 @@ class Popup(Widget, name="popup"):
                 self.widget.hide()
                 if self.current:
                     self.current.hide()
-                    # self.widget.clear()
             case "open_popup" | "set_popup":
                 if self.current:
                     self.widget.layout().removeWidget(self.current)
