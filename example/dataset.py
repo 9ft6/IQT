@@ -6,27 +6,28 @@ from pydantic import Field, BaseModel
 from iqt.components.data_view.item import BaseDataItem
 from iqt.components.data_view.dataset import Dataset
 
+Category = Literal["books", "buds", "other"] | None
+
 
 class Accessory(BaseDataItem):
-    _view_widgets: dict = {}
-
+    _sort_fields: list = ["name", "rating", "category"]
     id: int = Field(None, description="ID")
     color: str | None = Field(None, description="Color")
+    name: str | None = Field(None, description="Name")
 
 
 class Supply(BaseDataItem):
-    _view_widgets: dict = {}
-    _sort_fields: str = ["name", "rating", "category"]
+    _sort_fields: list = ["name", "rating", "category"]
 
     id: int = Field(None, description="ID")
+    accessories: list[Accessory] = Field([], description="Accessories")
     rating: float = Field(None, description="Rating")
-    category: Literal["books", "buds", "other"] = Field(None, description="Category")
+    category: Category = Field(None, description="Category")
     name: str = Field(None, description="Name")
     image: str = Field(None, description="<preview>")
     slug: str | None = Field(None, description="Slug")
     subtitle: str = Field(None, description="<item_name>")
     discount: bool = Field(False, description="Discount")
-    accessory: Accessory = Field(None, description="Accessoies")
 
 
 class Supplies(Dataset):
