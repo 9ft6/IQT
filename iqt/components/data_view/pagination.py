@@ -32,6 +32,7 @@ class Pagination(Widget):
     def update(self):
         dataset = self.widget.dataset
         pages = range(1, int(dataset.count() / dataset.per_page) + 1)
+        pages = list(pages) or [1]
         self.widget.clear()
         self.widgets.clear()
 
@@ -42,7 +43,6 @@ class Pagination(Widget):
         page = page or self.widget.dataset.state.page
         for n, w in self.widgets.items():
             w.set_active(str(n) == page)
-
         self.widgets[page].set_active(True)
 
     def items_handler(self, sender, *args):

@@ -35,6 +35,7 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     fixed_size: Size = Field(None)
     fixed_width: int = Field(None)
     hidden: bool = Field(False)
+    shortcut: str = Field(None)
 
     def get_settings(self):
         result = self.model_dump(by_alias=True, exclude_none=True)

@@ -2,86 +2,29 @@ from copy import deepcopy
 from typing import get_args, get_origin, Literal
 from types import UnionType
 
-from pydantic import BaseModel
-
-from iqt.images import svg
-from iqt.components import Widget, Label, Image, ComboBox, Title, Input, ImageLabel, CheckBox, Button
+from pydantic import BaseModel, Field
+from iqt.components import Widget
 from iqt.components.layouts import Horizont, Vertical
 from iqt.components.widgets import CustomQWidget
-
+from iqt.components.data_view.fields import (
+    ComboBoxField,
+    CheckBoxField,
+    StringField,
+    ListField,
+    NameField,
+    PreviewField,
+    RowPreviewField,
+    RowNameField,
+    # DynamicSubItem,
+)
 
 name_label_width = 80
 
 
-class BaseFieldWidget(Widget):
-    order: int = 10
-
-    def __init__(self, name, item, field, **kwargs):
-        self.name = name
-        self.item = item
-        self.field = field
-        super().__init__(**kwargs)
-
-
-class StringField(BaseFieldWidget):
-    def generate_items(self):
-        value = str(getattr(self.item, self.name, ""))
-        name = self.field.description or self.name
-        return Horizont[
-            Label(name, fixed_width=name_label_width),
-            Input(name=f"_{self.name}", text=value)
-        ]
-
-
-class PreviewLabel(ImageLabel):
-    def load_from_web(self, image: str):
-        super().load_from_web(image)
-        width = self.parent().parent().width() - 16
-        self.setFixedWidth(width)
-        self.set_image(svg.no_preview)
-
-
-class Preview(Image):
-    factory = PreviewLabel
-
-
-class PreviewField(BaseFieldWidget):
-    order: int = 2
-
-    def generate_items(self):
-        return Horizont[Preview(getattr(self.item, self.name, None))]
-
-
-class NameField(BaseFieldWidget):
-    order: int = 1
-
-    def generate_items(self):
-        return Horizont[Title(getattr(self.item, self.name, None))]
-
-
-class ComboBoxField(BaseFieldWidget):
-    def generate_items(self):
-        name = self.field.description or self.name
-        return Horizont[
-            Label(self.field.description, fixed_width=name_label_width),
-            ComboBox(
-                empty_state=name,
-                items=get_args(self.field.annotation),
-                value=getattr(self.item, self.name, None)
-            ),
-        ]
-
-
-class CheckBoxField(BaseFieldWidget):
-    def generate_items(self):
-        name = self.field.description or self.name
-        return Horizont[CheckBox(text=name)]
-
-
 class BaseDataItem(BaseModel):
-    _view_widgets: dict
+    _view_widgets: dict = {}
+    _sort_fields: list = []
     id: str
-    slug: str
 
 
 class DynamicItemWidget(CustomQWidget):
@@ -104,7 +47,7 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
         for name, field in self.item.__fields__.items():
             if widget := self._sub_widgets.get(name):
                 widgets.append(widget(name, self.item, field))
-            if widget := self.get_widget_by_field(field):
+            elif widget := self.get_widget_by_field(field):
                 widgets.append(widget(name, self.item, field))
 
         return sorted(widgets, key=lambda x: x.order)
@@ -128,6 +71,9 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
             return StringField
         elif f.annotation is bool:
             return CheckBoxField
+        elif get_origin(f.annotation) is list and (args := get_args(f.annotation)):
+            if len(set(args)) == 1 and type(args[0]) not in [str, int, float, bool]:
+                return ListField
         # else:
         #     print(f"Unknown widget type: {f.annotation} {get_origin(f.annotation)}")
 
@@ -148,20 +94,6 @@ class DynamicColumnItem(BaseDynamicItem, fixed_width=250):
     tail = [...]
 
 
-class RowNameField(BaseFieldWidget):
-    order: int = 2
-
-    def generate_items(self):
-        return Horizont[Label(getattr(self.item, self.name, None), fixed_width=160)]
-
-
-class RowPreviewField(BaseFieldWidget):
-    order: int = 1
-
-    def generate_items(self):
-        return Horizont[Image(getattr(self.item, self.name, None), fixed_size=(160, 120))]
-
-
 class DynamicRowItem(BaseDynamicItem):
     layout = Horizont
 
@@ -180,6 +112,3 @@ get_item_by_layout = {
     'horizont': DynamicColumnItem,
 }.__getitem__
 
-
-class DynamicSubItem(BaseFieldWidget):
-    order: int = 3

@@ -69,7 +69,12 @@ class DynamicDataView(Widget):
     def update_content(self):
         self.active.clear()
         for item in self.dataset:
-            widget = self.item_model._view_widgets.get(self.active.name, None)
+            widget = None
+            try:
+                widget = self.item_model._view_widgets.get(self.active.name, None)
+            except:
+                ...
+
             if not widget:
                 widget = get_item_by_layout(self.active.name)
             self.active.add(widget(item, self.active.name))

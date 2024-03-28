@@ -20,6 +20,7 @@ native_methods = {
     "h_scroll_policy": "setHorizontalScrollBarPolicy",
     "v_scroll_policy": "setVerticalScrollBarPolicy",
     "hidden": "setHidden",
+    "shortcut": "setShortcut"
 }
 # custom methods
 custom_methods = {

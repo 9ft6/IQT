@@ -26,9 +26,8 @@ class MainWindow(QMainWindow):
 
     def move_to_center(self, fixed_size, animation=True):
         center = QApplication.primaryScreen().geometry().center()
-        x, y, (w, h) = center.x(), center.y(), self.size().toTuple()
-
-        final = QRect(x - w / 2, y - h / 2 + 16, *fixed_size)
+        x, y, (w, h) = center.x(), center.y(), fixed_size
+        final = QRect(x - w / 2, y - h/2, *fixed_size)
         if animation:
             self.start_resize_animation(final)
         else:

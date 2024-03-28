@@ -29,6 +29,12 @@ class Button(BaseObject):
         super().__init__(*args, **kwargs)
 
 
+class Submit(Button):
+    class Config(ButtonConfig):
+        name: str = "submit"
+        shortcut: str = "Return"
+
+
 class BaseImageButton(QPushButton, BaseImageWidgetMixin):
     def setPixmap(self, image):
         self.setIcon(QIcon(image))
