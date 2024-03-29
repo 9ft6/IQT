@@ -40,8 +40,18 @@ class Horizont(BaseLayout):
     factory: QLayout = QHBoxLayout
 
 
+class HorizontNM(Horizont):
+    class Config(BaseLayoutConfig):
+        margins: tuple[int, int, int, int] = (0, ) * 4
+
+
 class Vertical(BaseLayout):
     factory: QLayout = QVBoxLayout
+
+
+class VerticalNM(Vertical):
+    class Config(BaseLayoutConfig):
+        margins: tuple[int, int, int, int] = (0, ) * 4
 
 
 class BaseFlowLayout(QLayout):

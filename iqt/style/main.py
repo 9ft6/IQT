@@ -5,9 +5,12 @@ main = f'''
     QMainWindow,
     QWidget {{
         background-color: {Colors.dark};
-        border-radius: 0px;
         selection-background-color: {Colors.selection};
     }}
+    QMainWindow > QWidget,
+    QMainWindow > QWidget > QWidget {{
+        border-radius: 16px;
+    }} 
     QPushButton,
     QLabel {{
         {Fonts.normal}
@@ -154,6 +157,12 @@ main = f'''
         background: {Colors.none};
     }}
     QWidget#popup {{
+        background: rgba(0, 0, 0, 0.8);
+    }}
+    QWidget#title_bar {{
+        background: rgba(0, 0, 0, 0.1);
+    }}
+    QWidget#title_bar[active = true] {{
         background: rgba(0, 0, 0, 0.8);
     }}
     QLabel#popup_resize_label {{

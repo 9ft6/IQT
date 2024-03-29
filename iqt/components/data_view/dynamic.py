@@ -22,14 +22,14 @@ class EditSideBar(Widget, fixed_width=132):
 class NavBar(Widget, name="navbar"):
     def generate_items(self):
         return Horizont[
-            FlowBtn(),
-            HorizontBtn(),
-            VerticalBtn(),
             ...,
             Pagination(),
             ...,
             Horizont[FilterWidget()],
             Horizont[SortingWidget()],
+            FlowBtn(),
+            HorizontBtn(),
+            VerticalBtn(),
         ]
 
 
