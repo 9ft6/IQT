@@ -25,18 +25,22 @@ class ResizeLabel(QLabel):
 
 class PopupWidget(CustomQWidget):
     old_pos = None
+    old_size = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.resize_label = ResizeLabel(self)
+        self.label = ResizeLabel(self)
 
     def resizeEvent(self, event):
+        self._update_size()
+
+    def _update_size(self):
         if current := self.entity.current:
-            pos = event.size() / 2 - current.geometry().size() / 2
+            pos = self.size() / 2 - current.size() / 2
             current.move(*pos.toTuple())
             x, y = (current.geometry().size() + pos).toTuple()
-            w, h = self.resize_label.size().toTuple()
-            self.resize_label.move(x - w + 2, y - h + 2)
+            w, h = self.label.size().toTuple()
+            self.label.move(x - w + 2, y - h + 2)
 
     def eventFilter(self, watched, event):
         if not (current := self.entity.current):
@@ -44,31 +48,31 @@ class PopupWidget(CustomQWidget):
 
         match event.type():
             case QEvent.MouseButtonPress | QEvent.MouseButtonDblClick:
-                diff = current.geometry().bottomRight() - event.pos()
-                if all(x < 10 for x in diff.toTuple()):
+                pos = event.pos()
+                outside_current = not current.geometry().contains(pos)
+                outside_label = not self.label.geometry().contains(pos)
+                if outside_current and outside_label:
+                    self.entity.send_event(ClosePopupEvent())
+
+                diff = (current.geometry().bottomRight() - event.pos()).toTuple()
+                if all(x < 10 for x in diff):
                     self.old_pos = event.pos()
                     self.old_size = current.size()
             case QEvent.MouseMove:
                 if self.old_pos:
-                    diff = event.pos() - self.old_pos
-                    new_size = self.old_size + QSize(*(diff * 2).toTuple())
+                    diff = QSize(*((event.pos() - self.old_pos) * 2).toTuple())
+                    new_size = self.old_size + diff
                     current.resize(*new_size.toTuple())
-                    self.entity.move_to_center(current)
-
-                    # move resize label
-                    pos = self.size() / 2 - current.geometry().size() / 2
-                    x, y = (current.geometry().size() + pos).toTuple()
-                    w, h = self.resize_label.size().toTuple()
-                    self.resize_label.move(x - w + 2, y - h + 2)
-
+                    self._update_size()
             case QEvent.MouseButtonRelease:
                 if self.old_pos:
                     self.old_pos = None
-                else:
-                    if not current.geometry().contains(event.pos()):
-                        self.entity.send_event(ClosePopupEvent())
 
         return super().eventFilter(watched, event)
+
+    def show(self):
+        super().show()
+        self._update_size()
 
 
 class Popup(Widget, name="popup"):
@@ -97,9 +101,4 @@ class Popup(Widget, name="popup"):
                     self.widget.layout().removeWidget(self.current)
 
                 self.current = message.message().create_widget(self.widget)
-                self.move_to_center(self.current)
                 self.widget.show()
-
-    def move_to_center(self, widget):
-        pos = self.widget.geometry().size() / 2 - widget.geometry().size() / 2
-        widget.move(*pos.toTuple())
