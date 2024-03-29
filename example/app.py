@@ -19,7 +19,7 @@ class View(DynamicDataView, size=(1600, 1024)):
     dataset = Supplies
 
 
-class LoginInvalidWidget(Widget, size=(240, 80), margins=(16, 8, 16, 8)):
+class LoginInvalidWidget(Widget, size=(240, 80), margins=(16, ) * 4):
     items = Vertical[Label("login is biba or boba"), Submit("try again")]
     to_connect = {"back_to_login": ["submit.clicked"]}
 
@@ -27,7 +27,7 @@ class LoginInvalidWidget(Widget, size=(240, 80), margins=(16, 8, 16, 8)):
         self.window.change_widget(LoginWidget())
 
 
-class LoginWidget(Widget, size=(280, 360), margins=(16, 8, 16, 8)):
+class LoginWidget(Widget, size=(280, 360), margins=(16, ) * 4):
     items = Vertical[
         Horizont[..., Image("logo.png", fixed_width=160)],
         Horizont[Title("Please Login:")],
