@@ -54,14 +54,14 @@ class PopupWidget(CustomQWidget):
                 if outside_current and outside_label:
                     self.entity.send_event(ClosePopupEvent())
 
-                diff = (current.geometry().bottomRight() - event.pos()).toTuple()
-                if all(x < 10 for x in diff):
-                    self.old_pos = event.pos()
+                diff = (current.geometry().bottomRight() - pos)
+                if all(x < 10 for x in diff.toTuple()):
+                    self.old_pos = pos
                     self.old_size = current.size()
             case QEvent.MouseMove:
                 if self.old_pos:
-                    diff = QSize(*((event.pos() - self.old_pos) * 2).toTuple())
-                    new_size = self.old_size + diff
+                    diff = ((event.pos() - self.old_pos) * 2).toTuple()
+                    new_size = self.old_size + QSize(*diff)
                     current.resize(*new_size.toTuple())
                     self._update_size()
             case QEvent.MouseButtonRelease:
