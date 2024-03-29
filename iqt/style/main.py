@@ -1,10 +1,10 @@
-from .settings import Colors, Fonts
+from .settings import Colors, Fonts, Scheme
 
 
 main = f'''
     QMainWindow,
     QWidget {{
-        background-color: {Colors.dark};
+        background-color: {Scheme.main_bg};
         selection-background-color: {Colors.selection};
     }}
     QMainWindow > QWidget,
@@ -16,16 +16,8 @@ main = f'''
         {Fonts.normal}
         background: {Colors.none};
     }}
-    QPushButton:hover {{
-        background: {Colors.gray};
-        border: 1px solid {Colors.white};
-    }}
-    QPushButton:clicked {{
-        background: {Colors.light_gray};
-        border: 1px solid {Colors.white};
-    }}
     ButtonQWidget {{
-        background: {Colors.light};
+        background: {Scheme.unit};
         border-radius: 4px;
         height: 24px;
         padding-left: 8px;
@@ -33,8 +25,7 @@ main = f'''
     }}
     QLineEdit {{
         {Fonts.normal}
-        color: {Colors.white};
-        background: {Colors.gray};
+        background: {Scheme.unit};
         border-radius: 6px;
         line-height: 24px;
         padding-left: 4px;
@@ -48,7 +39,7 @@ main = f'''
     }}
     QComboBox {{
         {Fonts.normal}
-        background: {Colors.gray};
+        background: {Scheme.unit};
         border-radius: 6px;
         height: 24;
         font-size: 14px;
@@ -121,7 +112,7 @@ main = f'''
     }}
     QScrollBar:vertical {{
         border: 0px;
-        background: {Colors.lightest};
+        background: {Scheme.frame};
         width: 16px;
         margin: 0px 0px 0px 0px;
         border-top-right-radius: 4px;
@@ -129,7 +120,7 @@ main = f'''
     }}
     QScrollBar:horizontal {{
         border: 0px;
-        background: {Colors.lightest};
+        background: {Scheme.frame};
         height: 12px;
         border-radius: 0px;
         margin: 0px 0px 0px 0px;
@@ -137,14 +128,14 @@ main = f'''
         border-bottom-right-radius: 4px;
     }}
     QScrollBar::handle:vertical {{
-        background: {Colors.gray};
+        background: {Scheme.unit};
         min-height: 32px;
         width: 10px;
         border-radius: 5px;
         margin: 2px 2px 2px 2px;
     }}
     QScrollBar::handle:horizontal {{
-        background: {Colors.gray};
+        background: {Scheme.unit};
         min-width: 32px;
         height: 10px;
         border-radius: 5px;

@@ -1,11 +1,7 @@
-from iqt.style.settings import Colors, Fonts
+from iqt.style.settings import Colors, Fonts, Scheme
 
 
 style = f'''
-    QWidget#strain_card {{
-        background: {Colors.gray};
-        border: 1px solid green;
-    }}
     QWidget#pagination,
     QWidget#default_widget {{
         background: {Colors.none};
@@ -13,7 +9,7 @@ style = f'''
     PreviewLabel,
     QWidget#filter,
     QWidget#sorting {{
-        background: {Colors.light};
+        background: {Scheme.frame};
         border-radius: 8px;
     }}
     QLabel#title {{
@@ -21,26 +17,28 @@ style = f'''
     }}
     .DynamicItemWidget {{
         border-radius: 8px;
+        border: 1px solid {Scheme.main_bg};
     }}
     .BaseImageButton {{
         background: {Colors.none};
         border: none;
     }}
     PageQButton {{
-        background: {Colors.gray};
+        background: {Scheme.unit};
         border: none;
         border-radius: 12px;
         width: 24px;
         height: 24px;
     }}
     PageQButton[active = true] {{
-        background: {Colors.light};
+        background: {Scheme.unit_active};
+        border: {Scheme.unit_active_border};
     }}
     QWidget#scroll_area_widget {{
         background-color: {Colors.none};
     }}
     DataViewScrollArea {{
-        background-color: {Colors.lightest};
+        background-color: {Scheme.frame};
     }}
 '''
 
