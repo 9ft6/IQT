@@ -31,6 +31,11 @@ class CustomQWidget(QWidget):
 
     __signals: QObject
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._hide = super().hide
+        self._show = super().show
+
     def build(self, config, root=None):
         self.root = root or self
         self.entity = config.entity

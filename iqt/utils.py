@@ -29,6 +29,7 @@ custom_methods = {
     "items": "set_items",
     "empty_state": "set_empty_state",
     "value": "set_text",
+    "animated": "set_animated",
     "event_filter": "installEventFilter",
 }
 

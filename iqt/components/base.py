@@ -38,6 +38,7 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     hidden: bool = Field(False)
     shortcut: str = Field(None)
     event_filter: bool = False
+    animated: bool = False
 
     def get_settings(self):
         result = self.model_dump(by_alias=True, exclude_none=True)
