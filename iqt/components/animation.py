@@ -37,13 +37,17 @@ class OpacityAnimation(BaseAnimation):
         self.animation = target.get_property_animation(self)
         target.animation_callback = self.animation_callback
         self.animation.finished.connect(self.animation_callback)
+        self.animation.finished.connect(target.fade_in_out_callback)
 
         setattr(target, f"{self.name}_animation", self.animation)
 
     def animation_callback(self):
         backward = QAbstractAnimation.Direction.Backward
         if self.animation.direction() == backward:
-            self._target._hide()
+            try:
+                self._target._hide()
+            except:
+                ...
         else:
             self._target._show()
 
@@ -51,7 +55,7 @@ class OpacityAnimation(BaseAnimation):
 class ShowHideFadeAnimation(OpacityAnimation):
     name: str = 'show_fade'
     property: bytes = b'opacity'
-    duration: int = 300
+    duration: int = 160
     start: Any = 0.0
     end: Any = 0.999999
 
@@ -93,7 +97,12 @@ class AnimatedWidgetMixin:
     def fade_in(self):
         if animation := getattr(self, 'show_fade_animation', None):
             self.start_animation(animation, 'Forward')
+            return animation
 
     def fade_out(self):
         if animation := getattr(self, 'show_fade_animation', None):
             self.start_animation(animation, 'Backward')
+            return animation
+
+    def fade_in_out_callback(self):
+        ...

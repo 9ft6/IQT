@@ -1,3 +1,5 @@
+from typing import Any
+
 from iqt.components import (
     Widget,
     FlowDataView,
@@ -51,10 +53,16 @@ class DynamicDataView(Widget):
         ],
     }
     item_model: BaseDataItem
-    active: BaseDataView = None
-    popup: Widget = None
+    active: BaseDataView
+    popup: Widget
     dataset: Dataset
     pagination: Pagination
+    no_popup: bool = False
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.active: BaseDataView = None
+        self.popup: Widget = None
 
     def generate_items(self):
         return Vertical[
@@ -70,7 +78,8 @@ class DynamicDataView(Widget):
             if view := getattr(self.navbar, name, None):
                 view.show()
 
-        self.popup = Popup().create_widget(parent=self.widget)
+        if not self.no_popup:
+            self.popup = Popup().create_widget(parent=self.widget)
 
         self.dataset = self.dataset(self.update_content)
         self.pagination = self.navbar.pagination
@@ -87,7 +96,8 @@ class DynamicDataView(Widget):
         for item in self.dataset:
             widget = None
             try:
-                widget = self.item_model._view_widgets.get(self.active.name, None)
+                view_widgets = self.item_model._view_widgets
+                widget = view_widgets.get(self.active.name, None)
             except:
                 ...
 

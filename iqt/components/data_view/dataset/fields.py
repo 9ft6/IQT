@@ -91,6 +91,7 @@ class ListField(BaseFieldWidget):
         class DataView(DynamicDataView, size=(800, 600)):
             item_model = value[0]
             dataset = GeneratedDataset
+            no_popup = True
 
         self.send_event(OpenPopupEvent(DataView))
 

@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QLabel
 from PySide6.QtGui import QCursor
-from PySide6.QtCore import QEvent, QSize, Qt
+from PySide6.QtCore import QEvent, QSize, Qt, QAbstractAnimation
+
 from iqt.components import Widget
 from iqt.components.animation import (
     AnimatedWidgetMixin,
@@ -95,7 +96,11 @@ class Popup(Widget, name="popup"):
 
     factory = PopupWidget
     items = Horizont[...]
-    current: Widget = None
+    current: Widget
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.current = None
 
     def post_init(self):
         self.widget.resize(self.widget.parent().size())
@@ -113,6 +118,8 @@ class Popup(Widget, name="popup"):
             case "open_popup" | "set_popup":
                 if self.current:
                     self.widget.layout().removeWidget(self.current)
+                    self.current.deleteLater()
+                    self.current = None
 
                 self.current = message.message().create_widget(self.widget)
                 self.widget.show()
