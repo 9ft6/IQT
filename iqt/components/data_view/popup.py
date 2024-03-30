@@ -1,11 +1,15 @@
 from PySide6.QtWidgets import QLabel
-from PySide6.QtCore import QEvent, QSize, Qt
 from PySide6.QtGui import QCursor
-
+from PySide6.QtCore import QEvent, QSize, Qt
 from iqt.components import Widget
-from iqt.events import ClosePopupEvent
+from iqt.components.animation import (
+    AnimatedWidgetMixin,
+    BaseAnimation,
+    ShowHideFadeAnimation,
+)
 from iqt.components.layouts import Horizont
 from iqt.components.widgets import CustomQWidget
+from iqt.events import ClosePopupEvent
 
 
 class ResizeLabel(QLabel):
@@ -23,9 +27,11 @@ class ResizeLabel(QLabel):
         return super().eventFilter(watched, event)
 
 
-class PopupWidget(CustomQWidget):
+class PopupWidget(CustomQWidget, AnimatedWidgetMixin):
     old_pos = None
     old_size = None
+    effect = None
+    animations: list[BaseAnimation] = [ShowHideFadeAnimation]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -70,14 +76,22 @@ class PopupWidget(CustomQWidget):
 
         return super().eventFilter(watched, event)
 
+    def hide(self):
+        if self.is_animated:
+            self.fade_out()
+        else:
+            super().hide()
+
     def show(self):
         super().show()
         self._update_size()
+        self.fade_in()
 
 
 class Popup(Widget, name="popup"):
     class Config(Widget.Config):
         event_filter: bool = True
+        animated: bool = True
 
     factory = PopupWidget
     items = Horizont[...]
