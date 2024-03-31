@@ -31,7 +31,7 @@ class BaseAnimation:
 class OpacityAnimation(BaseAnimation):
     def setup(self, target: QObject) -> None:
         if not target.effect:
-            target.effect = QGraphicsOpacityEffect(opacity=0.999999)
+            target.effect = QGraphicsOpacityEffect(opacity=1.0)
             target.setGraphicsEffect(target.effect)
 
         self.animation = target.get_property_animation(self)
@@ -57,7 +57,7 @@ class ShowHideFadeAnimation(OpacityAnimation):
     property: bytes = b'opacity'
     duration: int = 160
     start: Any = 0.0
-    end: Any = 0.999999
+    end: Any = 1.0
 
     show_fade_animation: QPropertyAnimation
 
