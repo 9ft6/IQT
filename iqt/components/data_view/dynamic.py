@@ -43,6 +43,9 @@ class DynamicDataViewWidget(CustomQWidget):
         return super().resizeEvent(event)
 
 
+available_view_types = ["flow", "vertical", "horizont"]
+
+
 class DynamicDataView(Widget):
     factory = DynamicDataViewWidget
     to_connect = {
@@ -74,7 +77,7 @@ class DynamicDataView(Widget):
         ]
 
     def post_init(self):
-        for name in ["flow", "vertical", "horizont"]:
+        for name in available_view_types:
             if name in self.cfg.ignore_view_types:
                 continue
 
@@ -91,7 +94,12 @@ class DynamicDataView(Widget):
         self.sorting.item_model = self.item_model
 
         self.pagination.dataset = self.dataset
-        self.ensure_type_btn("flow", "flow")
+
+        for v_type in available_view_types:
+            if v_type not in self.cfg.ignore_view_types:
+                self.ensure_type_btn(v_type, v_type)
+                break
+
         self.update_content()
 
     def update_content(self):
@@ -113,7 +121,7 @@ class DynamicDataView(Widget):
         self.sorting.entity.update()
 
     def view_type_handler(self, sender, *args, **kwargs):
-        for name in ["flow", "vertical", "horizont"]:
+        for name in available_view_types:
             self.ensure_type_btn(name, sender.name)
 
         self.update_content()
