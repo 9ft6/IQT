@@ -75,6 +75,9 @@ class DynamicDataView(Widget):
 
     def post_init(self):
         for name in ["flow", "vertical", "horizont"]:
+            if name in self.cfg.ignore_view_types:
+                continue
+
             if view := getattr(self.navbar, name, None):
                 view.show()
 

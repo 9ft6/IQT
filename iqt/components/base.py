@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 from pathlib import Path
 
 from PySide6.QtWidgets import QWidget, QApplication
@@ -8,10 +8,10 @@ from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from pydantic import BaseModel, Field
 
-from iqt.events import BusEvent
 from iqt.utils import setup_settings
 
-Size: tuple[int, int] = ...
+Size = tuple[int, int]
+ViewType = Literal["flow", "vertical", "horizont"]
 
 
 class ConfigurableType(type):
@@ -39,6 +39,7 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     shortcut: str = Field(None)
     event_filter: bool = False
     animated: bool = False
+    ignore_view_types: tuple[ViewType] | tuple[ViewType, ViewType] = Field(tuple())
 
     def get_settings(self):
         result = self.model_dump(by_alias=True, exclude_none=True)
