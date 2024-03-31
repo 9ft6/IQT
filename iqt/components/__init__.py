@@ -6,8 +6,8 @@ from iqt.components.data_view import (
     HorizontDataView,
     FlowDataView,
 )
-from iqt.components.buttons import Button, ImageButton, Submit
-from iqt.components.widgets import Widget, Input, CustomQWidget
-from iqt.components.base import BaseWidget
-from iqt.components.combo import ComboBox
-from iqt.components.checkbox import CheckBox
+from . import buttons
+from . import widgets
+from . import base
+from . import combo
+from . import checkbox
