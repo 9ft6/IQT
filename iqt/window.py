@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import Qt, QEvent, QPropertyAnimation, QEasingCurve, QPoint
 
 from iqt.components.base import Size, BaseObject, BaseConfig
-from iqt.components import Widget
+from iqt.components.widgets import Widget
 from iqt.components.layouts import Horizont, HorizontNM
 from iqt.components.title_bar import TitleBar
 from iqt.utils import setup_settings, get_widget_center_geometry

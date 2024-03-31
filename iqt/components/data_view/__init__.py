@@ -1,6 +1,6 @@
-from iqt.components.data_view.data_view import (
-    FlowDataView,
-    HorizontDataView,
-    VerticalDataView,
-    BaseDataView,
-)
+from . import data_view
+from . import dynamic
+from . import popup
+from . import scroller
+from . import dataset
+from . import navigation

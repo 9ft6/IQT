@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import QPushButton
 
 from iqt.components.base import BaseConfig
-from iqt.components import Button, Widget
+from iqt.components.buttons import Button
+from iqt.components.widgets import Widget
 from iqt.components.layouts import Horizont
 
 

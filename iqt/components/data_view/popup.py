@@ -1,15 +1,14 @@
 from PySide6.QtWidgets import QLabel
 from PySide6.QtGui import QCursor
-from PySide6.QtCore import QEvent, QSize, Qt, QAbstractAnimation
+from PySide6.QtCore import QEvent, QSize, Qt
 
-from iqt.components import Widget
 from iqt.components.animation import (
     AnimatedWidgetMixin,
     BaseAnimation,
     ShowHideFadeAnimation,
 )
 from iqt.components.layouts import Horizont
-from iqt.components.widgets import CustomQWidget
+from iqt.components.widgets import CustomQWidget, Widget
 from iqt.events import ClosePopupEvent
 
 

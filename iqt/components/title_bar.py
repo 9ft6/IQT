@@ -1,5 +1,6 @@
 from PySide6.QtCore import QEvent
-from iqt.components import Widget, CustomQWidget, Button
+from iqt.components.widgets import Widget, CustomQWidget
+from iqt.components.buttons import Button
 from iqt.components.layouts import Horizont
 
 

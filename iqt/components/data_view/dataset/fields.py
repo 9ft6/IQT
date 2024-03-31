@@ -1,17 +1,11 @@
 from typing import get_args
 
 from iqt.images import svg
-from iqt.components import (
-    Label,
-    Image,
-    ComboBox,
-    Title,
-    Input,
-    ImageLabel,
-    CheckBox,
-    Button,
-    Widget,
-)
+from iqt.components.labels import Label, Image, Title, ImageLabel
+from iqt.components.combo import ComboBox
+from iqt.components.widgets import Input, Widget
+from iqt.components.checkbox import CheckBox
+from iqt.components.buttons import Button
 from iqt.components.layouts import Horizont
 from iqt.events import OpenPopupEvent
 

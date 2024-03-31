@@ -1,9 +1,11 @@
 from pathlib import Path
 
-from iqt.components import Widget, ComboBox, ImageButton, Label
+from iqt.components.widgets import Widget
+from iqt.components.combo import ComboBox
+from iqt.components.labels import Label
 from iqt.components.layouts import Horizont
 from iqt.components.combo import ComboBoxConfig
-from iqt.components.buttons import ButtonConfig
+from iqt.components.buttons import ButtonConfig, ImageButton
 from iqt.images import svg
 
 

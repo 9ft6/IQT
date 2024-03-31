@@ -3,9 +3,8 @@ from typing import get_args, get_origin, Literal
 from types import UnionType
 
 from pydantic import BaseModel
-from iqt.components import Widget
 from iqt.components.layouts import Horizont, Vertical
-from iqt.components.widgets import CustomQWidget
+from iqt.components.widgets import CustomQWidget, Widget
 from iqt.components.data_view.dataset.fields import (
     ComboBoxField,
     CheckBoxField,

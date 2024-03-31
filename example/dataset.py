@@ -3,7 +3,8 @@ from pathlib import Path
 
 from pydantic import Field, BaseModel
 
-from iqt.components.data_view.dataset import Dataset, BaseDataItem
+from iqt.components.data_view.dataset.ds import Dataset
+from iqt.components.data_view.dataset.item import BaseDataItem
 
 Category = Literal["books", "buds", "other"] | None
 

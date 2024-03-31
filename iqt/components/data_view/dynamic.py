@@ -1,20 +1,20 @@
 from typing import Any
 
-from iqt.components import (
-    Widget,
+from iqt.components.data_view.data_view import (
     FlowDataView,
     VerticalDataView,
     HorizontDataView,
     BaseDataView,
 )
 from iqt.components.buttons import FlowBtn, HorizontBtn, VerticalBtn
-from iqt.components.data_view.dataset import BaseDataItem, get_item_by_layout, Dataset
+from iqt.components.data_view.dataset.item import BaseDataItem, get_item_by_layout
 from iqt.components.data_view.navigation.pagination import Pagination
 from iqt.components.data_view.navigation.sort import SortingWidget
 from iqt.components.data_view.navigation.filter import FilterWidget
 from iqt.components.data_view.popup import Popup
+from iqt.components.data_view.dataset.ds import Dataset
 from iqt.components.layouts import Vertical, Horizont
-from iqt.components.widgets import CustomQWidget
+from iqt.components.widgets import CustomQWidget, Widget
 
 
 class EditSideBar(Widget, fixed_width=132):

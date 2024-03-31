@@ -1,12 +1,7 @@
-from pathlib import Path
-
-from iqt.components.widgets import CustomQWidget
-from iqt.components import Widget, ComboBox, Button, Label
+from iqt.components.widgets import Widget
+from iqt.components.buttons import Button
+from iqt.components.labels import Label
 from iqt.components.layouts import Horizont
-from iqt.components.combo import ComboBoxConfig
-from iqt.components.buttons import ButtonConfig
-from iqt.images import svg
-
 
 
 class FilterWidget(Widget, name='filter'):
