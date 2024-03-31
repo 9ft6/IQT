@@ -30,7 +30,7 @@ class DynamicItemWidget(CustomQWidget):
     ...
 
 
-class BaseDynamicItem(Widget, name="base_item_widget"):
+class BaseDynamicItemWidget(Widget, name="base_item_widget"):
     factory = DynamicItemWidget
     layout = Vertical
     tail = []
@@ -41,6 +41,8 @@ class BaseDynamicItem(Widget, name="base_item_widget"):
         self._sub_widgets = getattr(item, "_sub_widgets", {})
         super().__init__()
 
+
+class BaseDynamicItem(BaseDynamicItemWidget):
     def _prepare_widgets(self):
         widgets = []
         for name, field in self.item.__fields__.items():
