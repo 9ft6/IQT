@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QScrollArea, QScrollBar
+from PySide6.QtWidgets import QScrollArea, QScrollBar, QWidgetItem
 
 from iqt.components.widgets import Widget
 from iqt.components.layouts import Horizont, Flow, Vertical
@@ -16,6 +16,7 @@ class DataViewScrollArea(QScrollArea, ScrollerMixin):
     name = "data_view"
 
     def setup_layout(self, config):
+        self.stretch = None
         self.cfg = config
 
         class MainWidget(Widget, name="scroll_area_widget"):
@@ -36,24 +37,24 @@ class DataViewScrollArea(QScrollArea, ScrollerMixin):
     def add_widget(self, widget):
         widget = widget.create_widget(self.scroll_widget)
         widget.setVisible(False)
-        self.layout.addWidget(widget)
+
+        if self.cfg.direction != "flow":
+            self.remove_stretch()
+            self.layout.addWidget(widget)
+            self.add_stretch()
+        else:
+            self.layout.addWidget(widget)
+
         widget.setVisible(True)
-        self.auto_resize()
-
-    def auto_resize(self):
-        attrs = {"horizont": "width", "vertical": "height"}
-        if attr_name := attrs.get(self.cfg.direction):
-            value = 0
-            if widget := self.layout.itemAt(0):
-                count = self.layout.count()
-                value = getattr(widget.widget(), attr_name)()
-                value = count * value + (count + 1) * self.layout.spacing()
-
-            method = getattr(self.scroll_widget, f"setFixed{attr_name.capitalize()}")
-            method(value)
 
     def clear(self):
         while item := self.layout.itemAt(0):
-            widget = item.widget()
-            widget.hide()
-            self.layout.removeWidget(widget)
+            self.layout.removeItem(item)
+
+    def add_stretch(self):
+        self.layout.addStretch()
+
+    def remove_stretch(self):
+        if self.layout.count():
+            if item := self.layout.itemAt(self.layout.count() - 1):
+                self.layout.removeItem(item)
