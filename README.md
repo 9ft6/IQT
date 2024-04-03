@@ -23,45 +23,51 @@ So you need only 60+ lines of code to make app like this.
 ```python
 from iqt.app import Application
 from iqt.window import Window
-from iqt.components.widgets import Widget, Input, CheckBox
+from iqt.components.widgets import Widget, Input
 from iqt.components.layouts import Horizont, Vertical
-from iqt.components import Button, Label, Title, Image
+from iqt.components.labels import Label, Title, Image
+from iqt.components.buttons import Submit
+from iqt.components.checkbox import CheckBox
 from iqt.components.data_view.dynamic import DynamicDataView
 from dataset import Supply, Supplies
 
-class StrainsView(DynamicDataView):
+class View(DynamicDataView, size=(1600, 1024)):
     item_model = Supply()
     dataset = Supplies
 
-class LoginInvalidWidget(Widget, size=(240, 80), margins=(16, 8, 16, 8)):
-    items = Vertical[Label("login is biba or boba"), Button("try again")]
-    to_connect = {"back_to_login": ["button.clicked"]}
+
+class LoginInvalidWidget(Widget, size=(240, 80), margins=(16, ) * 4):
+    items = Vertical[Label("login is biba or boba"), Submit("try again")]
+    to_connect = {"back_to_login": ["submit.clicked"]}
 
     def back_to_login(self, *args, **kwargs):
         self.window.change_widget(LoginWidget())
 
-class LoginWidget(Widget, size=(280, 360), margins=(16, 8, 16, 8)):
+
+class LoginWidget(Widget, size=(280, 360), margins=(16, ) * 4):
     items = Vertical[
         Horizont[..., Image("logo.png", fixed_width=160)],
         Horizont[Title("Please Login:")],
         Horizont[Label("login:"), ..., Input("login", fixed_size=(160, 32))],
         Horizont[Label("pass:"), ..., Input("pwd", fixed_size=(160, 32))],
-        Horizont[CheckBox("Remember me"), ..., Button("login")],
+        Horizont[CheckBox(text="Remember me"), ..., Submit("login")],
     ]
 
     def items_handler(self, sender: Widget, *args, **kwargs):
         match sender.name:
-            case "button":
+            case "submit":
                 if self.login.text() in ["biba", "boba"]:
-                    self.window.change_widget(StrainsView(size=(1600, 1024)))
+                    self.window.change_widget(View(size=(1600, 1024)))
                 else:
                     self.window.change_widget(LoginInvalidWidget())
             case "checkbox":
                 print("change config state")
 
+
 class TestGUI(Application):
     class StartWindow(Window, title="Please login", widget_model=LoginWidget):
         ...
+
 
 if __name__ == '__main__':
     TestGUI().run()
@@ -75,17 +81,17 @@ from iqt.components.data_view.dataset import Dataset
 
 Category: Literal["books", "buds", "other"] | None = None
 
-
 class Accessory(BaseDataItem):
+    _sort_fields: list = ["name", "rating", "category"]
     id: int = Field(None, description="ID")
     color: str | None = Field(None, description="Color")
     name: str | None = Field(None, description="Name")
 
-
 class Supply(BaseDataItem):
-    _sort_fields: str = ["name", "rating", "category"]
+    _sort_fields: list = ["name", "rating", "category"]
 
     id: int = Field(None, description="ID")
+    accessories: list[Accessory] = Field([], description="Accessories")
     rating: float = Field(None, description="Rating")
     category: Category = Field(None, description="Category")
     name: str = Field(None, description="Name")
@@ -93,8 +99,6 @@ class Supply(BaseDataItem):
     slug: str | None = Field(None, description="Slug")
     subtitle: str = Field(None, description="<item_name>")
     discount: bool = Field(False, description="Discount")
-    accessories: list[Accessory] = Field([], description="Accessories")
-
 
 class Supplies(Dataset):
     dump_file: Path = Path("supplies.pickle")
@@ -103,6 +107,11 @@ class Supplies(Dataset):
 
 Features to be added:
 - Functions for convenient editing will be added
-- Widget caching.
+- Selectable and movable items in data view
+- DataView items caching.
+- Filtration
+- Window frameless mode
+- Sidebar
+- Full animated widgets
 
 Stay tuned for updates.

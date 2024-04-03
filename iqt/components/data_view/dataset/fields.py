@@ -72,7 +72,7 @@ class ListField(BaseFieldWidget):
             return
 
         from iqt.components.data_view.dynamic import DynamicDataView
-        from iqt.components.data_view.dataset import Dataset
+        from iqt.components.data_view.dataset.ds import Dataset
 
         class GeneratedDataset(Dataset):
             initial_load: bool = False
