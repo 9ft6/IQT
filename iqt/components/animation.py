@@ -1,12 +1,16 @@
-from typing import Any
+from typing import Any, Literal
 
 from PySide6.QtWidgets import QGraphicsOpacityEffect
 from PySide6.QtCore import (
     QPropertyAnimation,
     QAbstractAnimation,
     QEasingCurve,
-    QObject
+    QObject,
+    QRect,
+    Property,
 )
+
+Direction = Literal['top', 'bottom', 'left', 'right']
 
 
 class BaseAnimation:
@@ -19,6 +23,7 @@ class BaseAnimation:
     keys: list[tuple[float, float]] = None
 
     _target: QObject
+    target: QObject
 
     def __init__(self, target: QObject) -> None:
         self._target = target
@@ -38,6 +43,7 @@ class OpacityAnimation(BaseAnimation):
         target.animation_callback = self.animation_callback
         self.animation.finished.connect(self.animation_callback)
         self.animation.finished.connect(target.fade_in_out_callback)
+        self.target = self._target.effect
 
         setattr(target, f"{self.name}_animation", self.animation)
 
@@ -60,6 +66,22 @@ class ShowHideFadeAnimation(OpacityAnimation):
     end: Any = 1.0
 
     show_fade_animation: QPropertyAnimation
+
+
+class ResizeAnimation(BaseAnimation):
+    duration = 250
+    property: bytes = b'geometry'
+    start = 0
+    end = 0
+    keys = (0.5, 0.5)
+    curve = QEasingCurve.InOutExpo  # OutQuart  InOutQuart
+
+    def setup(self, target: QObject) -> None:
+        self.start = self.start if isinstance(self.start, QRect) else QRect(*self.start)
+        self.end = self.end if isinstance(self.end, QRect) else QRect(*self.end)
+        self.target = target
+        self.resize_animation = target.get_property_animation(self)
+        print(self.resize_animation)
 
 
 class AnimatedWidgetMixin:
@@ -106,3 +128,24 @@ class AnimatedWidgetMixin:
 
     def fade_in_out_callback(self):
         ...
+
+    direction: Direction = "right"
+
+    # Resize animation methods
+    @Property(int)
+    def animated_size(self):
+        return self.size_value
+
+    @animated_size.setter
+    def animated_size(self, value):
+        self.resize_set_method(self.size_value)
+        self.size_value = value
+
+    def animation_callback(self):
+        self.resize_set_method(self.resize_ends)
+
+    def resize_set_method(self, value):
+        if self.direction in ['left', 'right']:
+            self.setWidth(value)
+        else:
+            self.setHeight(value)
