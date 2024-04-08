@@ -61,10 +61,11 @@ class NameField(BaseFieldWidget):
 
 
 class ListFieldHandlerMixin:
-    check_value: bool = True
+    def get_list_value(self):
+        return getattr(self.item, self.name, None)
 
     def items_handler(self, *args, **kwargs):
-        value = getattr(self.item, self.name, None)
+        value = self.get_list_value
         if self.check_value and not value:
             return
 
