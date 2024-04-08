@@ -55,7 +55,7 @@ class Dataset:
 
     def get_sort_fields(self):
         # TODO: implement dynamic fields generation
-        return self.item_model._sort_fields
+        return self.item_model.sort_fields
 
     def count(self):
         return len(self._get_filtered(self.items))

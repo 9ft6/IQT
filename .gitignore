@@ -25,4 +25,4 @@ data/*
 /backup
 **/*.json
 .job
-
+iqt.egg-info

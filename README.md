@@ -83,13 +83,13 @@ from iqt.components.data_view.dataset import Dataset
 Category: Literal["books", "buds", "other"] | None = None
 
 class Accessory(BaseDataItem):
-    _sort_fields: list = ["name", "rating", "category"]
+    sort_fields: list = ["name", "rating", "category"]
     id: int = Field(None, description="ID")
     color: str | None = Field(None, description="Color")
     name: str | None = Field(None, description="Name")
 
 class Supply(BaseDataItem):
-    _sort_fields: list = ["name", "rating", "category"]
+    sort_fields: list = ["name", "rating", "category"]
 
     id: int = Field(None, description="ID")
     accessories: list[Accessory] = Field([], description="Accessories")
