@@ -1,5 +1,7 @@
 from typing import get_args
 
+from PySide6.QtCore import QSize
+
 from iqt.images import svg
 from iqt.components.labels import Label, Image, Title, ImageLabel
 from iqt.components.combo import ComboBox
@@ -82,7 +84,10 @@ class ListField(BaseFieldWidget):
                 super().__init__(update_callback=update_callback)
                 self.items = {i.id: i for i in value}
 
-        class DataView(DynamicDataView, size=(800, 600)):
+        scroll_area = self.widget.parent().parent().parent()
+        view_size = scroll_area.size() - QSize(256, 256)
+
+        class DataView(DynamicDataView, size=view_size.toTuple()):
             item_model = value[0]
             dataset = GeneratedDataset
             no_popup = True
