@@ -60,14 +60,7 @@ class NameField(BaseFieldWidget):
         return Horizont[Title(getattr(self.item, self.name, None))]
 
 
-class ListField(BaseFieldWidget):
-    order: int = 10
-
-    def generate_items(self):
-        value = getattr(self.item, self.name, None)
-        name = f"{self.field.description or self.name}"
-        return Horizont[Button(f"{name} ({len(value)})")]
-
+class ListFieldHandlerMixin:
     def items_handler(self, *args, **kwargs):
         value = getattr(self.item, self.name, None)
         if not value:
@@ -93,6 +86,15 @@ class ListField(BaseFieldWidget):
             no_popup = True
 
         self.send_event(OpenPopupEvent(DataView))
+
+
+class ListField(BaseFieldWidget, ListFieldHandlerMixin):
+    order: int = 10
+
+    def generate_items(self):
+        value = getattr(self.item, self.name, None)
+        name = f"{self.field.description or self.name}"
+        return Horizont[Button(f"{name} ({len(value)})")]
 
 
 class ComboBoxField(BaseFieldWidget):
