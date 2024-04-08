@@ -95,7 +95,7 @@ class Dataset:
             with open(self.dump_file, 'rb') as file:
                 self.items = pickle.load(file)
         except Exception as e:
-            logger.error(f"Cannot read strains.pickle {e}")
+            logger.error(f"Cannot read pickle {e}")
 
     def put_raws(self, raws: dict):
         items = {

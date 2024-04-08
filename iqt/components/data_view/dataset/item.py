@@ -21,8 +21,8 @@ name_label_width = 80
 
 
 class BaseDataItem(BaseModel):
-    _view_widgets: dict = {}
-    _sort_fields: list = []
+    view_widgets: dict = {}
+    sort_fields: list = []
     id: str
 
 

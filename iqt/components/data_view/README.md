@@ -9,8 +9,8 @@ from iqt.components.data_view.item import BaseDataItem
 
 
 class Supply(BaseDataItem):
-    _view_widgets: dict = {}
-    _sort_fields: str = ["name", "slug", "category"]
+    view_widgets: dict = {}
+    sort_fields: str = ["name", "slug", "category"]
 
     id: int = None
     rating: float = Field(None, description="Average rating")
@@ -20,6 +20,6 @@ class Supply(BaseDataItem):
     slug: str = Field(None)
     subtitle: str = Field(None, description="<item_name>")
 ```
-- <b>_view_widgets</b> - You can specify a widget for each display type: "flow", "vertical", "horizont".
-- <b>_sort_fields</b> - You can explicitly indicate which fields are allowed for sorting.
-- <b>_sort_items</b> - Dict with SudWidgets for field_names
+- <b>view_widgets</b> - You can specify a widget for each display type: "flow", "vertical", "horizont".
+- <b>sort_fields</b> - You can explicitly indicate which fields are allowed for sorting.
+- <b>sort_items</b> - Dict with SudWidgets for field_names
