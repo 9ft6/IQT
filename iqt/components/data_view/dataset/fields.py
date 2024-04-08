@@ -61,9 +61,11 @@ class NameField(BaseFieldWidget):
 
 
 class ListFieldHandlerMixin:
+    check_value: bool = True
+
     def items_handler(self, *args, **kwargs):
         value = getattr(self.item, self.name, None)
-        if not value:
+        if self.check_value and not value:
             return
 
         from iqt.components.data_view.dynamic import DynamicDataView
