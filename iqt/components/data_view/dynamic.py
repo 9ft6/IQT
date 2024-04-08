@@ -16,6 +16,8 @@ from iqt.components.data_view.dataset.ds import Dataset
 from iqt.components.layouts import Vertical, Horizont
 from iqt.components.widgets import CustomQWidget, Widget
 
+from iqt.logger import logger
+
 
 class EditSideBar(Widget, fixed_width=132):
     items = Vertical[...]
@@ -107,10 +109,10 @@ class DynamicDataView(Widget):
         for item in self.dataset:
             widget = None
             try:
-                view_widgets = self.item_model._view_widgets
+                view_widgets = self.item_model.view_widgets
                 widget = view_widgets.get(self.active.name, None)
-            except:
-                ...
+            except Exception as e:
+                logger.error(f"While custom item widget: {e}")
 
             if not widget:
                 widget = get_item_by_layout(self.active.name)

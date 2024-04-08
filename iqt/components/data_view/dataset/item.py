@@ -1,8 +1,9 @@
 from copy import deepcopy
 from typing import get_args, get_origin, Literal
 from types import UnionType
+from uuid import uuid4
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from iqt.components.layouts import Horizont, Vertical
 from iqt.components.widgets import CustomQWidget, Widget
 from iqt.components.data_view.dataset.fields import (
@@ -23,7 +24,7 @@ name_label_width = 80
 class BaseDataItem(BaseModel):
     view_widgets: dict = {}
     sort_fields: list = []
-    id: str
+    id: str = Field(default_factory=lambda: str(uuid4()))
 
 
 class DynamicItemWidget(CustomQWidget):
