@@ -65,8 +65,8 @@ class ListFieldHandlerMixin:
         return getattr(self.item, self.name, None)
 
     def items_handler(self, *args, **kwargs):
-        value = self.get_list_value
-        if self.check_value and not value:
+        value = self.get_list_value()
+        if not value:
             return
 
         from iqt.components.data_view.dynamic import DynamicDataView
