@@ -9,6 +9,7 @@ Keep an eye out for updates as we keep building and improving IQT.
 
 Python 3.11 required
 ## Simple example
+See usage example: https://github.com/9ft6/leakly
 
 To run this example, clone the repository and execute ```make run``` in the root directory.
 
