@@ -19,7 +19,6 @@ class ResizeLabel(QLabel):
         self.setObjectName("popup_resize_label")
         self.setFixedSize(10, 10)
 
-
     def eventFilter(self, watched, event):
         if event.type() == QEvent.Enter:
             self.setCursor(QCursor(Qt.SizeFDiagCursor))

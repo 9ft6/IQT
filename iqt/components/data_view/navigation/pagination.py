@@ -23,7 +23,6 @@ class CurrentPage(Input):
     def __init__(self, page: str, *args, root=None, **kwargs):
         self.page = page
         self.dataset = root.widget.dataset
-        print(args, kwargs)
         super().__init__("current", *args, fixed_width=24, **kwargs)
 
     def post_init(self):

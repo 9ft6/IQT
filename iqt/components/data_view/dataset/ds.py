@@ -1,10 +1,6 @@
-import json
-from pathlib import Path
-import pickle
-
 from pydantic import BaseModel
 
-from iqt.logger import logger
+from iqt.db import BaseDictDB
 
 
 class DataNavigationState(BaseModel):
@@ -15,50 +11,22 @@ class DataNavigationState(BaseModel):
     ascending: bool = True
 
 
-class Dataset:
+class Dataset(BaseDictDB):
     state: DataNavigationState
-    items: dict
-    dump_file: str | Path
     item_model: BaseModel
-    initial_load: bool = True
 
     def __init__(self, update_callback=None):
-        self.items = {}
+        super().__init__()
         self.update_callback = update_callback
-        if self.initial_load:
-            logger.info("Loading dataset...")
-            self.load()
         self.state = DataNavigationState()
         self.per_page = self.state.per_page
 
     def __iter__(self):
-        filtered = self._get_filtered(self.items)
-        _sorted = self._get_sorted(filtered)
-        return iter(self._get_current_page(_sorted))
-
-    def _get_filtered(self, items):
-        filtered = items
-        # TODO: Implement filter
-        return filtered
-
-    def _get_sorted(self, filtered):
-        key = self.state.sort_key or "id"
-        return list(sorted(
-            filtered.values(),
-            reverse=self.state.ascending,
-            **{"key": lambda s: str(getattr(s, key, ""))}
-        ))
-
-    def _get_current_page(self, _sorted):
-        page, per_page = self.state.page, self.state.per_page
-        return _sorted[(page - 1) * per_page:page * per_page]
+        return iter(self.query(self.state))
 
     def get_sort_fields(self):
         # TODO: implement dynamic fields generation
         return self.item_model.sort_fields
-
-    def count(self):
-        return len(self._get_filtered(self.items))
 
     def pages_count(self):
         return len(self.pages())
@@ -84,34 +52,6 @@ class Dataset:
             self.state.page = page
             self.update_callback()
 
-    def show(self, _filter=None):
-        for item in self.items.values():
-            if not _filter or _filter(item):
-                logger.info(item)
-
-    def export(self):
-        with open('export.json', 'w') as file:
-            items = {i: s.dict() for i, s in self.items.items()}
-            json.dump(items, file)
-
-    def dump(self):
-        with open(self.dump_file, 'wb') as file:
-            pickle.dump(self.items, file)
-
-    def load(self):
-        try:
-            with open(self.dump_file, 'rb') as file:
-                self.items = pickle.load(file)
-        except Exception as e:
-            logger.error(f"Cannot read pickle {e}")
-
     def put_raws(self, raws: dict):
-        items = {
-            i: self.item_model.parse_obj(r)
-            for i, r in raws.items()
-        }
-        self.put_items(items)
+        self.insert_many(self.item_model.parse_obj(r) for r in raws.values())
 
-    def put_items(self, items: dict):
-        self.items.update(items)
-        self.dump()
