@@ -80,6 +80,8 @@ class CustomQWidget(QWidget):
             if widget := item.widget():
                 widget.hide()
                 self.layout().removeWidget(widget)
+            else:
+                self.layout().removeItem(item.spacerItem())
 
     def set_widget_attr(self, name, widget):
         objects = [self, self.entity, self.root, self.root.entity]
