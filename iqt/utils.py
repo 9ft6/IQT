@@ -8,7 +8,7 @@ from PySide6.QtCore import QRect, QEventLoop, QTimer
 native_methods = {
     "fixed_height": "setFixedHeight",
     "fixed_size": "setFixedSize",
-    "min_size": "setMinimalSize",
+    "min_size": "setMinimumSize",
     "fixed_width": "setFixedWidth",
     "width": "setWidth",
     "margins": "setContentsMargins",
@@ -23,6 +23,7 @@ native_methods = {
     "v_scroll_policy": "setVerticalScrollBarPolicy",
     "hidden": "setHidden",
     "shortcut": "setShortcut"
+    "event_filter": "installEventFilter",
 }
 # custom methods
 custom_methods = {
@@ -31,7 +32,6 @@ custom_methods = {
     "empty_state": "set_empty_state",
     "value": "set_text",
     "animated": "set_animated",
-    "event_filter": "installEventFilter",
 }
 
 

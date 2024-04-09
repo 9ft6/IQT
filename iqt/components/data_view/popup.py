@@ -19,6 +19,7 @@ class ResizeLabel(QLabel):
         self.setObjectName("popup_resize_label")
         self.setFixedSize(10, 10)
 
+
     def eventFilter(self, watched, event):
         if event.type() == QEvent.Enter:
             self.setCursor(QCursor(Qt.SizeFDiagCursor))
@@ -67,9 +68,14 @@ class PopupWidget(CustomQWidget, AnimatedWidgetMixin):
             case QEvent.MouseMove:
                 if self.old_pos:
                     diff = ((event.pos() - self.old_pos) * 2).toTuple()
-                    new_size = self.old_size + QSize(*diff)
-                    current.resize(*new_size.toTuple())
+                    w, h = (self.old_size + QSize(*diff)).toTuple()
+                    max_w, max_h = self.parent().size().toTuple()
+                    min_w, min_h = self.minimumSize().toTuple()
+                    w, h = w if w < max_w else max_w, h if h < max_h else max_h
+                    new_size = w if w > min_w else min_w, h if h > min_h else min_h
+
                     self._update_size()
+                    current.resize(*new_size)
             case QEvent.MouseButtonRelease:
                 if self.old_pos:
                     self.old_pos = None
@@ -88,10 +94,11 @@ class PopupWidget(CustomQWidget, AnimatedWidgetMixin):
         self.fade_in()
 
 
-class Popup(Widget, name="popup"):
+class Popup(Widget, name="popup", min_size=(640, 480)):
     class Config(Widget.Config):
         event_filter: bool = True
         animated: bool = True
+        min_size: tuple[int, int] = 640, 480
 
     factory = PopupWidget
     items = Horizont[...]

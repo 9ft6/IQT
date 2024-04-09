@@ -33,6 +33,7 @@ class BaseConfig(BaseModel, arbitrary_types_allowed=True):
     to_connect: dict[str, list] = Field({})
     signals: list[SignalModel] = Field([])
     size: Size = Field(None)
+    min_size: Size = Field(None)
     fixed_size: Size = Field(None)
     fixed_width: int = Field(None)
     fixed_height: int = Field(None)
