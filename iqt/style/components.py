@@ -26,6 +26,7 @@ style = f'''
         background: {Colors.none};
         border: none;
     }}
+    CurrentPageInput,
     PageQButton {{
         background: {Colors.gray};
         border: none;
@@ -33,7 +34,7 @@ style = f'''
         width: 24px;
         height: 24px;
     }}
-    PageQButton[active = true] {{
+    CurrentPageInput {{
         background: {Colors.light};
     }}
     QWidget#scroll_area_widget {{

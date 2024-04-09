@@ -9,7 +9,8 @@ from iqt.logger import logger
 
 class DataNavigationState(BaseModel):
     page: int = 1
-    per_page: int = 25
+    per_page: int = 2
+
     sort_key: str = None
     filter: dict = {}
     ascending: bool = True
@@ -59,6 +60,14 @@ class Dataset:
 
     def count(self):
         return len(self._get_filtered(self.items))
+
+    def pages_count(self):
+        return len(self.pages())
+
+    def pages(self):
+        pages = self.count() // self.per_page
+        tail = self.count() % self.per_page
+        return [x + 1 for x in range(0, pages + bool(tail))]
 
     def set_ascending(self, ascending: bool):
         if self.state.ascending != ascending:

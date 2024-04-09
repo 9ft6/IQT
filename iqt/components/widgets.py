@@ -19,6 +19,10 @@ class Input(BaseObject):
         fixed_height: int = 24
 
     factory: QWidget = QLineEdit
+    to_connect: dict = {
+        "text_handler": ["textChanged"],
+        "items_handler": ["editingFinished"],
+    }
 
     def __init__(self, name=None, *args, **kwargs):
         kwargs["name"] = name
