@@ -2,7 +2,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtGui import QFontDatabase, QFont
-from PySide6.QtCore import QRect
+from PySide6.QtCore import QRect, QEventLoop, QTimer
 
 # QT native methods
 native_methods = {
@@ -10,6 +10,7 @@ native_methods = {
     "fixed_size": "setFixedSize",
     "min_size": "setMinimalSize",
     "fixed_width": "setFixedWidth",
+    "width": "setWidth",
     "margins": "setContentsMargins",
     "name": "setObjectName",
     "size": "resize",
@@ -97,3 +98,9 @@ def get_widget_center_geometry(size):
     center = screen
     x, y, (w, h) = center.x(), center.y(), size
     return QRect(x - w / 2, y - h / 2, *size)
+
+
+def q_sleep(secs):
+    loop = QEventLoop()
+    QTimer.singleShot(secs, loop.quit)
+    loop.exec_()
