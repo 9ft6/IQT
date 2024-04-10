@@ -70,15 +70,14 @@ class ListFieldHandlerMixin:
             return
 
         from iqt.components.data_view.dynamic import DynamicDataView
-        from iqt.components.data_view.dataset.ds import Dataset
+        from iqt.components.data_view.dataset.ds import get_dataset
 
-        class GeneratedDataset(Dataset):
-            initial_load: bool = False
+        class GeneratedDataset(get_dataset(None)):
             item_model = value[0]
 
             def __init__(self, update_callback=None):
                 super().__init__(update_callback=update_callback)
-                self.items = {i.id: i for i in value}
+                self.put_raws(value)
 
         scroll_area = self.widget.parent().parent().parent()
         view_size = scroll_area.size() - QSize(256, 256)

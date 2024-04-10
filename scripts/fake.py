@@ -27,7 +27,7 @@ def generate_accessory():
 def generate_supply_data():
     accessories_count = random.randint(0, 10)
     accessories = [generate_accessory() for _ in range(accessories_count)]
-    accessories = [Accessory(**a) for a in accessories]
+    accessories = [Accessory(**a).model_dump() for a in accessories]
 
     return {
         "id": faker.unique.random_int(min=1, max=100000),
@@ -42,7 +42,7 @@ def generate_supply_data():
 
 
 if __name__ == '__main__':
-    data = {i: generate_supply_data() for i in range(50)}
+    data = [generate_supply_data() for i in range(50)]
     supply = Supplies()
     supply.put_raws(data)
-    supply.dump()
+    # supply.dump()

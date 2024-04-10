@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pydantic import Field, BaseModel
 
-from iqt.components.data_view.dataset.ds import Dataset
+from iqt.components.data_view.dataset.ds import get_dataset
 from iqt.components.data_view.dataset.item import BaseDataItem
 
 Category = Literal["books", "buds", "other"] | None
@@ -30,6 +30,6 @@ class Supply(BaseDataItem):
     discount: bool = Field(False, description="Discount")
 
 
-class Supplies(Dataset):
-    dump_file: Path = Path("supplies.pickle")
+class Supplies(get_dataset(None)):
+    dump_file: Path = Path("supplies.json")
     item_model: BaseModel = Supply()

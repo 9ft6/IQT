@@ -19,10 +19,6 @@ from iqt.components.widgets import CustomQWidget, Widget
 from iqt.logger import logger
 
 
-class EditSideBar(Widget, fixed_width=132):
-    items = Vertical[...]
-
-
 class NavBar(Widget, name="navbar"):
     def generate_items(self):
         return Horizont[
@@ -71,7 +67,6 @@ class DynamicDataView(Widget):
 
     def generate_items(self):
         return Vertical[
-            # EditSideBar(),
             NavBar(),
             FlowDataView("flow", hidden=True),
             VerticalDataView("vertical", hidden=True),

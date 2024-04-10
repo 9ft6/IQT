@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 
-from iqt.db import BaseDictDB
+from iqt.config import cfg
+from iqt.db import BaseDictDB, TinyDB
+from iqt.logger import logger
 
 
 class DataNavigationState(BaseModel):
@@ -11,7 +13,7 @@ class DataNavigationState(BaseModel):
     ascending: bool = True
 
 
-class Dataset(BaseDictDB):
+class Dataset:
     state: DataNavigationState
     item_model: BaseModel
 
@@ -52,6 +54,22 @@ class Dataset(BaseDictDB):
             self.state.page = page
             self.update_callback()
 
-    def put_raws(self, raws: dict):
-        self.insert_many(self.item_model.parse_obj(r) for r in raws.values())
+    def put_raws(self, raws: list):
+        self.insert_many([self.item_model.parse_obj(r) for r in raws])
 
+
+def get_dataset(update_callback=None):
+    match cfg.db_type:
+        case 'dict':
+            db = BaseDictDB
+        case 'tinydb':
+            db = TinyDB
+        case _:
+            db = None
+            logger.error(f'unknown db type: {cfg.db_type}')
+
+    return type(
+        "Dataset",
+        (Dataset, db),
+        {"update_callback": update_callback}
+    )

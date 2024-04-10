@@ -1,66 +1,31 @@
 import json
-from pathlib import Path
 import pickle
 
 from iqt.logger import logger
-from .base import DataBaseWrapper
+from .base import FileBasedDataBase
 
 
-class BaseDictDB(DataBaseWrapper):
+class BaseDictDB(FileBasedDataBase):
     items: dict
-    dump_file: str | Path = None
 
     def __init__(self):
         self.items = {}
         self.load()
 
-    def query(self, state):
-        filtered = self._get_filtered(self.items)
-        _sorted = self._get_sorted(filtered, state)
-        return self._get_current_page(_sorted, state)
-
-    def _get_filtered(self, items):
-        filtered = items
-        # TODO: Implement filter
-        return filtered
+    def _get_filtered(self, state):
+        return self.items
 
     def _get_sorted(self, filtered, state):
         key = state.sort_key or "id"
         return list(sorted(
             filtered.values(),
             reverse=state.ascending,
-            **{"key": lambda s: str(getattr(s, key, ""))}
+            key=lambda s: str(getattr(s, key, "")),
         ))
-
-    def _get_current_page(self, _sorted, state):
-        page, per_page = state.page, state.per_page
-        return _sorted[(page - 1) * per_page:page * per_page]
-
-    def remove(self, key):
-        ...
-
-    def remove_many(self, key):
-        ...
-
-    def insert(self, item):
-        ...
 
     def insert_many(self, items):
         self.items.update({i.id: i for i in items})
         self.dump()
-
-    def update_many(self, many):
-        ...
-
-    def update(self, key, value):
-        ...
-
-    def count(self, state=None):
-        if not state:
-            return len(self._get_filtered(self.items))
-
-    def distinct(self, key):
-        ...
 
     def show(self, _filter=None):
         for item in self.items.values():

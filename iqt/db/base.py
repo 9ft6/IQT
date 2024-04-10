@@ -1,42 +1,66 @@
-import abc
+from abc import abstractmethod
+from pathlib import Path
 
 
 class DataBaseWrapper:
-    @abc.abstractmethod
+    @abstractmethod
     def query(self, state):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def remove(self, key):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def remove_many(self, key):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def insert(self, item):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def insert_many(self, items):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def update_many(self, many):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def update(self, key, value):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def count(self, key):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def distinct(self, key):
         ...
 
 
-__all__ = ['DataBaseWrapper']
+class FileBasedDataBase(DataBaseWrapper):
+    dump_file: str | Path = None
+
+    def count(self, state=None):
+        if not state:
+            return len(self._get_filtered(state))
+
+    def query(self, state):
+        filtered = self._get_filtered(state)
+        _sorted = self._get_sorted(filtered, state)
+        return self._get_current_page(_sorted, state)
+
+    def _get_filtered(self, state) -> iter:
+        ...
+
+    def _get_sorted(self, filtered, state):
+        ...
+
+    def _get_current_page(self, _sorted, state):
+        page, per_page = state.page, state.per_page
+        return _sorted[(page - 1) * per_page:page * per_page]
+
+
+__all__ = ['DataBaseWrapper', 'FileBasedDataBase']
