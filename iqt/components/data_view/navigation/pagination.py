@@ -22,7 +22,7 @@ class CurrentPage(Input):
 
     def __init__(self, page: str, *args, root=None, **kwargs):
         self.page = page
-        self.dataset = root.widget.dataset
+        self.dataset = root.dataview.dataset
         super().__init__("current", *args, fixed_width=24, **kwargs)
 
     def post_init(self):
@@ -48,8 +48,12 @@ class Pagination(Widget):
     Config = PaginationConfig
     items = Horizont[None]
 
+    def __init__(self, dataview, *args, **kwargs):
+        self.dataview = dataview
+        super().__init__(*args, **kwargs)
+
     def update(self):
-        self.dataset = self.widget.dataset
+        self.dataset = self.dataview.dataset
         pages = self.create_pages()
         self.widget.clear()
         self.widget.layout().addStretch()

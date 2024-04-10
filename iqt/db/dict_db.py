@@ -5,6 +5,7 @@ from iqt.logger import logger
 from .base import FileBasedDataBase
 
 
+# TODO: deprecate?
 class BaseDictDB(FileBasedDataBase):
     items: dict
 

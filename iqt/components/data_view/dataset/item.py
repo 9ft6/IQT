@@ -15,16 +15,16 @@ from iqt.components.data_view.dataset.fields import (
     PreviewField,
     RowPreviewField,
     RowNameField,
-    # DynamicSubItem,
 )
 
 name_label_width = 80
 
 
 class BaseDataItem(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid4()))
     view_widgets: dict = {}
     sort_fields: list = []
-    id: str = Field(default_factory=lambda: str(uuid4()))
+    filter_fields: list = []
 
 
 class DynamicItemWidget(CustomQWidget):
@@ -79,8 +79,6 @@ class BaseDynamicItem(BaseDynamicItemWidget):
         elif get_origin(f.annotation) is list and (args := get_args(f.annotation)):
             if len(set(args)) == 1 and type(args[0]) not in [str, int, float, bool]:
                 return ListField
-        # else:
-        #     print(f"Unknown widget type: {f.annotation} {get_origin(f.annotation)}")
 
     @classmethod
     def get_special_widget(cls, widget_name):

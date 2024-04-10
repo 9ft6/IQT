@@ -20,13 +20,17 @@ from iqt.logger import logger
 
 
 class NavBar(Widget, name="navbar"):
+    def __init__(self, dataview, *args, **kwargs):
+        self.dataview = dataview
+        super().__init__(*args, **kwargs)
+
     def generate_items(self):
         return Horizont[
             ...,
-            Pagination(),
+            Pagination(self.dataview),
             ...,
-            Horizont[FilterWidget()],
-            Horizont[SortingWidget()],
+            Horizont[FilterWidget(self.dataview)],
+            Horizont[SortingWidget(self.dataview)],
             FlowBtn(),
             HorizontBtn(),
             VerticalBtn(),
@@ -67,7 +71,7 @@ class DynamicDataView(Widget):
 
     def generate_items(self):
         return Vertical[
-            NavBar(),
+            NavBar(self),
             FlowDataView("flow", hidden=True),
             VerticalDataView("vertical", hidden=True),
             HorizontDataView("horizont", hidden=True),
@@ -87,10 +91,7 @@ class DynamicDataView(Widget):
         self.dataset = self.dataset(self.update_content)
         self.pagination = self.navbar.pagination
         self.sorting = self.navbar.sorting
-        self.sorting.dataset = self.dataset
-        self.sorting.item_model = self.item_model
-
-        self.pagination.dataset = self.dataset
+        self.filter = self.navbar.filter
 
         for v_type in available_view_types:
             if v_type not in self.cfg.ignore_view_types:

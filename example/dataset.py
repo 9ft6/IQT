@@ -18,6 +18,7 @@ class Accessory(BaseDataItem):
 
 class Supply(BaseDataItem):
     sort_fields: list = ["name", "rating", "category"]
+    filter_fields: list = ["category"]
 
     id: int = Field(None, description="ID")
     accessories: list[Accessory] = Field([], description="Accessories")

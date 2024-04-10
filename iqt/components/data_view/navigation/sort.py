@@ -30,8 +30,12 @@ class SortingWidget(Widget, name='sorting'):
         "ascending_handler": ["ascending_btn.clicked"],
     }
 
+    def __init__(self, dataview, *args, **kwargs):
+        self.dataview = dataview
+        super().__init__(*args, **kwargs)
+
     def update(self):
-        fields = set(self.widget.dataset.get_sort_fields())
+        fields = set(self.dataview.dataset.get_sort_fields())
         exists = set(self.sort_box.get_all_items())
         exists.remove(self.sort_box.lineEdit().placeholderText())
         if fields != exists:

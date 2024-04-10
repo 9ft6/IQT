@@ -13,7 +13,7 @@ style = f'''
     PreviewLabel,
     QWidget#filter,
     QWidget#sorting {{
-        background: {Colors.light};
+        background: {Colors.none};
         border-radius: 8px;
     }}
     QLabel#title {{
