@@ -40,10 +40,16 @@ class NavBar(Widget, name="navbar"):
 
 
 class DynamicDataViewWidget(CustomQWidget):
+    def show_filter(self):
+        from PySide6.QtWidgets import QLabel
+        button = QLabel(self)
+        button.setText("some")
+        button.move(10, 10)
+
     def resizeEvent(self, event):
         if self.entity.popup:
             self.entity.popup.resize(event.size())
-
+        self.show_filter()
         return super().resizeEvent(event)
 
 
@@ -78,6 +84,10 @@ class DynamicDataView(Widget):
             VerticalDataView("vertical", hidden=True),
             HorizontDataView("horizont", hidden=True),
         ]
+
+    def event_bus_handler(self, message):
+        if str(id(self)) == message.target:
+            self.widget.show_filter()
 
     def post_init(self):
         for name in available_view_types:

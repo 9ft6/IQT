@@ -3,6 +3,7 @@ from pathlib import Path
 from iqt.components.buttons import ImageButton, ButtonConfig
 from iqt.components.widgets import Widget
 from iqt.components.layouts import Horizont
+from iqt.events import OpenFilter
 from iqt.images import svg
 
 
@@ -23,4 +24,4 @@ class FilterWidget(Widget, name='filter'):
         super().__init__(*args, **kwargs)
 
     def items_handler(self, sender, *args, **kwargs):
-        print("open filter widget...")
+        self.send_event(OpenFilter(str(id(self.dataview))))

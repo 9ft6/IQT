@@ -49,7 +49,8 @@ class DataViewScrollArea(QScrollArea, ScrollerMixin):
 
     def clear(self):
         while item := self.layout.itemAt(0):
-            item.widget().setVisible(False)
+            if widget := item.widget():
+                widget.setVisible(False)
             self.layout.removeItem(item)
 
     def add_stretch(self):

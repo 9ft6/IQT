@@ -30,3 +30,11 @@ class OpenPopupEvent(BasePopupEvent):
 
 class SetPopupEvent(BasePopupEvent):
     type: str = "set_popup"
+
+
+class OpenFilter(BusEvent):
+    type: str = "open_filter"
+    message: str = "open_filter"
+
+    def __init__(self, target: str):
+        super().__init__(target=target)
