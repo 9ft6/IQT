@@ -20,7 +20,7 @@ class AscendingButton(ImageButton):
     class Config(ButtonConfig):
         name: str = "ascending_btn"
         image: str | Path = svg.ascending
-        fixed_size: tuple[int, int] = (24, 24)
+        fixed_size: tuple[int, int] = (20, 20)
 
 
 class SortingWidget(Widget, name='sorting'):
@@ -42,11 +42,11 @@ class SortingWidget(Widget, name='sorting'):
             self.sort_box.set_items(fields)
 
     def ascending_handler(self, sender, *args):
-        dataset = self.widget.dataset
+        dataset = self.dataview.dataset
         value = not dataset.state.ascending
         dataset.set_ascending(value)
         sender.set_image(svg.ascending if value else svg.descending)
 
     def sort_handler(self, sender, text):
         value = text if sender.empty_state != text else None
-        self.widget.dataset.set_sort_key(value)
+        self.dataview.dataset.set_sort_key(value)

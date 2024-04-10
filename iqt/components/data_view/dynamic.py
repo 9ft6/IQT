@@ -29,8 +29,10 @@ class NavBar(Widget, name="navbar"):
             ...,
             Pagination(self.dataview),
             ...,
-            Horizont[FilterWidget(self.dataview)],
-            Horizont[SortingWidget(self.dataview)],
+            Horizont[
+                SortingWidget(self.dataview),
+                FilterWidget(self.dataview)
+            ],
             FlowBtn(),
             HorizontBtn(),
             VerticalBtn(),

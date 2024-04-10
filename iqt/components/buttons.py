@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtWidgets import QWidget, QPushButton
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, Qt, QPixmap
 
 from iqt.images import svg
 from iqt.components.base import BaseObject, BaseConfig, BaseImageWidgetMixin
@@ -37,7 +37,12 @@ class Submit(Button):
 
 class BaseImageButton(QPushButton, BaseImageWidgetMixin):
     def setPixmap(self, image):
-        self.setIcon(QIcon(image))
+        # self.setIcon(QIcon(image))
+        scaled_pixmap = QPixmap(image).scaled(self.size(), Qt.KeepAspectRatio,
+                                      Qt.SmoothTransformation)
+        icon = QIcon(scaled_pixmap)
+        self.setIcon(icon)
+        self.setIconSize(self.size())
 
 
 class ImageButton(Button):
@@ -52,7 +57,7 @@ class ImageButton(Button):
 
 class ViewBtnConfig(ButtonConfig):
     hidden: bool = True
-    fixed_size: tuple[int, int] = (24, 24)
+    fixed_size: tuple[int, int] = (18, 18)
 
 
 class FlowBtn(ImageButton):
