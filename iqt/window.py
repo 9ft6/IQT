@@ -13,11 +13,11 @@ from iqt.utils import setup_settings, get_widget_center_geometry
 class CentralWidget(Widget, name="central_widget"):
     items = HorizontNM[None]
 
-    def set_widget(self, widget: BaseObject, transparent: bool):
+    def set_widget(self, widget: BaseObject, titlebar: bool):
         self.widget.clear()
         self.widget.add_widget(widget)
 
-        if transparent:
+        if titlebar:
             TitleBar().create_widget(widget)
 
 
@@ -86,7 +86,10 @@ class MainWindow(QMainWindow):
         widget = widget.create_widget(self)
         widget.window = widget.entity.window = self
         self.current = widget
-        self.central_widget.entity.set_widget(widget, self.entity.cfg.transparent)
+        self.central_widget.entity.set_widget(
+            widget,
+            self.entity.cfg.transparent_titlebar
+        )
 
         fixed_size = self.entity.cfg.fixed_size or widget.size().toTuple()
         self.move_to_center(fixed_size, animation=animation)
@@ -97,6 +100,7 @@ class WindowConfig(BaseConfig):
     title: str = "Application"
     fixed_size: Size = None
     transparent: bool = False
+    transparent_titlebar: bool = True
     name: str = "window"
     start_at_center: bool = True
 
