@@ -24,8 +24,8 @@ class Button(BaseObject):
     factory: QWidget = ButtonQWidget
 
     def __init__(self, text=None, *args, **kwargs):
-        # kwargs["text"] = text or self._cfg_extra.get("text", "")
-        kwargs["text"] = text or kwargs.get("text", "")
+        extra = self._cfg_extra
+        kwargs["text"] = text or kwargs.get("text") or extra.get("text", "")
         super().__init__(*args, **kwargs)
 
 
