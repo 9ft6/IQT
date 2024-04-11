@@ -99,8 +99,8 @@ class WindowConfig(BaseConfig):
     widget_model: Any = None
     title: str = "Application"
     fixed_size: Size = None
-    transparent: bool = False
-    transparent_titlebar: bool = True
+    transparent: bool = True
+    transparent_titlebar: bool = False
     name: str = "window"
     start_at_center: bool = True
 
