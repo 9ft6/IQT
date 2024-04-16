@@ -9,6 +9,7 @@ from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from pydantic import BaseModel, Field
 
 from iqt.utils import setup_settings
+from iqt.logger import logger
 
 Size = tuple[int, int]
 ViewType = Literal["flow", "vertical", "horizont"]
@@ -108,7 +109,10 @@ class BaseObject(metaclass=ConfigurableType):
         self.pre_init()
         self.widget = self.init_widget(parent)
         self.app = QApplication.instance()
-        self.app.event_bus.connect(self.event_bus_handler)
+        try:
+            self.app.event_bus.connect(self.event_bus_handler)
+        except Exception as e:
+            logger.error(f'Failed to connect to event bus: {e} in {self.name}')
         config = self.config()
         setup_settings(self.widget, config.widget_settings)
         self.post_init()
