@@ -78,7 +78,7 @@ class VerticalBtn(ImageButton):
         image: str | Path = svg.horizont
 
 
-class AcceptBtn(Button, name="accept", text="Accept"):
+class AcceptBtn(Button, name="accept", text="Accept", default=True):
     ...
 
 
