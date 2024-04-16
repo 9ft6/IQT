@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any
 
 from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import QDir, Signal
+from PySide6.QtCore import QDir, Signal, QObject
 
 from iqt.components.base import BaseObject, BaseConfig
 from iqt.events import BusEvent
@@ -20,17 +20,23 @@ class AppConfig(BaseConfig):
     images_path: Path = Path().resolve() / "images"
 
 
-class AppObject(QApplication):
+class EventBus(QObject):
     event_bus: Signal = Signal(BusEvent)
 
 
 class Application(BaseObject):
     main_window: Any
     StartWindow: Any
+    event_bus_obj: QObject = EventBus()
     Config = AppConfig
 
     def run(self):
-        self.app = AppObject()
+        if QApplication.instance() is None:
+            self.app = QApplication()
+        else:
+            self.app = QApplication.instance()
+
+        self.app.event_bus = self.event_bus_obj.event_bus
         self.app.cfg = self.cfg = self.build_config()
         self.app.setStyleSheet(self.cfg.style)
 
