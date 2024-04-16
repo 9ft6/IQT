@@ -110,9 +110,6 @@ class Window(BaseObject):
     window: MainWindow
     Config = WindowConfig
 
-    def __init__(self, app: QApplication):
-        self.app = app
-
     def init_window(self):
         self.window = self.factory()
         self.window.entity = self
